@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { erc20Abi, parseUnits, type Hash } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ConnectButton } from "@/components/ConnectButton";
+import { ExitAllButton } from "@/components/app/ExitAllButton";
 import { useMounted } from "@/hooks/useMounted";
 import { formatUsdg, useUsdg, useVault } from "@/hooks/useVault";
 import { blurVaultAbi } from "@/lib/abis";
@@ -266,6 +267,13 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
             REDEEM EVERYTHING IN KIND
           </button>
         )}
+
+        {/* Sell the whole position — stocks included — to USDG in one go. Only
+            meaningful for a basketed vault; STEADY already exits fully in USDG. */}
+        {ready && mode === "withdraw" && Boolean(vault.shares) &&
+          strategy.id !== "steady" && vault.address && (
+            <ExitAllButton vault={vault.address} shares={vault.shares!} />
+          )}
 
         {vault.isPriceable === false && (
           <div className="font-mono text-xs text-wire-cyan/80 leading-relaxed border border-wire-cyan/40 p-3">

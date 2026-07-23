@@ -115,6 +115,28 @@ export const DEPLOYED_VAULTS = Object.entries(VAULT_ADDRESSES).filter(
  */
 export const BLUR_TOKEN = optionalAddress(process.env.NEXT_PUBLIC_BLUR_TOKEN);
 
+/**
+ * The ExitRouter, if deployed. Lets a holder of a basketed vault sell the stock
+ * leg to USDG in one transaction instead of receiving stock tokens in kind.
+ * Null until deployed, and the "sell all" control simply doesn't render.
+ */
+export const EXIT_ROUTER = optionalAddress(process.env.NEXT_PUBLIC_EXIT_ROUTER);
+
+/** Minimal ExitRouter ABI: the one function the UI calls. */
+export const exitRouterAbi = [
+  {
+    type: "function",
+    name: "exitToStable",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "vault", type: "address" },
+      { name: "shares", type: "uint256" },
+      { name: "minStableOut", type: "uint256" },
+    ],
+    outputs: [{ name: "totalStable", type: "uint256" }],
+  },
+] as const;
+
 /** True when no vault has been deployed yet, i.e. the app is display-only. */
 export const NOTHING_DEPLOYED = DEPLOYED_VAULTS.length === 0;
 
