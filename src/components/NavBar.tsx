@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { CaBar } from "@/components/CaBar";
 import { ConnectButton } from "@/components/ConnectButton";
@@ -12,13 +11,6 @@ export function NavBar() {
       <CaBar />
       <nav className="grid grid-cols-2 lg:grid-cols-3 items-center px-6 py-3 border-b border-wire-border">
       <div className="flex items-center gap-3">
-        <Image
-          src="/images/logo.png"
-          alt="BLUR"
-          width={32}
-          height={32}
-          className="rounded opacity-90"
-        />
         <span className="wire-title text-2xl text-wire-cyan glow-cyan tracking-widest">
           BLUR
         </span>

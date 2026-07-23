@@ -120,13 +120,6 @@ export function VaultApp() {
                   : "Connect a wallet to see your balance, allocation and live value."
               }
             />
-
-            <EmptyCard
-              title="AUTO-SAVE"
-              badge="NOT BUILT"
-              body="Scheduled top-ups toward a target. There is no contract for this yet, so there is nothing to connect to — the docs describe the intended design."
-              caption="PLANNED · MOVES ONLY USDG YOU APPROVE · CANCEL BY REVOKING"
-            />
           </div>
 
           <div className="lg:sticky lg:top-20">

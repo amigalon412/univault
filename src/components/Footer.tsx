@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 const BOX = `╔══════════════════════════════════════════════════════════════════╗
@@ -11,13 +10,6 @@ export function Footer() {
       <div className="font-mono text-xs text-wire-cyan/55 mb-6 text-center whitespace-pre overflow-x-auto">{BOX}</div>
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Image
-            src="/images/logo.png"
-            alt="BLUR"
-            width={22}
-            height={22}
-            className="rounded opacity-50"
-          />
           <span className="wire-title text-wire-cyan opacity-50 tracking-widest text-lg">
             BLUR
           </span>

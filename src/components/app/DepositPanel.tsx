@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { erc20Abi, parseUnits, type Hash } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ConnectButton } from "@/components/ConnectButton";
@@ -30,15 +31,27 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
   const [error, setError] = useState<string | null>(null);
 
   const mounted = useMounted();
+  const queryClient = useQueryClient();
   const { address: account, isConnected, chainId } = useAccount();
   const vault = useVault(strategy.id);
-  const { balance, allowance, refetch: refetchUsdg } = useUsdg(vault.address);
+  const { balance, allowance } = useUsdg(vault.address);
 
   const { writeContractAsync, isPending: isSigning } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
     query: { enabled: Boolean(hash) },
   });
+
+  // Re-read chain state only once a transaction has actually confirmed.
+  // writeContractAsync resolves when the tx is *sent*, not mined, so refetching
+  // right after sending an approval still reads the old allowance and leaves the
+  // button stuck on "APPROVE USDG" -- the user just approves again and again.
+  // Invalidating every query (rather than one hook's refetch) is what refreshes
+  // the sibling components too: TVL, position and wallet balance live in their
+  // own hook instances up in VaultApp and would otherwise stay stale.
+  useEffect(() => {
+    if (isSuccess) queryClient.invalidateQueries();
+  }, [isSuccess, queryClient]);
 
   // parseUnits throws on "" and on a bare "." -- both are reachable from the
   // input's own filter, so the parse has to be guarded rather than trusted.
@@ -79,7 +92,6 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
             args: [vault.address, parsed],
           });
           setHash(approvalHash);
-          await refetchUsdg();
           return;
         }
         setHash(
