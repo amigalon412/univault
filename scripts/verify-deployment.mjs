@@ -116,8 +116,12 @@ const readVault = (functionName, args = []) =>
   client.readContract({ address: VAULT, abi: blurVaultAbi, functionName, args });
 const readGuard = (functionName, args = []) =>
   client.readContract({ address: GUARD, abi: guardAbi, functionName, args });
+// Prefer the basket the vault actually points at; fall back to a BASKET given
+// on the command line. Reading it off-chain means the equity checks work with
+// only VAULT set, instead of firing an eth_call at `to: null`.
+let basketAddress = BASKET;
 const readBasket = (functionName, args = []) =>
-  client.readContract({ address: BASKET, abi: basketAbi, functionName, args });
+  client.readContract({ address: basketAddress, abi: basketAbi, functionName, args });
 
 const same = (a, b) => a && b && a.toLowerCase() === b.toLowerCase();
 
@@ -183,6 +187,7 @@ async function main() {
     if (BASKET) bad("BASKET was given but the vault has none");
   } else {
     if (BASKET) check(same(basket, BASKET), "basket matches the one given", basket);
+    basketAddress = BASKET ?? basket;
     check(same(await readBasket("vault"), VAULT), "basket points back at this vault");
     check(same(await readBasket("stable"), asset), "basket trades the vault's asset");
     if (ORACLE) check(same(await readBasket("oracle"), ORACLE), "basket uses the oracle given");
