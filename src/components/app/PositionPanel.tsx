@@ -12,10 +12,10 @@ interface PositionPanelProps {
 /** A status pill: a breathing lime dot when live, a still dim one when not. */
 function Status({ on, label }: { on: boolean; label: string }) {
   return (
-    <span className="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] whitespace-nowrap">
+    <span className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] whitespace-nowrap">
       <span
         className={
-          "inline-block w-1.5 h-1.5 rounded-full " +
+          "inline-block w-2 h-2 rounded-full " +
           (on ? "bg-wire-cyan animate-earn" : "bg-wire-muted/40")
         }
       />
@@ -25,34 +25,54 @@ function Status({ on, label }: { on: boolean; label: string }) {
 }
 
 /**
- * A looping pulse that runs along the earning pipeline, so the card reads as a
- * live mechanism rather than a static balance: deposit splits into lending and
- * stocks, both feed value back, and it compounds.
+ * A looping pulse that runs the earning pipeline as lit nodes, so the card
+ * reads as a live mechanism rather than a static balance: deposit splits into
+ * lending and stocks, both feed value back, and it compounds.
  */
 function Mechanism({ hasBasket }: { hasBasket: boolean }) {
   const stages = [
-    "USDG",
-    hasBasket ? "LENDING + STOCKS" : "LENDING",
-    "YIELD",
-    "COMPOUND",
+    { k: "DEPOSIT", s: "USDG" },
+    { k: "AT WORK", s: hasBasket ? "LENDING + STOCKS" : "LENDING" },
+    { k: "YIELD", s: "GROWS" },
+    { k: "COMPOUND", s: "REPEATS" },
   ];
   return (
-    <div className="mt-7 border border-wire-border bg-wire-card px-5 py-5">
-      <div className="font-mono text-[11px] text-wire-muted tracking-[0.3em] mb-4">
+    <div className="mt-8 border border-wire-border bg-wire-card px-6 py-6">
+      <div className="font-mono text-xs text-wire-muted tracking-[0.35em] mb-6">
         {"// HOW IT EARNS"}
       </div>
-      <div className="relative h-px bg-wire-border my-3">
-        <span className="absolute -top-[3px] w-1.5 h-1.5 rounded-full bg-wire-cyan glow-box-cyan animate-flow" />
-      </div>
-      <div className="flex items-center justify-between gap-2 font-mono text-[10px] sm:text-[11px] tracking-[0.15em] text-wire-cyan/80">
-        {stages.map((s, i) => (
-          <span key={s} className="flex items-center gap-2">
-            <span className={i === stages.length - 1 ? "text-wire-cyan glow-cyan" : ""}>
-              {s}
-            </span>
-            {i < stages.length - 1 && <span className="text-wire-border">▶</span>}
-          </span>
-        ))}
+      <div className="relative">
+        {/* the rail with a travelling pulse */}
+        <div className="absolute left-[8%] right-[8%] top-[9px] h-px bg-wire-border">
+          <span className="absolute -top-[3px] w-2 h-2 rounded-full bg-wire-cyan glow-box-cyan animate-flow" />
+        </div>
+        <div className="relative grid grid-cols-4 gap-2">
+          {stages.map((st, i) => (
+            <div key={st.k} className="flex flex-col items-center text-center">
+              <span
+                className={
+                  "w-5 h-5 rounded-full border-2 bg-black mb-3 " +
+                  (i === stages.length - 1
+                    ? "border-wire-cyan glow-box-cyan"
+                    : "border-wire-cyan/60")
+                }
+              />
+              <span
+                className={
+                  "font-mono text-xs tracking-[0.2em] " +
+                  (i === stages.length - 1
+                    ? "text-wire-cyan glow-cyan"
+                    : "text-wire-cyan/90")
+                }
+              >
+                {st.k}
+              </span>
+              <span className="font-mono text-[10px] tracking-[0.15em] text-wire-muted mt-1">
+                {st.s}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -78,17 +98,16 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
   };
 
   const header = (
-    <div className="flex items-baseline justify-between gap-4 mb-6">
-      <h2 className="font-mono text-lg text-wire-cyan glow-cyan tracking-[0.3em]">
+    <div className="flex items-center justify-between gap-4 mb-8">
+      <h2 className="font-mono text-xl md:text-2xl text-wire-cyan glow-cyan tracking-[0.3em]">
         YOUR POSITION
       </h2>
-      <span className="font-mono text-xs text-wire-muted tracking-[0.2em]">
+      <span className="font-mono text-xs text-wire-muted tracking-[0.25em] border border-wire-border px-3 py-1">
         {strategy.name}
       </span>
     </div>
   );
 
-  // States that carry no live breakdown fall back to a plain line.
   const message =
     !live
       ? "Connect a wallet to see your balance, allocation and live value."
@@ -100,9 +119,9 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
 
   if (message) {
     return (
-      <section className="border border-wire-border bg-black p-7 md:p-9">
+      <section className="border border-wire-border bg-black p-8 md:p-10">
         {header}
-        <div className="border border-dashed border-wire-border px-8 py-12">
+        <div className="border border-dashed border-wire-border px-8 py-14">
           <p className="font-mono text-sm text-wire-muted text-center leading-relaxed">
             {message}
           </p>
@@ -117,59 +136,91 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
   const userIdle = slice(bd.idle);
   const userLending = userStable > userIdle ? userStable - userIdle : 0n;
 
-  const stablePct = total && total > 0n ? Number((userStable * 1000n) / total) / 10 : 0;
-  const stocksPct = total && total > 0n ? Number((userStocks * 1000n) / total) / 10 : 0;
+  const pctOf = (v: bigint, whole: bigint | undefined) =>
+    whole && whole > 0n ? Number((v * 1000n) / whole) / 10 : 0;
+
+  const stablePct = pctOf(userStable, total);
+  const stocksPct = pctOf(userStocks, total);
 
   const lendingOn = userLending > 0n;
   const stocksOn = userStocks > 0n;
 
   return (
-    <section className="border border-wire-border bg-black p-7 md:p-9">
-      {header}
+    <section className="border border-wire-border bg-black p-8 md:p-10">
+      <div className="flex items-center justify-between gap-4 mb-8">
+        <h2 className="font-mono text-xl md:text-2xl text-wire-cyan glow-cyan tracking-[0.3em]">
+          YOUR POSITION
+        </h2>
+        <div className="flex items-center gap-3">
+          <Status on label="LIVE" />
+          <span className="font-mono text-xs text-wire-muted tracking-[0.25em] border border-wire-border px-3 py-1">
+            {strategy.name}
+          </span>
+        </div>
+      </div>
 
-      {/* Total */}
-      <div className="flex items-baseline justify-between gap-4 mb-5">
-        <span className="font-mono text-xs text-wire-muted tracking-[0.25em]">
+      {/* Total — the hero number */}
+      <div className="mb-8">
+        <div className="font-mono text-xs text-wire-muted tracking-[0.35em] mb-2">
           TOTAL VALUE
-        </span>
-        <span className="font-mono text-3xl md:text-4xl text-wire-cyan glow-cyan">
+        </div>
+        <div className="font-mono text-6xl md:text-7xl text-wire-cyan glow-cyan leading-none">
           {total === undefined ? "—" : formatUsdg(total)}
-        </span>
+        </div>
       </div>
 
       {/* Allocation bar */}
-      <div className="flex h-3 w-full overflow-hidden border border-wire-border mb-2">
-        <div
-          className="bar-fill bg-wire-cyan/70"
-          style={{ width: `${stablePct}%` }}
-          title={`Stable ${stablePct.toFixed(0)}%`}
-        />
-        <div
-          className="bar-fill bg-wire-purple/70"
-          style={{ width: `${stocksPct}%` }}
-          title={`Stocks ${stocksPct.toFixed(0)}%`}
-        />
-      </div>
-      <div className="flex justify-between font-mono text-[11px] text-wire-muted tracking-[0.2em] mb-7">
-        <span>◆ STABLE {stablePct.toFixed(0)}%</span>
-        {bd.hasBasket && <span>STOCKS {stocksPct.toFixed(0)}% ◆</span>}
+      <div className="mb-10">
+        <div className="flex h-6 w-full overflow-hidden border border-wire-border">
+          <div
+            className="bar-fill bg-wire-cyan/80 flex items-center pl-3"
+            style={{ width: `${Math.max(stablePct, 8)}%` }}
+          >
+            <span className="font-mono text-[10px] text-black font-bold tracking-widest">
+              STABLE
+            </span>
+          </div>
+          {bd.hasBasket && (
+            <div
+              className="bar-fill bg-wire-purple/80 flex items-center justify-end pr-3"
+              style={{ width: `${Math.max(stocksPct, 8)}%` }}
+            >
+              <span className="font-mono text-[10px] text-black font-bold tracking-widest">
+                STOCKS
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="flex justify-between font-mono text-xs text-wire-muted tracking-[0.25em] mt-2.5">
+          <span className="text-wire-cyan">◆ {stablePct.toFixed(0)}% STABLE</span>
+          {bd.hasBasket && (
+            <span className="text-wire-purple">{stocksPct.toFixed(0)}% STOCKS ◆</span>
+          )}
+        </div>
       </div>
 
       {/* Stable leg */}
-      <div className="border border-wire-border bg-wire-card px-5 py-4 mb-4">
-        <div className="flex items-center justify-between gap-4 mb-3">
-          <span className="font-mono text-sm text-wire-cyan tracking-[0.2em]">
+      <div className="border border-wire-border border-l-2 border-l-wire-cyan bg-wire-card px-6 py-5 mb-5">
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <span className="font-mono text-base text-wire-cyan tracking-[0.25em]">
             STABLE · {formatUsdg(userStable)}
           </span>
           <Status on={lendingOn} label={lendingOn ? "EARNING" : "IDLE"} />
         </div>
-        <div className="space-y-1.5 font-mono text-xs">
-          <div className="flex justify-between text-wire-muted">
-            <span>in lending (earns yield)</span>
+        <div className="space-y-3 font-mono text-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-wire-muted tracking-wide">
+              ▸ in lending <span className="text-wire-muted/60">· earns yield</span>
+            </span>
             <span className="text-wire-cyan">{formatUsdg(userLending)}</span>
           </div>
-          <div className="flex justify-between text-wire-muted">
-            <span>idle {userIdle > 0n ? "· awaiting the keeper" : ""}</span>
+          <div className="flex items-center justify-between">
+            <span className="text-wire-muted tracking-wide">
+              ▸ idle{" "}
+              {userIdle > 0n && (
+                <span className="text-wire-muted/60">· awaiting the keeper</span>
+              )}
+            </span>
             <span className={userIdle > 0n ? "text-wire-cyan" : "text-wire-muted"}>
               {formatUsdg(userIdle)}
             </span>
@@ -179,40 +230,49 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
 
       {/* Equity leg */}
       {bd.hasBasket && (
-        <div className="border border-wire-border bg-wire-card px-5 py-4">
-          <div className="flex items-center justify-between gap-4 mb-3">
-            <span className="font-mono text-sm text-wire-cyan tracking-[0.2em]">
+        <div className="border border-wire-border border-l-2 border-l-wire-purple bg-wire-card px-6 py-5">
+          <div className="flex items-center justify-between gap-4 mb-5">
+            <span className="font-mono text-base text-wire-cyan tracking-[0.25em]">
               STOCKS · {formatUsdg(userStocks)}
             </span>
             <Status on={stocksOn} label={stocksOn ? "LIVE" : "AWAITING"} />
           </div>
-          <div className="space-y-2 font-mono text-xs">
+          <div className="space-y-3.5">
             {bd.stocks.map((s) => {
               const v = slice(s.value);
-              const pct =
-                userStocks > 0n ? Number((v * 1000n) / userStocks) / 10 : 0;
+              const pct = pctOf(v, userStocks);
+              const held = v > 0n;
               return (
                 <div key={s.symbol} className="flex items-center gap-3">
-                  <span className="w-12 text-wire-cyan">{s.symbol}</span>
-                  <div className="flex-1 h-2 bg-black border border-wire-border overflow-hidden">
+                  <span
+                    className={
+                      "font-mono text-xs w-14 px-2 py-1 border text-center tracking-widest " +
+                      (held
+                        ? "border-wire-purple/60 text-wire-cyan"
+                        : "border-wire-border text-wire-muted")
+                    }
+                  >
+                    {s.symbol}
+                  </span>
+                  <div className="flex-1 h-3 bg-black border border-wire-border overflow-hidden">
                     <div
                       className="bar-fill h-full bg-wire-purple/70"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="w-16 text-right text-wire-muted">
+                  <span className="font-mono text-sm w-20 text-right text-wire-cyan">
                     {formatUsdg(v)}
                   </span>
-                  <span className="w-10 text-right text-wire-muted/70">
+                  <span className="font-mono text-xs w-12 text-right text-wire-muted">
                     {pct.toFixed(0)}%
                   </span>
                 </div>
               );
             })}
           </div>
-          <p className="font-mono text-[11px] text-wire-muted/70 leading-relaxed mt-3">
-            Target is 25% each; the keeper spreads into them over time. What you
-            see is what the vault holds right now.
+          <p className="font-mono text-xs text-wire-muted/70 leading-relaxed mt-5 border-t border-wire-border pt-4">
+            The equity leg targets an even split across these four. It shows what
+            the vault holds right now, live from the chain.
           </p>
         </div>
       )}
