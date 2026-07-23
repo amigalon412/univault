@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { VT323, Share_Tech_Mono } from "next/font/google";
+import { cookieToInitialState } from "wagmi";
 import { Web3Provider } from "@/components/providers/Web3Provider";
+import { wagmiConfig } from "@/lib/wagmi";
 import "./globals.css";
 
 const vt323 = VT323({
@@ -55,18 +58,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Rehydrate the wallet connection from the cookie wagmi wrote, so a refresh
+  // keeps the wallet connected instead of dropping it.
+  const initialState = cookieToInitialState(
+    wagmiConfig,
+    (await headers()).get("cookie"),
+  );
+
   return (
     <html
       lang="en"
       className={`${vt323.variable} ${shareTechMono.variable} dark`}
     >
       <body>
-        <Web3Provider>{children}</Web3Provider>
+        <Web3Provider initialState={initialState}>{children}</Web3Provider>
       </body>
     </html>
   );
