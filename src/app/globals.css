@@ -284,3 +284,36 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+
+/* A pulse travelling along the earning pipeline, left to right, looping. */
+.animate-flow {
+  animation: flowPulse 2.8s linear infinite;
+}
+@keyframes flowPulse {
+  0% { left: 0%; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+/* A soft breathing glow for the "actively earning" markers. */
+.animate-earn {
+  animation: earnPulse 1.8s ease-in-out infinite;
+}
+@keyframes earnPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--cyan), 0 0 12px rgba(214, 254, 81, 0.5); }
+  50% { opacity: 0.5; box-shadow: 0 0 2px var(--cyan); }
+}
+/* The width of an allocation bar eases in when its value arrives. */
+.bar-fill {
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-flow,
+  .animate-earn {
+    animation: none;
+  }
+  .bar-fill {
+    transition: none;
+  }
+}

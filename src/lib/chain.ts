@@ -58,6 +58,22 @@ export const STOCK_FEEDS: { symbol: string; feed: Address }[] = [
 ];
 
 /**
+ * The tradable stock tokens the BALANCED and GROWTH baskets hold, four names at
+ * 25% each. Addresses read on-chain from the deployed BasketAdapter; the same
+ * four in both baskets. AMD is deliberately absent -- its pool is hooked and
+ * empty, so it was never added as a constituent.
+ *
+ * These are the tokens, not the price feeds in STOCK_FEEDS: a feed is a number,
+ * a token is a thing the vault can actually own.
+ */
+export const BASKET_STOCKS: { symbol: string; token: Address }[] = [
+  { symbol: "NVDA", token: getAddress("0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC") },
+  { symbol: "AAPL", token: getAddress("0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9") },
+  { symbol: "TSLA", token: getAddress("0x322F0929c4625eD5bAd873c95208D54E1c003b2d") },
+  { symbol: "AMZN", token: getAddress("0x12f190a9F9d7D37a250758b26824B97CE941bF54") },
+];
+
+/**
  * Reads an address out of the environment, returning null rather than throwing
  * when it is absent or malformed.
  *

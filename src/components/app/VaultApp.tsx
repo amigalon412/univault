@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import { DepositPanel } from "@/components/app/DepositPanel";
-import { EmptyCard } from "@/components/app/EmptyCard";
+import { PositionPanel } from "@/components/app/PositionPanel";
 import { StrategyPicker } from "@/components/app/StrategyPicker";
 import { useMounted } from "@/hooks/useMounted";
 import {
@@ -107,19 +107,7 @@ export function VaultApp() {
               tvl={perVault}
             />
 
-            <EmptyCard
-              title="YOUR POSITION"
-              badge={strategy.name}
-              body={
-                live
-                  ? vault.address === null
-                    ? "This strategy has no vault deployed yet."
-                    : vault.shares
-                      ? `${formatUsdg(vault.positionAssets ?? 0n)} across ${strategy.split} stable/stocks.`
-                      : "No shares in this vault yet."
-                  : "Connect a wallet to see your balance, allocation and live value."
-              }
-            />
+            <PositionPanel strategy={strategy} />
           </div>
 
           <div className="lg:sticky lg:top-20">
