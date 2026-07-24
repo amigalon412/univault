@@ -45,6 +45,7 @@ contract TwoLegTest is Test {
         oracle.setFeed(address(nvda), address(nvdaFeed), 2 hours);
         basket.addConstituent(address(nvda), 10_000);
         vault.setBasket(basket, 6_000); // BALANCED: 60 stable / 40 equity
+        vault.setAutoAllocate(false); // these tests drive allocation by hand
         vm.stopPrank();
 
         usdg.mint(alice, 1_000_000 * ONE);

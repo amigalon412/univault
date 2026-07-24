@@ -36,6 +36,7 @@ contract KeeperGuardTest is Test {
         guard.setVault(address(vault), true);
         guard.setSentinel(sentinel, true);
         vault.setGuard(address(guard));
+        vault.setAutoAllocate(false); // these tests drive allocation through the guard
         vm.stopPrank();
 
         usdg.mint(alice, 5_000_000 * ONE);

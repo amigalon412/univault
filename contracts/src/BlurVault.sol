@@ -85,9 +85,27 @@ contract BlurVault is ERC4626, Ownable, ReentrancyGuard {
     ///      no further.
     uint16 public driftBandBps;
 
+    /// @notice Worst fill accepted when a deposit allocates itself, in bps.
+    /// @dev A deposit puts its own money to work in the same transaction so the
+    ///      depositor pays for it and the common path needs no keeper. Each buy
+    ///      is bounded by this against the oracle price, the same guarantee the
+    ///      guard gives a keeper's rebalance. Best-effort: a constituent whose
+    ///      pool cannot fill inside the bound is skipped and left idle for a
+    ///      keeper to mop up, so a thin or volatile pool never bricks a deposit.
+    uint16 public depositSlippageBps;
+
+    /// @notice When true, a deposit allocates itself in the same transaction.
+    /// @dev On by default: the depositor pays for putting their money to work,
+    ///      so the steady state needs no keeper. An operator can turn it off to
+    ///      fall back to keeper-driven allocation — for a migration, or if the
+    ///      pools are unhealthy and idle is preferable to a bad fill.
+    bool public autoAllocate;
+
     event Deployed(uint256 assets);
     event Recalled(uint256 assets);
     event BufferUpdated(uint16 bufferBps);
+    event DepositSlippageUpdated(uint16 bps);
+    event AutoAllocateSet(bool on);
     event FeeAccrued(uint256 feeAssets, uint256 feeShares, uint256 newHighWaterMark);
     event FeeRecipientUpdated(address recipient);
     event GuardUpdated(address guard);
@@ -123,6 +141,8 @@ contract BlurVault is ERC4626, Ownable, ReentrancyGuard {
         feeRecipient = owner_;
         targetStableBps = BPS; // lending-only until a basket is attached
         driftBandBps = 200; // 2%
+        depositSlippageBps = 100; // 1%
+        autoAllocate = true;
         _assetDecimals = IERC20Metadata(address(asset_)).decimals();
         highWaterMark = _sharePrice();
     }
@@ -361,9 +381,16 @@ contract BlurVault is ERC4626, Ownable, ReentrancyGuard {
         return _deployIdle(maxAssets);
     }
 
-    function _deployIdle(uint256 maxAssets) internal returns (uint256 deployed) {
+    function _deployIdle(uint256 maxAssets) internal returns (uint256) {
         _requireAutomation();
+        return _deployToVenue(maxAssets);
+    }
 
+    /// @dev The allocation itself, without the automation gate. Reachable by a
+    ///      keeper through `_deployIdle` and by a depositor through
+    ///      `_allocateOnDeposit`; both only ever move stable toward the lending
+    ///      leg, never out of the vault, so neither needs the gate.
+    function _deployToVenue(uint256 maxAssets) internal returns (uint256 deployed) {
         uint256 idle = _idle();
         uint256 target = (totalAssets() * bufferBps) / BPS;
         if (idle <= target) return 0;
@@ -375,6 +402,73 @@ contract BlurVault is ERC4626, Ownable, ReentrancyGuard {
         IERC20(asset()).forceApprove(address(yieldVault), deployed);
         yieldVault.deposit(deployed, address(this));
         emit Deployed(deployed);
+    }
+
+    // ---------------------------------------------------------------------
+    // Deposit-time allocation
+    //
+    // A deposit puts its own money to work in the same transaction: it buys the
+    // basket toward its target weights and lends the rest. The depositor pays
+    // for it, so the steady state needs no keeper and the protocol carries no
+    // gas bill that grows with deposits. Only a rare price-drift rebalance is
+    // left for a keeper.
+    //
+    // It moves nothing out of the vault and cannot overshoot the target split —
+    // the same reasons `rebalance` is safe to expose to a keeper — so it runs
+    // without a caller check, inside the deposit that triggered it.
+    // ---------------------------------------------------------------------
+
+    function _allocateOnDeposit() internal {
+        // Buy the basket toward target weights, funded by the stable now sitting
+        // above target. Skipped for a lending-only vault and while the basket
+        // cannot be priced.
+        if (address(basket) != address(0) && targetStableBps < BPS && isPriceable()) {
+            uint256 total = totalAssets();
+            uint256 targetStable = (total * targetStableBps) / BPS;
+            uint256 stable = _stableAssets();
+
+            if (stable > targetStable) {
+                uint256 budget = stable - targetStable; // stable to move into equity
+                uint256 equityTarget = total - targetStable; // value the equity leg should reach
+                uint256 n = basket.tokensLength();
+
+                for (uint256 i; i < n && budget > 0; ++i) {
+                    address token = basket.tokens(i);
+                    (uint16 weightBps,,,) = basket.constituents(token);
+                    uint256 tokenTarget = (equityTarget * weightBps) / BPS;
+                    uint256 held = _usdToAssets(basket.valueOf(token));
+                    if (held >= tokenTarget) continue;
+
+                    uint256 want = tokenTarget - held;
+                    if (want > budget) want = budget;
+
+                    budget -= _buyEquityBestEffort(token, want);
+                }
+            }
+        }
+
+        // Whatever stable remains above the buffer earns yield in the venue.
+        _deployToVenue(type(uint256).max);
+    }
+
+    /// @dev Buy `assetsIn` of `token`, bounded by the deposit slippage against
+    ///      the oracle. Returns the stable actually spent — zero if the pool
+    ///      could not fill inside the bound, in which case the pre-sent stable
+    ///      is swept back so nothing is stranded in the basket.
+    function _buyEquityBestEffort(address token, uint256 assetsIn) internal returns (uint256 spent) {
+        uint256 idle = _idle();
+        if (assetsIn > idle) assetsIn = idle; // spend only what is on hand
+        if (assetsIn == 0) return 0;
+
+        IERC20(asset()).safeTransfer(address(basket), assetsIn);
+        uint256 minOut = (_expectedTokensFor(token, assetsIn) * (BPS - depositSlippageBps)) / BPS;
+
+        try basket.buy(token, assetsIn, minOut) returns (uint256) {
+            spent = assetsIn;
+        } catch {
+            basket.sweepStableToVault();
+            spent = 0;
+        }
     }
 
     // ---------------------------------------------------------------------
@@ -480,6 +574,19 @@ contract BlurVault is ERC4626, Ownable, ReentrancyGuard {
         if (newBandBps > BPS) revert SplitOutOfRange();
         driftBandBps = newBandBps;
         emit DriftBandUpdated(newBandBps);
+    }
+
+    /// @notice Worst fill a self-allocating deposit may accept, in bps.
+    function setDepositSlippageBps(uint16 newSlippageBps) external onlyOwner {
+        if (newSlippageBps > MAX_SLIPPAGE_BPS) revert SlippageOutOfRange();
+        depositSlippageBps = newSlippageBps;
+        emit DepositSlippageUpdated(newSlippageBps);
+    }
+
+    /// @notice Turn deposit-time self-allocation on or off.
+    function setAutoAllocate(bool on) external onlyOwner {
+        autoAllocate = on;
+        emit AutoAllocateSet(on);
     }
 
     /// @notice Address permitted to run automation alongside the owner.
@@ -602,5 +709,6 @@ contract BlurVault is ERC4626, Ownable, ReentrancyGuard {
 
     function _deposit(address caller, address receiver, uint256 assets, uint256 shares) internal override nonReentrant {
         super._deposit(caller, receiver, assets, shares);
+        if (autoAllocate) _allocateOnDeposit();
     }
 }

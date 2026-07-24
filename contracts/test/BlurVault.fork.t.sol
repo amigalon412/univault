@@ -25,6 +25,8 @@ contract BlurVaultForkTest is Test {
         vm.createSelectFork(vm.envOr("ROBINHOOD_RPC", vm.rpcUrl("robinhood")));
 
         vault = new BlurVault(usdg, steak, "BLUR Steady", "blurSTEADY", owner);
+        vm.prank(owner);
+        vault.setAutoAllocate(false); // these tests drive deployIdle by hand
 
         deal(address(usdg), alice, 100_000 * ONE);
         deal(address(usdg), bob, 100_000 * ONE);

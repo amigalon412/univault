@@ -45,6 +45,7 @@ contract SwapForkTest is Test {
         basket.addConstituent(RobinhoodChain.NVDA, 10_000);
         basket.setPool(RobinhoodChain.NVDA, _nvdaPool());
         vault.setBasket(basket, 6_000);
+        vault.setAutoAllocate(false); // these tests drive swaps by hand
         vm.stopPrank();
     }
 

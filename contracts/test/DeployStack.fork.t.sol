@@ -135,6 +135,11 @@ contract DeployStackForkTest is Test, DeployStack {
     function test_TheDeployedStackTakesAndReturnsMoney() public {
         Stack memory s = _deploy(6_000);
 
+        // This test drives allocation through the guard, so turn off the
+        // deposit-time self-allocation a fresh deployment ships with.
+        vm.prank(s.vault.owner());
+        s.vault.setAutoAllocate(false);
+
         deal(RobinhoodChain.USDG, alice, 10_000 * ONE);
 
         vm.startPrank(alice);

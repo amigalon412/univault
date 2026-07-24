@@ -26,6 +26,8 @@ contract BlurVaultTest is Test {
         usdg = new MockERC20("Global Dollar", "USDG", 6);
         yieldVault = new MockYieldVault(IERC20(address(usdg)), APR_BPS);
         vault = new BlurVault(IERC20(address(usdg)), IERC4626(address(yieldVault)), "BLUR Steady", "blurSTEADY", owner);
+        vm.prank(owner);
+        vault.setAutoAllocate(false); // these tests drive deployIdle by hand
 
         usdg.mint(alice, 1_000_000 * ONE);
         usdg.mint(bob, 1_000_000 * ONE);

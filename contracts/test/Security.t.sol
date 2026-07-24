@@ -99,8 +99,10 @@ contract SecurityTest is Test {
         nvda = new MockStock("NVIDIA", "NVDA");
         feed = new MockAggregator(8, "RHNVDA / USD", 200_00000000); // $200
 
-        vm.prank(owner);
+        vm.startPrank(owner);
         oracle.setFeed(address(nvda), address(feed), 2 hours);
+        vault.setAutoAllocate(false); // these tests drive allocation by hand
+        vm.stopPrank();
     }
 
     function _deposit(uint256 amount) internal {

@@ -68,6 +68,7 @@ contract RebalanceTest is Test {
         basket.addConstituent(address(nvda), 10_000);
         vault.setBasket(basket, 6_000); // 60 stable / 40 equity
         vault.setGuard(keeper); // keeper drives automation directly here
+        vault.setAutoAllocate(false); // these tests drive allocation by hand
         vm.stopPrank();
 
         usdg.mint(alice, 1_000_000 * ONE);

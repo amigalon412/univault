@@ -82,6 +82,11 @@ contract DeployTest is Test, Deploy {
     function test_FreshDeploymentWorksImmediately() public {
         (BlurVault vault, KeeperGuard guard) = _runDeploy(_config());
 
+        // This test drives allocation through the keeper, so turn off the
+        // deposit-time self-allocation a fresh deployment ships with.
+        vm.prank(vault.owner());
+        vault.setAutoAllocate(false);
+
         usdg.mint(alice, 1_000_000 * ONE);
         vm.startPrank(alice);
         usdg.approve(address(vault), type(uint256).max);
