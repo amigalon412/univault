@@ -32,6 +32,13 @@ interface IBuyback {
 ///      able to accept a worse fill than the operator chose. Oracle freshness
 ///      is enforced by the vault itself, which refuses to price a stale basket.
 contract KeeperGuard is Ownable {
+    /// @notice Hard ceiling on rebalance slippage, matching BlurVault's own
+    ///         `MAX_SLIPPAGE_BPS`. A guard value above this is not merely loose,
+    ///         it is inert: the vault reverts `SlippageOutOfRange` on every
+    ///         rebalance, silently disabling automation. Rejecting it here makes
+    ///         a misconfiguration fail at set-time instead of at run-time.
+    uint16 internal constant MAX_SLIPPAGE_BPS = 1_000; // 10%
+
     /// @notice Keepers permitted to trigger automation.
     mapping(address => bool) public isKeeper;
 
@@ -215,7 +222,7 @@ contract KeeperGuard is Ownable {
     }
 
     function setTradeLimits(uint256 maxRebalancePerCall_, uint16 maxSlippageBps_) external onlyOwner {
-        if (maxSlippageBps_ > 10_000) revert SlippageOutOfRange();
+        if (maxSlippageBps_ > MAX_SLIPPAGE_BPS) revert SlippageOutOfRange();
         maxRebalancePerCall = maxRebalancePerCall_;
         maxSlippageBps = maxSlippageBps_;
         emit TradeLimitsUpdated(maxRebalancePerCall_, maxSlippageBps_);
