@@ -1,0 +1,13 @@
+Configuration baked into this bundle at build time
+===================================================
+These NEXT_PUBLIC_* values are already compiled into app/ — nothing to set on
+the server. To CHANGE any of them you must rebuild (see DEPLOY.md "Rebuilding").
+
+NEXT_PUBLIC_VAULT_STEADY    = 0x583bce228448814bc42235d4761290f3ac710a09
+NEXT_PUBLIC_VAULT_BALANCED  = 0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7
+NEXT_PUBLIC_VAULT_GROWTH    = 0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c
+NEXT_PUBLIC_EXIT_ROUTER     = 0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
+NEXT_PUBLIC_SITE_URL        = https://blurvault.pro
+
+Chain: Robinhood Chain, id 4663, RPC https://rpc.mainnet.chain.robinhood.com
+Built for Node >= 24. Contracts owner/keeper/fee: 0x56D89b63192677c72fCf4C9CB64de592F2833A63

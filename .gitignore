@@ -57,3 +57,4 @@ temp/
 
 # Playwright MCP scratch output
 .playwright-mcp/
+BlurVault/app/

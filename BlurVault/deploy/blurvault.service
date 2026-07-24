@@ -1,0 +1,18 @@
+[Unit]
+Description=BlurVault website (Next.js standalone)
+After=network.target
+
+[Service]
+Type=simple
+# Change User and the path to wherever you rsync'd the app/ folder.
+User=www-data
+WorkingDirectory=/var/www/blurvault
+ExecStart=/usr/bin/node server.js
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOSTNAME=127.0.0.1
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
