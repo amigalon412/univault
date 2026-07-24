@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const BOX = `╔══════════════════════════════════════════════════════════════════╗
-║  BLUR · GROW YOUR BAG, AUTOMATICALLY · blur.finance               ║
+║  BLUR · GROW YOUR BAG, AUTOMATICALLY · blurvault.pro             ║
 ╚══════════════════════════════════════════════════════════════════╝`;
 
 export function Footer() {
@@ -31,7 +31,7 @@ export function Footer() {
             DOCS
           </Link>
           <a
-            href="https://x.com/blurbotRH"
+            href="https://x.com/BlurOnRh"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-wire-cyan transition-colors"

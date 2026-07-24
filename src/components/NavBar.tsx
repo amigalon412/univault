@@ -37,10 +37,10 @@ export function NavBar() {
       </div>
       <div className="flex items-center justify-end gap-2 sm:gap-3">
         <a
-          href="https://x.com/blurbotRH"
+          href="https://x.com/BlurOnRh"
           target="_blank"
           rel="noopener noreferrer"
-          title="@blurbotRH on X"
+          title="@BlurOnRh on X"
           className="flex items-center justify-center border border-wire-cyan text-wire-cyan glow-box-cyan p-2 hover:bg-wire-cyan hover:text-black transition-all"
         >
           <XIcon width={15} height={15} className="glow-svg-cyan" />
