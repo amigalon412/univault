@@ -31,7 +31,7 @@ export function Footer() {
             DOCS
           </Link>
           <a
-            href="https://x.com/BlurOnRh"
+            href="https://x.com/BlurYield"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-wire-cyan transition-colors"
