@@ -22,15 +22,23 @@ The BALANCED and GROWTH baskets each hold NVDA, AAPL, TSLA and AMZN at 25% via
 Uniswap v4 pools (0.30% fee). AMD is deliberately excluded — its pool is hooked
 and holds no liquidity.
 
+## Periphery
+
+| Contract | Address | Notes |
+|----------|---------|-------|
+| ExitRouter | `0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0` | Deployed 2026-07-24, block 17686207. Ownerless, holds no funds. Market-sells a whole position (stocks included) to USDG in one tx via `redeemInKind` + v4 swaps. Powers the "SELL EVERYTHING → USDG" button on BALANCED/GROWTH. |
+
 ## Wiring the site
 
-These are what `NEXT_PUBLIC_VAULT_*` point at. Set the same three in the Vercel
-project settings to make the public site read the live vaults:
+These are what `NEXT_PUBLIC_VAULT_*` / `NEXT_PUBLIC_EXIT_ROUTER` point at. Set the
+same values in the Vercel project settings to make the public site read the live
+contracts:
 
 ```
 NEXT_PUBLIC_VAULT_STEADY=0xFd7223d33335c5A7bdFA44C8Fa0B212cA045A996
 NEXT_PUBLIC_VAULT_BALANCED=0x066d4661A5419A68b64a0dCF51f5c295185dB175
 NEXT_PUBLIC_VAULT_GROWTH=0xBF2b621E86e762C6f4C78aCAc4F1C41087CaB787
+NEXT_PUBLIC_EXIT_ROUTER=0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
 ```
 
 ## Not deployed yet
