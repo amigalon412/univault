@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const ASCII = `
-██████╗ ██╗     ██╗   ██╗██████╗ 
+██████╗ ██╗     ██╗   ██╗██████╗
 ██╔══██╗██║     ██║   ██║██╔══██╗
 ██████╔╝██║     ██║   ██║██████╔╝
 ██╔══██╗██║     ██║   ██║██╔══██╗
@@ -24,7 +24,7 @@ export function HeroSection() {
 
   useEffect(() => {
     const timeouts = BOOT.map((e, i) =>
-      setTimeout(() => setShown((s) => [...s, i]), e.delay)
+      setTimeout(() => setShown((s) => [...s, i]), e.delay),
     );
     return () => {
       timeouts.forEach((t) => clearTimeout(t));
@@ -39,12 +39,18 @@ export function HeroSection() {
         <div>│  SPLIT: ████████░░░░░  AUTO   │</div>
         <div>└──────────────────────────────┘</div>
       </div>
-      <pre
-        className="font-mono text-[10px] md:text-[14px] lg:text-[18px] leading-tight text-wire-cyan glow-cyan glitch mb-8 animate-flicker whitespace-pre"
-        data-text={ASCII}
-      >
-        {ASCII}
-      </pre>
+      {/* The wrapper carries the scroll-parallax (transform + opacity only, so
+          it stays on the compositor and never touches the text); the pre keeps
+          its glitch and flicker and is left out of the matrix dissolve. */}
+      <div data-hero-logo className="mb-8 will-change-transform">
+        <pre
+          data-no-matrix
+          className="font-mono text-[10px] md:text-[14px] lg:text-[18px] leading-tight text-wire-cyan glow-cyan glitch animate-flicker whitespace-pre"
+          data-text={ASCII}
+        >
+          {ASCII}
+        </pre>
+      </div>
       <div className="font-mono text-base md:text-lg text-wire-muted mb-4 tracking-[0.25em] flex items-center gap-2 justify-center">
         <span className="text-wire-cyan">▶</span>GROW YOUR BAG, AUTOMATICALLY
       </div>

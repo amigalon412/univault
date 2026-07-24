@@ -137,7 +137,7 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
               type="button"
               onClick={() => setSlippageBps(s.bps)}
               className={
-                "font-mono text-[11px] px-2.5 py-1 border transition-all " +
+                "font-digits text-[11px] px-2.5 py-1 border transition-all " +
                 (slippageBps === s.bps
                   ? "border-wire-cyan text-wire-cyan"
                   : "border-wire-border text-wire-muted hover:border-wire-cyan/50")

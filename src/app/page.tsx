@@ -8,10 +8,12 @@ import { SecuritySection } from "@/components/SecuritySection";
 import { TokenSection } from "@/components/TokenSection";
 import { LiveFeed } from "@/components/LiveFeed";
 import { Footer } from "@/components/Footer";
+import { MatrixScroll } from "@/components/MatrixScroll";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-wire-cyan overflow-x-hidden page-enter">
+      <MatrixScroll />
       <NavBar />
       <HeroSection />
       <TickerMarquee />

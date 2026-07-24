@@ -86,7 +86,7 @@ export function VaultApp() {
               </div>
               <div
                 className={
-                  "font-mono text-3xl md:text-4xl mb-2 " +
+                  "font-digits text-3xl md:text-4xl mb-2 " +
                   (s.lit ? "text-wire-cyan glow-cyan" : "text-wire-cyan")
                 }
               >

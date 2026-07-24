@@ -29,7 +29,7 @@ export function CaBar() {
 
   if (!BLUR_TOKEN) {
     return (
-      <div className="w-full border-b border-wire-border bg-black/90 px-4 py-1.5 text-center">
+      <div data-no-matrix className="w-full border-b border-wire-border bg-black/90 px-4 py-1.5 text-center">
         <span className="font-mono text-[11px] sm:text-xs tracking-widest text-wire-muted">
           <span className="text-wire-cyan">$BLUR CA</span>
           <span className="mx-2 text-wire-border">·</span>
@@ -40,7 +40,7 @@ export function CaBar() {
   }
 
   return (
-    <div className="flex w-full items-center justify-center gap-2 sm:gap-3 border-b border-wire-border bg-black/90 px-4 py-1.5">
+    <div data-no-matrix className="flex w-full items-center justify-center gap-2 sm:gap-3 border-b border-wire-border bg-black/90 px-4 py-1.5">
       <span className="font-mono text-[11px] sm:text-xs tracking-widest text-wire-cyan shrink-0">
         $BLUR CA
       </span>

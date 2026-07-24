@@ -62,7 +62,7 @@ export function StrategyPicker({ selected, onSelect, tvl }: StrategyPickerProps)
                 </span>
                 <span
                   className={
-                    "font-mono text-3xl whitespace-nowrap " +
+                    "font-digits text-3xl whitespace-nowrap " +
                     (active ? "text-wire-cyan glow-cyan" : "text-wire-cyan")
                   }
                 >

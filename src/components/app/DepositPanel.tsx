@@ -135,7 +135,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
     }
   }
 
-  const rows: { label: string; value: string }[] = [
+  const rows: { label: string; value: string; numeric?: boolean }[] = [
     {
       label: mode === "deposit" ? "Wallet balance" : "Your position",
       value:
@@ -148,6 +148,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
             : vault.positionAssets === undefined
               ? "—"
               : formatUsdg(vault.positionAssets),
+      numeric: true,
     },
     { label: "Strategy", value: strategy.name },
     {
@@ -160,6 +161,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
     rows.splice(1, 0, {
       label: "Withdrawable in USDG",
       value: vault.maxWithdraw === undefined ? "—" : formatUsdg(vault.maxWithdraw),
+      numeric: true,
     });
   }
 
@@ -224,7 +226,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
             inputMode="decimal"
             placeholder="0"
             aria-label={`Amount to ${mode}`}
-            className="flex-1 min-w-0 bg-transparent font-mono text-3xl text-wire-cyan placeholder:text-wire-cyan/25 outline-none"
+            className="flex-1 min-w-0 bg-transparent font-digits text-3xl text-wire-cyan placeholder:text-wire-cyan/25 outline-none"
           />
           <span className="flex items-center gap-2 font-mono text-sm text-wire-muted tracking-widest shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-wire-cyan" />
@@ -239,7 +241,9 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
               className="flex items-baseline justify-between gap-4 font-mono text-sm border-b border-dashed border-wire-border pb-3"
             >
               <span className="text-wire-muted">{r.label}</span>
-              <span className="text-wire-cyan">{r.value}</span>
+              <span className={"text-wire-cyan" + (r.numeric ? " font-digits" : "")}>
+                {r.value}
+              </span>
             </div>
           ))}
         </div>

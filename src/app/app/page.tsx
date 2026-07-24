@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
-import { BackgroundWave } from "@/components/app/BackgroundWave";
+import { BackgroundGrid } from "@/components/app/BackgroundGrid";
 import { VaultApp } from "@/components/app/VaultApp";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function AppPage() {
   return (
     <main className="min-h-screen bg-black text-wire-cyan overflow-x-hidden page-enter">
-      <BackgroundWave />
+      <BackgroundGrid />
       <NavBar />
       <div className="relative z-10">
         <VaultApp />

@@ -164,7 +164,7 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
         <div className="font-mono text-xs text-wire-muted tracking-[0.35em] mb-2">
           TOTAL VALUE
         </div>
-        <div className="font-mono text-6xl md:text-7xl text-wire-cyan glow-cyan leading-none">
+        <div className="font-digits text-6xl md:text-7xl text-wire-cyan glow-cyan leading-none">
           {total === undefined ? "—" : formatUsdg(total)}
         </div>
       </div>
@@ -212,7 +212,7 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
             <span className="text-wire-muted tracking-wide">
               ▸ in lending <span className="text-wire-muted/60">· earns yield</span>
             </span>
-            <span className="text-wire-cyan">{formatUsdg(userLending)}</span>
+            <span className="font-digits text-wire-cyan">{formatUsdg(userLending)}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-wire-muted tracking-wide">
@@ -221,7 +221,7 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
                 <span className="text-wire-muted/60">· liquidity buffer</span>
               )}
             </span>
-            <span className={userIdle > 0n ? "text-wire-cyan" : "text-wire-muted"}>
+            <span className={"font-digits " + (userIdle > 0n ? "text-wire-cyan" : "text-wire-muted")}>
               {formatUsdg(userIdle)}
             </span>
           </div>
@@ -260,10 +260,10 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="font-mono text-sm w-20 text-right text-wire-cyan">
+                  <span className="font-digits text-sm w-20 text-right text-wire-cyan">
                     {formatUsdg(v)}
                   </span>
-                  <span className="font-mono text-xs w-12 text-right text-wire-muted">
+                  <span className="font-digits text-xs w-12 text-right text-wire-muted">
                     {pct.toFixed(0)}%
                   </span>
                 </div>

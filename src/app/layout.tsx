@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { VT323, Share_Tech_Mono } from "next/font/google";
+import { VT323, Share_Tech_Mono, Chakra_Petch } from "next/font/google";
 import { cookieToInitialState } from "wagmi";
 import { Web3Provider } from "@/components/providers/Web3Provider";
 import { wagmiConfig } from "@/lib/wagmi";
@@ -19,6 +19,17 @@ const shareTechMono = Share_Tech_Mono({
   subsets: ["latin"],
   variable: "--font-share-tech-mono",
   fallback: ["ui-monospace", "monospace"],
+  adjustFontFallback: false,
+});
+
+// Squared, technological face used only for the money read-outs and split
+// numbers — cut-corner geometry that fits the terminal/matrix look while
+// staying legible, with tabular figures so digits never jitter.
+const chakraPetch = Chakra_Petch({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  variable: "--font-digits",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
   adjustFontFallback: false,
 });
 
@@ -73,7 +84,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${vt323.variable} ${shareTechMono.variable} dark`}
+      className={`${vt323.variable} ${shareTechMono.variable} ${chakraPetch.variable} dark`}
     >
       <body>
         <Web3Provider initialState={initialState}>{children}</Web3Provider>
