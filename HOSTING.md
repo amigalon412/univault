@@ -120,6 +120,43 @@ sudo systemctl status blurvault      # active (running)
 ```
 The app now listens on `127.0.0.1:3000`; nginx exposes it.
 
+### Lean deploy for a tiny VPS (standalone bundle, ~40 MB, no node_modules)
+
+`next.config.ts` sets `output: "standalone"`, so `npm run build` emits a
+self-contained server at `.next/standalone` that bundles only the runtime files
+it actually reaches. The running app is **~40 MB total** instead of ~900 MB, and
+the server never needs `node_modules` or the build step at all.
+
+Two ways to use it:
+
+**A — build off-server, ship only the bundle** (best for a 1 GB box: no build
+RAM, no `npm ci`, no OOM). On your dev machine, after `npm run build`:
+```bash
+# assemble a runnable folder (static assets aren't copied into standalone automatically)
+cp -r .next/static .next/standalone/.next/static
+cp -r public       .next/standalone/public
+# ship it
+rsync -az .next/standalone/ user@server:/var/www/blurvault/
+```
+On the server the whole app is `/var/www/blurvault/server.js`. No install needed.
+
+**B — build on the server, then drop node_modules** (if you'd rather build there):
+```bash
+npm ci && npm run build
+cp -r .next/static .next/standalone/.next/static
+cp -r public       .next/standalone/public
+rm -rf node_modules .next/cache      # reclaim ~700 MB once the bundle exists
+```
+
+Either way, point systemd at the standalone server instead of `npm start` —
+replace the `ExecStart`/`WorkingDirectory` lines above with:
+```ini
+WorkingDirectory=/var/www/blurvault           # (path that contains server.js)
+ExecStart=/usr/bin/node server.js
+```
+The standalone server honours `PORT` and `HOSTNAME` from the same `Environment=`
+lines. Everything downstream (nginx, TLS) is unchanged.
+
 **6. Nginx reverse proxy:**
 ```bash
 sudo apt install -y nginx
