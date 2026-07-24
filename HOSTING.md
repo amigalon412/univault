@@ -53,6 +53,134 @@ inventing numbers.
 
 ---
 
+## 1a. Self-hosting on a VPS (Ubuntu/Debian runbook)
+
+Same app, no Vercel. Full walkthrough for a fresh VPS.
+
+> **Order matters:** `NEXT_PUBLIC_*` values are inlined into the bundle at
+> `npm run build`, not read at start. So always write `.env.local` **before**
+> building, and rebuild after changing any address.
+
+**1. Node 24 + git** (NodeSource):
+```bash
+sudo apt update && sudo apt install -y curl git
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+sudo apt install -y nodejs
+node -v      # v24.x
+```
+
+**2. Get the code:**
+```bash
+cd /var/www
+sudo mkdir -p blurvault && sudo chown $USER:$USER blurvault
+git clone <git-repo-url> blurvault && cd blurvault
+```
+
+**3. Env file (before building):**
+```bash
+cat > .env.local <<'EOF'
+NEXT_PUBLIC_VAULT_STEADY=0x583bce228448814bc42235d4761290f3ac710a09
+NEXT_PUBLIC_VAULT_BALANCED=0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7
+NEXT_PUBLIC_VAULT_GROWTH=0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c
+NEXT_PUBLIC_EXIT_ROUTER=0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
+NEXT_PUBLIC_SITE_URL=https://blurvault.pro
+EOF
+```
+
+**4. Install + build:**
+```bash
+npm ci
+npm run build
+```
+
+**5. Run as a systemd service** (survives crashes and reboots):
+```bash
+sudo tee /etc/systemd/system/blurvault.service > /dev/null <<EOF
+[Unit]
+Description=BLUR vault website (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=/var/www/blurvault
+ExecStart=/usr/bin/npm start
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now blurvault
+sudo systemctl status blurvault      # active (running)
+```
+The app now listens on `127.0.0.1:3000`; nginx exposes it.
+
+**6. Nginx reverse proxy:**
+```bash
+sudo apt install -y nginx
+sudo tee /etc/nginx/sites-available/blurvault > /dev/null <<'EOF'
+server {
+    listen 80;
+    server_name blurvault.pro www.blurvault.pro;
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+EOF
+sudo ln -sf /etc/nginx/sites-available/blurvault /etc/nginx/sites-enabled/
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+**7. DNS** — at the registrar, point A records at the VPS IP:
+```
+A   @     <server-ip>
+A   www   <server-ip>
+```
+
+**8. HTTPS** (Let's Encrypt, auto-renews):
+```bash
+sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d blurvault.pro -d www.blurvault.pro
+```
+
+**9. Firewall:**
+```bash
+sudo ufw allow OpenSSH
+sudo ufw allow 'Nginx Full'
+sudo ufw enable
+```
+
+**Updating later:**
+```bash
+cd /var/www/blurvault
+git pull && npm ci && npm run build
+sudo systemctl restart blurvault
+```
+
+**Sizing:** 1 vCPU / 1 GB RAM is enough for `next start`. If `npm run build`
+runs out of memory on 1 GB, add swap:
+```bash
+sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile
+sudo mkswap /swapfile && sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+---
+
 ## 2. Keeper (optional worker) — do NOT put on Vercel
 
 A plain Node >= 24 process. Run it on anything that stays up (a small VM,
