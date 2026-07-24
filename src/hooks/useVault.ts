@@ -185,7 +185,8 @@ export interface PositionBreakdown {
   stableAssets: bigint | undefined;
   /** The equity (stock) leg, in USDG. */
   basketAssets: bigint | undefined;
-  /** USDG sitting idle in the vault -- not yet earning, awaiting the keeper. */
+  /** USDG sitting idle in the vault -- the liquidity buffer kept out of
+   *  lending so small exits need no unwind. */
   idle: bigint | undefined;
   /** The part of the stable leg actually placed in lending (stable - idle). */
   lending: bigint | undefined;

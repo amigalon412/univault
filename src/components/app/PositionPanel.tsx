@@ -218,7 +218,7 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
             <span className="text-wire-muted tracking-wide">
               ▸ idle{" "}
               {userIdle > 0n && (
-                <span className="text-wire-muted/60">· awaiting the keeper</span>
+                <span className="text-wire-muted/60">· liquidity buffer</span>
               )}
             </span>
             <span className={userIdle > 0n ? "text-wire-cyan" : "text-wire-muted"}>
