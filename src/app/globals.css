@@ -384,3 +384,21 @@
     transition: none;
   }
 }
+/* A figure landing in its slot. Used by the homepage vault preview, where the
+   two leg amounts change as you switch strategy: keying the element on the
+   strategy replays this, so the new number arrives rather than swapping in
+   place. Pure CSS on purpose -- a JS-driven count-up would not repaint
+   reliably on a page loaded already scrolled to that section. */
+.figure-in {
+  animation: figureIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes figureIn {
+  from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figure-in {
+    animation: none;
+  }
+}

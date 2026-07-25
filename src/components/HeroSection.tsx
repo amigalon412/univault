@@ -35,8 +35,10 @@ export function HeroSection() {
     <section className="min-h-[78vh] flex flex-col items-center justify-center px-8 py-16 border-b border-wire-border text-center">
       <div className="font-mono text-[12px] text-wire-muted mb-8 tracking-widest hidden md:block">
         <div>┌──────────────────────────────┐</div>
-        <div>│  BALANCED VAULT · 60 / 40    │</div>
-        <div>│  SPLIT: ████████░░░░░  AUTO   │</div>
+        {/* Hard spaces: the box only lines up if the padding survives, and
+                JSX text collapses runs of ordinary whitespace. */}
+        <div>{"│  BALANCED VAULT · 60 / 40    │"}</div>
+        <div>{"│  SPLIT: ████████░░░░░  AUTO   │"}</div>
         <div>└──────────────────────────────┘</div>
       </div>
       {/* The wrapper carries the scroll-parallax (transform + opacity only, so

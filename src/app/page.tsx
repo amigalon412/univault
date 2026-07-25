@@ -1,6 +1,7 @@
 import { NavBar } from "@/components/NavBar";
 import { HeroSection } from "@/components/HeroSection";
 import { TickerMarquee } from "@/components/TickerMarquee";
+import { VaultPreview } from "@/components/VaultPreview";
 import { AboutSection } from "@/components/AboutSection";
 import { CommandsSection } from "@/components/CommandsSection";
 import { GuideSection } from "@/components/GuideSection";
@@ -19,6 +20,8 @@ export default function Home() {
       <NavBar />
       <HeroSection />
       <TickerMarquee />
+      {/* Straight after the fold: the product itself, before any prose. */}
+      <VaultPreview />
       <AboutSection />
       <CommandsSection />
       <GuideSection />
