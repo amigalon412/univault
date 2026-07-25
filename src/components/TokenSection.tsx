@@ -1,4 +1,5 @@
 import { AsciiRule } from "@/components/AsciiRule";
+import { TokenAddressPanel } from "@/components/TokenAddressPanel";
 
 export function TokenSection() {
   return (
@@ -17,17 +18,7 @@ export function TokenSection() {
           and the contract burns it — supply falls by the amount bought, and you can check that
           against the token yourself. Value from what the protocol actually does — not hype.
         </p>
-        <div className="bg-black border border-wire-border p-6 md:p-8">
-          <div className="font-mono text-[10px] text-wire-muted tracking-[0.3em] mb-3">
-            CONTRACT ADDRESS
-          </div>
-          <div className="font-mono text-sm text-wire-cyan glow-cyan mb-3">NOT LAUNCHED YET</div>
-          <div className="font-mono text-xs text-wire-muted leading-relaxed max-w-2xl">
-            There is no $BLUR contract to buy. When one is deployed, its address will appear here
-            and in the docs, and a buy link will appear alongside it. Until then, treat any address
-            presented as $BLUR — anywhere, by anyone — as fake.
-          </div>
-        </div>
+        <TokenAddressPanel />
       </div>
     </section>
   );

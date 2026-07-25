@@ -7,6 +7,7 @@ import { DocBody } from "@/components/docs/DocBody";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
 import { DOC_PAGES, getDocNeighbours, getDocPage } from "@/lib/docs";
 import { AsciiRule } from "@/components/AsciiRule";
+import { AnimationGovernor } from "@/components/AnimationGovernor";
 
 export function generateStaticParams() {
   return DOC_PAGES.map((p) => ({ slug: p.slug }));
@@ -39,6 +40,7 @@ export default async function DocsPage({
 
   return (
     <main className="min-h-screen bg-black text-wire-cyan overflow-x-hidden page-enter">
+      <AnimationGovernor />
       <NavBar />
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-14">
         <div className="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_210px] gap-10">

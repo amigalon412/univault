@@ -9,5 +9,16 @@ NEXT_PUBLIC_VAULT_GROWTH    = 0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c
 NEXT_PUBLIC_EXIT_ROUTER     = 0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
 NEXT_PUBLIC_SITE_URL        = https://blurvault.pro
 
+
+Set on the SERVER, not baked in (see DEPLOY.md)
+================================================
+ADMIN_PASSWORD    required to enable /admin; without it the page is switched off
+BLUR_DATA_DIR     where /admin stores the published $BLUR address
+                  (the unit sets /var/lib/blurvault)
+
+NEXT_PUBLIC_BLUR_TOKEN is intentionally NOT baked in. The $BLUR contract address
+does not exist until launch and is published from /admin at runtime instead, so
+putting it on the site never requires a rebuild.
+
 Chain: Robinhood Chain, id 4663, RPC https://rpc.mainnet.chain.robinhood.com
 Built for Node >= 24. Contracts owner/keeper/fee: 0x56D89b63192677c72fCf4C9CB64de592F2833A63

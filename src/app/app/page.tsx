@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
+import { AnimationGovernor } from "@/components/AnimationGovernor";
 import { BackgroundGrid } from "@/components/app/BackgroundGrid";
 import { VaultApp } from "@/components/app/VaultApp";
 
@@ -14,6 +15,7 @@ export default function AppPage() {
   return (
     <main className="min-h-screen bg-black text-wire-cyan overflow-x-hidden page-enter">
       <BackgroundGrid />
+      <AnimationGovernor />
       <NavBar />
       <div className="relative z-10">
         <VaultApp />

@@ -208,6 +208,11 @@
   inset: 0;
   pointer-events: none;
   overflow: hidden;
+  /* These two layers are copies of the ASCII logo carrying the same multi-layer
+     glow, and they animate transform + opacity forever. Un-promoted, every
+     frame repaints the glow of all three stacked layers; promoted, the frames
+     are a compositor transform. Two layers is a cheap price for that. */
+  will-change: transform, opacity;
 }
 .glitch::before {
   color: var(--cyan);
@@ -227,6 +232,21 @@
 }
 .animate-marquee {
   animation: marquee 25s linear infinite;
+  will-change: transform;
+}
+
+/* The glitch, flicker, blink and marquee loops had no reduced-motion escape,
+   unlike the wave and grid ones further down. They run forever, so on a machine
+   where this matters they never stop costing anything. */
+@media (prefers-reduced-motion: reduce) {
+  .glitch::before,
+  .glitch::after,
+  .cursor::after,
+  .animate-blink,
+  .animate-flicker,
+  .animate-marquee {
+    animation: none;
+  }
 }
 .animate-wave-fast {
   animation: waveDrift 26s linear infinite;

@@ -18,6 +18,10 @@ const eslintConfig = defineConfig([
     "contracts/lib/**",
     "contracts/out/**",
     "contracts/cache/**",
+    // The self-contained deploy bundle. It is a build artifact -- minified
+    // vendor JS that reports thousands of violations and drowns out every real
+    // one, which made `npm run lint` useless to read.
+    "BlurVault/app/**",
   ]),
 ]);
 

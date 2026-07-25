@@ -55,6 +55,10 @@ yarn-error.log*
 # Local temp files
 temp/
 
+# Runtime settings written by /admin (the published $BLUR address). On a server
+# this lives in BLUR_DATA_DIR; ./.data is only the local development default.
+.data/
+
 # Playwright MCP scratch output
 .playwright-mcp/
 BlurVault/app/

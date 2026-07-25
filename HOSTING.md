@@ -42,10 +42,24 @@ inventing numbers.
 | `NEXT_PUBLIC_VAULT_BALANCED` | yes      | BALANCED vault address. Current: `0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7` |
 | `NEXT_PUBLIC_VAULT_GROWTH`   | yes      | GROWTH vault address. Current: `0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c` |
 | `NEXT_PUBLIC_EXIT_ROUTER`    | yes*     | ExitRouter for one-tx "sell to USDG". `0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0`. *Without it the "sell everything" button is hidden. |
-| `NEXT_PUBLIC_BLUR_TOKEN`     | no       | $BLUR token address, if/when launched.                         |
+| `NEXT_PUBLIC_BLUR_TOKEN`     | no       | $BLUR token address. Normally left blank — publish it from `/admin` instead, which needs no rebuild. Kept only as a build-time fallback. |
 | `NEXT_PUBLIC_SITE_URL`       | no       | Canonical URL for OG/social images. Vercel supplies its own; set only on a custom domain, e.g. `https://blurvault.pro`. |
 
 > Vercel also injects `VERCEL_PROJECT_PRODUCTION_URL` automatically — no action.
+
+**Server-side variables.** These are *not* `NEXT_PUBLIC_*`, never reach the
+browser, and drive the `/admin` page:
+
+| Variable               | Required | Purpose                                                  |
+|------------------------|----------|----------------------------------------------------------|
+| `ADMIN_PASSWORD`       | no       | Enables `/admin`. Minimum 12 chars. **Unset ⇒ the admin page is switched off entirely**, which is the safe default. |
+| `BLUR_DATA_DIR`        | on a VPS | Directory for the published $BLUR address. Must sit **outside** the deploy dir or a redeploy wipes it. Defaults to `./.data`. |
+| `ADMIN_SESSION_SECRET` | no       | Signs session cookies independently of the password. By default the key is derived from `ADMIN_PASSWORD`, so rotating the password logs everyone out. |
+
+> `/admin` writes to the filesystem, so it works on a VPS or any host with a
+> persistent disk. **It does not work on Vercel**, whose filesystem is
+> read-only and per-invocation — there you would have to keep using
+> `NEXT_PUBLIC_BLUR_TOKEN` and redeploy, or move the store to a database.
 
 ### External services the site talks to (no keys needed)
 - **Robinhood Chain RPC** `https://rpc.mainnet.chain.robinhood.com` (chain id 4663) — read calls + wallet tx.
@@ -93,6 +107,18 @@ npm ci
 npm run build
 ```
 
+**4a. Admin password + data directory** (so you can publish the $BLUR CA after
+launch without rebuilding):
+```bash
+sudo mkdir -p /var/lib/blurvault && sudo chown "$USER" /var/lib/blurvault
+
+# generate a real password; the tee prints it once — save it now
+printf 'ADMIN_PASSWORD=%s\n' "$(openssl rand -base64 24)" | sudo tee /etc/blurvault.env
+sudo chmod 600 /etc/blurvault.env
+```
+Whoever has this password can make the site display any address as the official
+`$BLUR` CA, so do not choose it by hand.
+
 **5. Run as a systemd service** (survives crashes and reboots):
 ```bash
 sudo tee /etc/systemd/system/blurvault.service > /dev/null <<EOF
@@ -107,6 +133,8 @@ WorkingDirectory=/var/www/blurvault
 ExecStart=/usr/bin/npm start
 Environment=NODE_ENV=production
 Environment=PORT=3000
+Environment=BLUR_DATA_DIR=/var/lib/blurvault
+EnvironmentFile=-/etc/blurvault.env
 Restart=on-failure
 RestartSec=5
 
@@ -119,6 +147,13 @@ sudo systemctl enable --now blurvault
 sudo systemctl status blurvault      # active (running)
 ```
 The app now listens on `127.0.0.1:3000`; nginx exposes it.
+
+**5a. On launch day**, open `https://your-domain/admin`, sign in with
+`ADMIN_PASSWORD`, paste the `$BLUR` contract address and press PUBLISH. The
+header strip shows it site-wide from the next page load — no rebuild, no
+restart. Publishing an empty field clears it and restores the "not launched"
+warning. Wrong-password attempts are throttled to 8 per 15 min per IP; a
+`systemctl restart blurvault` clears the counter if you lock yourself out.
 
 ### Lean deploy for a tiny VPS (standalone bundle, ~40 MB, no node_modules)
 

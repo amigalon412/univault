@@ -11,6 +11,16 @@ ExecStart=/usr/bin/node server.js
 Environment=NODE_ENV=production
 Environment=PORT=3000
 Environment=HOSTNAME=127.0.0.1
+
+# Where /admin stores the published $BLUR address. Deliberately OUTSIDE
+# WorkingDirectory: rsyncing a new app/ over the deploy must not wipe it.
+Environment=BLUR_DATA_DIR=/var/lib/blurvault
+
+# ADMIN_PASSWORD lives in a root-owned chmod-600 file rather than in this unit,
+# which is world-readable. See DEPLOY.md, "Publishing the CA after launch".
+# Without it /admin is switched off, which is the safe default.
+EnvironmentFile=-/etc/blurvault.env
+
 Restart=on-failure
 RestartSec=5
 

@@ -16,8 +16,10 @@ BlurVault/
 └── DEPLOY.md                ← this file
 ```
 
-The contract addresses and the `https://blurvault.pro` site URL are **already
-compiled into `app/`**. There are no environment variables to set on the server.
+The vault addresses and the `https://blurvault.pro` site URL are **already
+compiled into `app/`**. The one thing you do set on the server is the admin
+password, so you can publish the `$BLUR` contract address after launch without
+rebuilding anything — see [Publishing the CA](#publishing-the-ca-after-launch).
 
 ---
 
@@ -40,7 +42,28 @@ Then on the server, let the service user own it:
 sudo chown -R www-data:www-data /var/www/blurvault
 ```
 
-### 3. Run it as a service
+### 3. Admin password + data directory
+`/admin` is where you paste the `$BLUR` contract address on launch day. It is
+**switched off until `ADMIN_PASSWORD` is set**, which is the safe default.
+
+```bash
+# a directory for the published address, outside the deploy so redeploys
+# cannot wipe it
+sudo mkdir -p /var/lib/blurvault
+sudo chown www-data:www-data /var/lib/blurvault
+
+# generate a real password and store it root-only
+printf 'ADMIN_PASSWORD=%s\n' "$(openssl rand -base64 24)" | sudo tee /etc/blurvault.env
+sudo chmod 600 /etc/blurvault.env
+```
+The `tee` prints the password once — **copy it into your password manager now.**
+
+> Whoever holds this password can make blurvault.pro display any contract
+> address as the official `$BLUR` CA. That is the whole risk here — not someone
+> reading the address, which is public anyway, but someone publishing a scam one
+> under your domain. Do not pick the password by hand.
+
+### 4. Run it as a service
 ```bash
 sudo cp /var/www/blurvault/../blurvault.service /etc/systemd/system/ 2>/dev/null || \
   sudo tee /etc/systemd/system/blurvault.service < deploy/blurvault.service
@@ -52,7 +75,7 @@ curl -I http://127.0.0.1:3000          # 200 OK
 ```
 The app now listens on `127.0.0.1:3000`.
 
-### 4. nginx + domain
+### 5. nginx + domain
 Put `deploy/blurvault.nginx` at `/etc/nginx/sites-available/blurvault`, then:
 ```bash
 sudo ln -sf /etc/nginx/sites-available/blurvault /etc/nginx/sites-enabled/
@@ -61,13 +84,13 @@ sudo nginx -t && sudo systemctl reload nginx
 ```
 Point DNS A records `@` and `www` at the server IP.
 
-### 5. HTTPS (free, auto-renews)
+### 6. HTTPS (free, auto-renews)
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
 sudo certbot --nginx -d blurvault.pro -d www.blurvault.pro
 ```
 
-### 6. Firewall
+### 7. Firewall
 ```bash
 sudo ufw allow OpenSSH && sudo ufw allow 'Nginx Full' && sudo ufw enable
 ```
@@ -78,16 +101,41 @@ build-time OOM to worry about.
 
 ---
 
+## Publishing the CA after launch
+
+Before launch the header strip says the token is not live and warns that any
+address claiming to be `$BLUR` is fake. To publish the real one:
+
+1. Go to **`https://blurvault.pro/admin`** (not linked from anywhere, not indexed).
+2. Sign in with `ADMIN_PASSWORD`.
+3. Paste the contract address and press **PUBLISH**.
+
+It appears in the header on every page from the next load. **No rebuild, no
+redeploy, no restart.** Publishing an empty field clears it and puts the warning
+back — useful if you paste the wrong thing.
+
+The address is checksum-validated before it is saved, so a typo is rejected
+rather than published. It is stored in `/var/lib/blurvault/site-config.json`,
+which survives redeploys and restarts.
+
+Wrong-password attempts are throttled to 8 per 15 minutes per IP. If you lock
+yourself out, `sudo systemctl restart blurvault` clears the counter.
+
 ## Managing it
 ```bash
 sudo systemctl restart blurvault     # restart
 sudo systemctl stop blurvault        # stop
 journalctl -u blurvault -f           # live logs
+
+# rotate the admin password (also signs out any open session)
+printf 'ADMIN_PASSWORD=%s\n' "$(openssl rand -base64 24)" | sudo tee /etc/blurvault.env
+sudo chmod 600 /etc/blurvault.env && sudo systemctl restart blurvault
 ```
 
-## Rebuilding (only if you change code or an address)
-The bundle is a snapshot. To change a contract address, the site URL, or any
-code, rebuild from the main repo and re-assemble this folder:
+## Rebuilding (only if you change code or a vault address)
+The bundle is a snapshot. To change a **vault** address, the site URL, or any
+code, rebuild from the main repo and re-assemble this folder. (The `$BLUR` CA is
+*not* on this list — that one is published from `/admin` at runtime.)
 ```bash
 # in the meganode repo root:
 #   edit .env.local (addresses / NEXT_PUBLIC_SITE_URL)

@@ -7,13 +7,24 @@ export function NavBar() {
   return (
     // The CA strip and the nav stick to the top as one unit, so the address
     // stays reachable on every page without stacking two sticky offsets.
-    <header className="sticky top-0 z-50 bg-black/85 backdrop-blur">
+    //
+    // No backdrop-blur: a blurred backdrop on a sticky bar has to be re-sampled
+    // and re-blurred on every frame anything underneath it moves, and on this
+    // page something is always moving (the marquee sits directly beneath it).
+    // Over 92%-opaque black it was buying almost nothing visually.
+    <header className="sticky top-0 z-50 bg-black/92">
       <CaBar />
       <nav className="grid grid-cols-2 lg:grid-cols-3 items-center px-6 py-3 border-b border-wire-border">
       <div className="flex items-center gap-3">
-        <span className="wire-title text-2xl text-wire-cyan glow-cyan tracking-widest">
+        {/* The wordmark is the way home from /app and /docs, which is where
+            everyone reaches for it first. */}
+        <Link
+          href="/"
+          aria-label="BLUR — home"
+          className="wire-title text-2xl text-wire-cyan glow-cyan tracking-widest hover:opacity-80 transition-opacity"
+        >
           BLUR
-        </span>
+        </Link>
       </div>
       <div className="hidden lg:flex items-center justify-center gap-8 font-mono text-xs tracking-widest text-wire-cyan/80">
         <Link href="/app" className="hover:text-wire-cyan hover:glow-cyan transition-all">
@@ -45,9 +56,6 @@ export function NavBar() {
         >
           <XIcon width={15} height={15} className="glow-svg-cyan" />
         </a>
-        {/* The BUY $BLUR button belongs here once a $BLUR token exists. It is
-            absent rather than pointed somewhere plausible: a buy link is the
-            one control on this page that costs money to click. */}
         <ConnectButton
           label="CONNECT"
           className="flex items-center gap-2 border border-wire-cyan text-wire-cyan text-xs px-4 py-2 hover:bg-wire-cyan hover:text-black disabled:opacity-30 whitespace-nowrap"
