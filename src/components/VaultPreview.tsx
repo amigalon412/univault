@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Bracket } from "@/components/Bracket";
 import { PixelLogo } from "@/components/PixelLogo";
 import { PIXEL_LOGOS } from "@/lib/pixel-logos";
 import { STRATEGIES, type StrategyId } from "@/lib/strategies";
@@ -14,20 +15,6 @@ const SEGMENTS = 48;
 
 const usd = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-
-/** L-bracket at one corner of the panel. Same device as the films use. */
-function Bracket({ at }: { at: "tl" | "tr" | "bl" | "br" }) {
-  const v = at[0] === "t" ? "top-[-1px]" : "bottom-[-1px]";
-  const h = at[1] === "l" ? "left-[-1px]" : "right-[-1px]";
-  const bv = at[0] === "t" ? "border-t-2" : "border-b-2";
-  const bh = at[1] === "l" ? "border-l-2" : "border-r-2";
-  return (
-    <span
-      aria-hidden
-      className={`pointer-events-none absolute ${v} ${h} ${bv} ${bh} z-20 h-4 w-4 border-wire-cyan`}
-    />
-  );
-}
 
 export function VaultPreview() {
   const [selected, setSelected] = useState<StrategyId>("balanced");
