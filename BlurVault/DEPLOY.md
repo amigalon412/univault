@@ -13,8 +13,14 @@ BlurVault/
 │   ├── blurvault.service    ← systemd unit
 │   ├── blurvault.nginx      ← nginx reverse-proxy block
 │   └── baked-config.txt     ← the addresses compiled into app/ (FYI, nothing to set)
-└── DEPLOY.md                ← this file
+├── DEPLOY.md                ← this file
+└── DEPLOY-ROOT.md           ← same deploy, running as root (no www-data, no chown)
 ```
+
+> Note: this guide does not create a user. `www-data` already exists on any
+> Ubuntu/Debian — the nginx package brings it. If you would rather run the
+> service as root anyway, use `DEPLOY-ROOT.md` instead of this file; everything
+> else (nginx, certbot, /admin) is identical.
 
 The vault addresses and the `https://blurvault.pro` site URL are **already
 compiled into `app/`**. The one thing you do set on the server is the admin
