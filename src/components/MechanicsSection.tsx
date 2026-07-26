@@ -76,8 +76,15 @@ function Connector({ delay = 0 }: { delay?: number }) {
  *
  * Replaces a section that repeated the vault preview's three strategy cards.
  * The page had no diagram and no external evidence in it anywhere; this is
- * both. Every node links to a deployed, verified contract, so the claim is
- * checkable rather than asserted.
+ * both. Every node links to the live contract at the address it runs at, so
+ * the wiring is checkable rather than asserted.
+ *
+ * The copy deliberately does NOT say "verified". None of the BLUR contracts
+ * are source-verified on Blockscout yet -- checked against its API -- so a
+ * link opens bytecode, not Solidity. Saying otherwise would be the same
+ * mistake as the launch video that showed superseded addresses under a green
+ * VERIFIED tick. When `forge verify-contract` has been run against them, the
+ * word can come back and this note can go.
  */
 export function MechanicsSection() {
   const [seen, setSeen] = useState(false);
@@ -107,9 +114,27 @@ export function MechanicsSection() {
   return (
     <section
       id="mechanics"
-      className="border-b border-wire-border px-4 sm:px-6 md:px-8 py-16 md:py-24 scroll-mt-16"
+      className="relative border-b border-wire-border px-4 sm:px-6 md:px-8 py-16 md:py-24 scroll-mt-16"
     >
-      <div className="max-w-5xl mx-auto" ref={root}>
+      {/* One grid for the whole section rather than one inside the panel.
+          Continuity is then structural: the panel is a border drawn over the
+          same field, so the ruling runs out of it and across the page instead
+          of stopping at an edge. Masked so it dissolves before the margins and
+          does not read as a rectangle of its own. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(214,254,81,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(214,254,81,0.055) 1px, transparent 1px)",
+          backgroundSize: "34px 34px",
+          maskImage:
+            "radial-gradient(115% 80% at 50% 45%, #000 45%, rgba(0,0,0,0.35) 78%, transparent 100%)",
+          WebkitMaskImage:
+            "radial-gradient(115% 80% at 50% 45%, #000 45%, rgba(0,0,0,0.35) 78%, transparent 100%)",
+        }}
+      />
+      <div className="relative max-w-5xl mx-auto" ref={root}>
         <div className="font-mono text-xs text-wire-muted tracking-[0.4em] mb-2">
           {"// HOW ONE DEPOSIT MOVES"}
         </div>
@@ -117,12 +142,12 @@ export function MechanicsSection() {
           Follow the money. Every box is a contract.
         </h2>
         <p className="font-mono text-sm text-wire-muted leading-relaxed max-w-2xl mb-8">
-          Not a diagram of an intention. Each node opens the deployed, verified
-          contract on the explorer — read what it does rather than taking this
-          page&apos;s word for it.
+          Not a diagram of an intention. Every node opens the live contract on
+          the explorer, at the address it actually runs at — check the wiring
+          rather than taking this page&apos;s word for it.
         </p>
 
-        <div className="relative border border-wire-cyan/25 bg-wire-card">
+        <div className="relative border border-wire-cyan/25 bg-black/25">
           <Bracket at="tl" />
           <Bracket at="tr" />
           <Bracket at="bl" />
@@ -141,14 +166,7 @@ export function MechanicsSection() {
             </span>
           </div>
 
-          <div
-            className="relative px-5 sm:px-9 py-9 sm:py-12"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(214,254,81,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(214,254,81,0.05) 1px, transparent 1px)",
-              backgroundSize: "32px 32px",
-            }}
-          >
+          <div className="relative px-5 sm:px-9 py-9 sm:py-12">
             {/* Stacks under md: a horizontal flow has nowhere to go on a phone. */}
             <div
               className={
