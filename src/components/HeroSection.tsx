@@ -28,19 +28,17 @@ const BOOT = [
  * pause switch. Nothing here needs a network call, so the panel cannot spin,
  * fail or go stale.
  */
-const STATUS: { label: string; value: string; tone: "good" | "plain" | "warn" }[] = [
+const STATUS: { label: string; value: string; tone: "good" | "plain" }[] = [
   { label: "VAULT CONTRACTS", value: "LIVE ON MAINNET", tone: "good" },
   { label: "SOURCE VERIFIED", value: "12 / 12", tone: "good" },
   { label: "CUSTODY", value: "YOURS", tone: "good" },
   { label: "WITHDRAWAL LOCK", value: "NONE", tone: "plain" },
   { label: "FEE", value: "5% OF GAINS ONLY", tone: "plain" },
-  { label: "EXTERNAL AUDIT", value: "NOT YET", tone: "warn" },
 ];
 
 const TONE = {
   good: "text-wire-cyan",
   plain: "text-wire-muted",
-  warn: "text-amber-400/80",
 } as const;
 
 export function HeroSection() {
