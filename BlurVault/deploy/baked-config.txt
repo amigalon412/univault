@@ -25,7 +25,12 @@ Built for Node >= 24. Contracts owner/keeper/fee: 0x56D89b63192677c72fCf4C9CB64d
 
 This snapshot
 =============
-Built 2026-07-26 from commit c8842e3, BUILD_ID CzaRHZxRig0xgCAJFXeoJ.
+Built 2026-07-26 from commit 011cff5, BUILD_ID LGfLoq7t8aL7pmE59amVt.
+
+Carries the scroll-performance work: the page-wide matrix text effect is gone
+(it rewrote text on every scroll frame and re-measured every text node in the
+document four times a minute), the reveal no longer animates a blur filter,
+and the flickering logo is promoted to its own compositor layer.
 All twelve deployed contracts are source-verified on Blockscout as of this
 build.
 
