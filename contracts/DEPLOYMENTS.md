@@ -25,6 +25,28 @@ and holds no liquidity.
 ExitRouter (`0xB31E70…b7F0`, in the Periphery table) takes the vault as a
 parameter and is unaffected by the redeploy — it works against the new vaults.
 
+### Guards predate `423d0b9` — verify them against that commit's parent
+
+All twelve contracts are source-verified on Blockscout. The three KeeperGuards
+took a second pass, and anyone re-verifying them needs to know why.
+
+`423d0b9 fix(guard): reject rebalance slippage above the vault's hard cap`
+lowered `MAX_SLIPPAGE_BPS` from `10_000` to `1_000`. The deployed guards were
+built before it. Their runtime bytecode differs from a HEAD build in exactly
+one word — `0x2710` where HEAD emits `0x03e8` — and the metadata hash that
+follows. Built from `423d0b9^` the match is byte-for-byte, metadata included:
+
+```
+git show 423d0b9^:contracts/src/KeeperGuard.sol > contracts/src/KeeperGuard.sol
+cd contracts && forge build && bash script/verify-all.sh   # restore the file after
+```
+
+`MAX_SLIPPAGE_BPS` is a ceiling on what the owner may set, not a live setting.
+All three guards run `maxSlippageBps = 100` (1%), an order of magnitude under
+even the lower ceiling, so the deployed guards and HEAD behave identically at
+the values in use. The difference is only in how far the owner could loosen
+them; redeploying to close that gap is optional and was not done.
+
 ### Superseded (2026-07-23, pre-allocate-on-deposit, now empty — do not use)
 
 | Strategy | Vault |

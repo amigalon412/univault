@@ -12,6 +12,15 @@
 # DeployStack's `transferOwnership` block never ran and each constructor's
 # owner argument equals the current `owner()`.
 #
+# The guards are the one exception to "build from HEAD". They were deployed
+# before 423d0b9 lowered MAX_SLIPPAGE_BPS, so a HEAD build misses their
+# bytecode by one word and the explorer rejects it. They are already verified;
+# should that ever need redoing, swap the file first and put it back after:
+#
+#   git show 423d0b9^:contracts/src/KeeperGuard.sol > contracts/src/KeeperGuard.sol
+#   forge build && bash script/verify-all.sh
+#   git checkout contracts/src/KeeperGuard.sol && forge build
+#
 # Usage:  cd contracts && bash script/verify-all.sh
 #         cd contracts && bash script/verify-all.sh --dry-run
 

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Bracket } from "@/components/Bracket";
 import { ContractLink } from "@/components/ContractLink";
 import { PixelLogo } from "@/components/PixelLogo";
-import { VAULT_ADDRESSES } from "@/lib/chain";
+import { KEEPER_GUARD, VAULT_ADDRESSES } from "@/lib/chain";
 import { GLYPH_GRID, KEY, PERCENT, ROBOT } from "@/lib/pixel-glyphs";
 import type { PixelLogo as PixelLogoData } from "@/lib/pixel-logos";
 import { ACTORS, PERMISSIONS, PERMISSION_CAPTION } from "@/lib/permissions";
@@ -167,23 +167,23 @@ export function TrustSection() {
           </div>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-wire-cyan/20 px-5 sm:px-8 py-4">
-            {/* Only the vault. KeeperGuard is not source-verified on
-                Blockscout and will not be: its source has moved on from the
-                deployed bytecode (69% of the creation code matches), so the
-                explorer refuses it -- confirmed twice against its API, once
-                per contract and once per verification job.
-
-                A link under the words VERIFIED SOURCE that opens bytecode
-                would be worse than no link, in a section whose whole argument
-                is that its claims can be checked. The guard is still named in
-                the mechanics diagram above; it just does not stand here under
-                a promise that is not true of it. */}
+            {/* The two contracts the rows above are read off. Both are
+                source-verified on Blockscout, so following either link lands
+                on the code rather than on bytecode -- which is the whole
+                claim this section makes. The guard verifies against 423d0b9^
+                rather than HEAD, because it was deployed before that commit
+                lowered the slippage ceiling; see contracts/DEPLOYMENTS.md. */}
             <span className="font-mono text-[10px] text-wire-muted/70 tracking-[0.22em]">
               VERIFIED SOURCE
             </span>
             <ContractLink
               address={VAULT_ADDRESSES.balanced}
               label="BLURVAULT"
+              variant="bare"
+            />
+            <ContractLink
+              address={KEEPER_GUARD}
+              label="KEEPERGUARD"
               variant="bare"
             />
           </div>

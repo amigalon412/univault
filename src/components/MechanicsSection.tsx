@@ -190,15 +190,12 @@ function Fork() {
  * both. Every node links to the live contract at the address it runs at, so
  * the wiring is checkable rather than asserted.
  *
- * On "verified", which the copy now claims of some nodes and not others:
- * nine of the twelve deployed contracts are source-verified on Blockscout --
- * all three vaults, two of three oracles, both basket adapters and the exit
- * router. The three KeeperGuards are not and will not be; their source has
- * moved on from the deployed bytecode, so the explorer rejects them. The
- * sentence therefore names what is verified instead of covering the diagram,
- * because a blanket claim would be false of the guard chip sitting right
- * under it. Re-run contracts/script/verify-all.sh to check the current state
- * before widening it.
+ * On "verified": all twelve deployed contracts are source-verified on
+ * Blockscout, so the copy below can cover the whole diagram. The guards took
+ * a second pass -- they were deployed before 423d0b9 tightened the slippage
+ * ceiling, so they verify against that commit's parent rather than against
+ * HEAD. contracts/script/verify-all.sh knows this; re-run it to confirm the
+ * state before trusting this comment.
  */
 export function MechanicsSection() {
   const [seen, setSeen] = useState(false);
@@ -257,9 +254,9 @@ export function MechanicsSection() {
         </h2>
         <p className="font-mono text-sm text-wire-muted leading-relaxed max-w-2xl mb-8">
           Not a diagram of an intention. Every node opens the deployed contract
-          on the explorer, at the address it actually runs at — the vaults, the
-          basket and the router with their source verified, so you can read what
-          they do rather than taking this page&apos;s word for it.
+          on the explorer, at the address it actually runs at, with its source
+          verified — so you can read what each one does rather than taking this
+          page&apos;s word for it.
         </p>
 
         <div className="relative border border-wire-cyan/25 bg-black/25">
