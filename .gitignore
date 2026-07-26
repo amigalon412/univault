@@ -63,3 +63,6 @@ temp/
 .playwright-mcp/
 BlurVault/app/
 .superpowers/
+
+# Build artefact -- the standalone bundle is produced by a build, not stored.
+BlurVault.zip
