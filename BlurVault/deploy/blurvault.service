@@ -4,12 +4,15 @@ After=network.target
 
 [Service]
 Type=simple
-# Change User and the path to wherever you rsync'd the app/ folder.
+# WorkingDirectory must be the exact directory you rsync'd app/ into, or systemd
+# fails before Node even starts: status=200/CHDIR.
 User=www-data
-WorkingDirectory=/var/www/blurvault
+WorkingDirectory=/var/www/blurvault.pro
 ExecStart=/usr/bin/node server.js
 Environment=NODE_ENV=production
-Environment=PORT=3000
+# Must match proxy_pass in deploy/blurvault.nginx. On a host that already runs
+# other sites, check the port is free first: ss -ltn | grep 5013
+Environment=PORT=5013
 Environment=HOSTNAME=127.0.0.1
 
 # Where /admin stores the published $BLUR address. Deliberately OUTSIDE

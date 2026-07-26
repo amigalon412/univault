@@ -35,12 +35,18 @@ node -v      # v24.x
 ### 2. Copy the app to the server
 From your machine (where this folder lives):
 ```bash
-rsync -az BlurVault/app/  user@YOUR_SERVER:/var/www/blurvault/
+rsync -az BlurVault/app/  user@YOUR_SERVER:/var/www/blurvault.pro/
 ```
 Then on the server, let the service user own it:
 ```bash
-sudo chown -R www-data:www-data /var/www/blurvault
+sudo chown -R www-data:www-data /var/www/blurvault.pro
 ```
+Two things that will otherwise bite you:
+- **The chown is not optional, and it is needed after *every* rsync.** `rsync -az`
+  carries your local uid/gid over, so the tree lands owned by a uid that does not
+  exist on the server and `www-data` cannot write `.next/cache`.
+- **`WorkingDirectory` in `blurvault.service` must be this exact path.** If it
+  points anywhere else systemd dies with `status=200/CHDIR` before Node runs.
 
 ### 3. Admin password + data directory
 `/admin` is where you paste the `$BLUR` contract address on launch day. It is
@@ -71,9 +77,15 @@ sudo cp /var/www/blurvault/../blurvault.service /etc/systemd/system/ 2>/dev/null
 sudo systemctl daemon-reload
 sudo systemctl enable --now blurvault
 sudo systemctl status blurvault        # active (running)
-curl -I http://127.0.0.1:3000          # 200 OK
+curl -I http://127.0.0.1:5013          # 200 OK
 ```
-The app now listens on `127.0.0.1:3000`.
+The app now listens on `127.0.0.1:5013`. If the host already runs other sites,
+confirm the port is free *before* starting, or the service will restart-loop on
+`EADDRINUSE`:
+```bash
+ss -ltn | grep 5013                    # no output = free
+```
+`PORT` in `blurvault.service` and `proxy_pass` in `blurvault.nginx` must agree.
 
 ### 5. nginx + domain
 Put `deploy/blurvault.nginx` at `/etc/nginx/sites-available/blurvault`, then:
@@ -147,7 +159,12 @@ mkdir -p BlurVault/app/.next
 cp -r .next/static              BlurVault/app/.next/static
 cp -r public                    BlurVault/app/public
 ```
-Then rsync `BlurVault/app/` to the server again and `systemctl restart blurvault`.
+Then rsync `BlurVault/app/` to the server again, **re-chown**, and restart:
+```bash
+rsync -az BlurVault/app/ user@YOUR_SERVER:/var/www/blurvault.pro/
+sudo chown -R www-data:www-data /var/www/blurvault.pro
+sudo systemctl restart blurvault
+```
 
 ## Not included on purpose
 - `contracts/` and `keeper/` — not needed to host the site. The vaults are

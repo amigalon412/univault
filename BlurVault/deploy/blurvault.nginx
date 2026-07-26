@@ -1,5 +1,6 @@
 # /etc/nginx/sites-available/blurvault
-# Reverse-proxy 80/443 -> the standalone server on 127.0.0.1:3000.
+# Reverse-proxy 80/443 -> the standalone server on 127.0.0.1:5013.
+# This port must match Environment=PORT in deploy/blurvault.service.
 # `certbot --nginx` rewrites this to add the 443 block and the http->https
 # redirect automatically; you only author the port-80 block below.
 server {
@@ -7,7 +8,7 @@ server {
     server_name blurvault.pro www.blurvault.pro;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:5013;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
