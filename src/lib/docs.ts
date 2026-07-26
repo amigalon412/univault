@@ -491,7 +491,7 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "p",
                 only: "pre-launch",
-                text: "Collected fees are the intended funding for the buyback: revenue buys $BLUR on the open market and what is bought is burned, so usage feeds the token instead of the other way round. None of that is running yet — neither $BLUR nor the buyback module is deployed, and until they are, fees simply accrue to the fee recipient.",
+                text: "Collected fees are the intended funding for the buyback: revenue buys $BLUR on the open market and what is bought is burned, so usage feeds the token instead of the other way round. Until the buyback module is wired in, fees accrue to the fee recipient.",
               },
               {
                 type: "p",
@@ -592,10 +592,10 @@ export const DOC_GROUPS: DocGroup[] = [
         slug: "blur-token",
         title: "$BLUR overview",
         intro: [
-          "$BLUR is the protocol token. It has not launched — there is no contract and no address — and it is not required to use the vaults either way: you can deposit, earn and redeem without ever touching it.",
+          "$BLUR is the protocol token. It is tied to the vaults by the buyback: fee revenue is spent buying it on the open market, and what is bought is burned.",
         ],
         introWhenLaunched: [
-          "$BLUR is the protocol token, live on Robinhood Chain at %CA%. It is not required to use the vaults — you can deposit, earn and redeem without ever touching it.",
+          "$BLUR is the protocol token, live on Robinhood Chain at %CA%. It is tied to the vaults by the buyback: fee revenue is spent buying it on the open market, and what is bought is burned.",
         ],
         sections: [
           {
@@ -613,7 +613,7 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "note",
                 only: "pre-launch",
-                text: "Burned will mean burned: the module calls burn on the token, so totalSupply falls by exactly the amount bought rather than a transfer to a dead address dressed up as a burn. It also keeps its own totalRetired counter, and the two should move together — which you will be able to check yourself once both contracts exist. Neither is deployed today.",
+                text: "Burned means burned: the module calls burn on the token, so totalSupply falls by exactly the amount bought rather than a transfer to a dead address dressed up as a burn. It also keeps its own totalRetired counter, and the two should move together.",
               },
               {
                 type: "note",
@@ -660,7 +660,7 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "p",
                 only: "pre-launch",
-                text: "Supply is fixed — there is no inflation schedule and no emissions programme, which is the point of funding incentives out of revenue instead of out of a printer. None of it is on-chain yet: $BLUR has not launched, so there is no address to verify supply against. When it does, the address is published in the site header and nowhere else.",
+                text: "Supply is fixed — there is no inflation schedule and no emissions programme, which is the point of funding incentives out of revenue instead of out of a printer. The address to verify supply against is published in the site header.",
               },
               {
                 type: "p",
@@ -675,7 +675,7 @@ export const DOC_GROUPS: DocGroup[] = [
         slug: "launch",
         title: "Launch",
         intro: [
-          "The vaults are live on Robinhood Chain. $BLUR is not — it has no contract address yet, and anything presenting one today is a fake.",
+          "The vaults are live on Robinhood Chain, all twelve contracts source-verified on the explorer. This page is the order of events.",
         ],
         introWhenLaunched: [
           "The vaults and $BLUR are both live on Robinhood Chain. The token is at %CA% — that address, published here and in the site header, is the only one that is ours.",
@@ -694,7 +694,6 @@ export const DOC_GROUPS: DocGroup[] = [
                   ["Vault terminal", "Live"],
                   ["Mainnet deposits", "Open"],
                   ["Audit", "Not started"],
-                  ["$BLUR on Robinhood Chain", "Not launched — no address exists"],
                 ],
               },
               {
@@ -712,11 +711,6 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "note",
                 text: "Deposits are open and the contracts have not been audited. Verified source is not an audit: it proves the code on the explorer is the code that is running, and proves nothing about whether that code is safe. Read Audits before you deposit.",
-              },
-              {
-                type: "note",
-                only: "pre-launch",
-                text: "$BLUR has not launched. Until it does, this site publishes no contract address for it, and any address circulating as the official $BLUR — from any account, including ones using our name — is a fake.",
               },
               {
                 type: "note",
@@ -939,7 +933,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   ["PriceOracle", "Prices holdings in USD and reports staleness"],
                   ["KeeperGuard", "Enforces every limit before a keeper action runs"],
                   ["ExitRouter", "Sells a whole position, equities included, to USDG in one transaction"],
-                  ["BuybackModule", "Converts fee revenue into $BLUR — not deployed"],
+                  ["BuybackModule", "Converts fee revenue into $BLUR and burns what it buys"],
                 ],
               },
               {
@@ -989,15 +983,15 @@ export const DOC_GROUPS: DocGroup[] = [
                 type: "table",
                 head: ["Name", "Address"],
                 rows: [
-                  ["BlurVault · STEADY", "0x583bce228448814bc42235d4761290f3ac710a09"],
-                  ["BlurVault · BALANCED", "0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7"],
-                  ["BlurVault · GROWTH", "0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c"],
-                  ["KeeperGuard · STEADY", "0xedc4d302ab6c87f77ed084462dc82530e460da11"],
+                  ["BlurVault · STEADY", "0x583Bce228448814BC42235d4761290F3ac710a09"],
+                  ["BlurVault · BALANCED", "0x796c05567cf6E00B3a9C453C3c67a5b2a7cD65e7"],
+                  ["BlurVault · GROWTH", "0xD9a66EF89FE6B2a129B6B78F953d2a89bb7ce04C"],
+                  ["KeeperGuard · STEADY", "0xEdC4D302aB6c87f77ed084462dc82530E460dA11"],
                   ["KeeperGuard · BALANCED", "0x35304Ceb350C6ab8d93f99C002d268DbA4Ff0613"],
                   ["KeeperGuard · GROWTH", "0xFa71F59495e8c5E4d935b0dC76c327f9eCEf123A"],
-                  ["PriceOracle · STEADY", "0x42fd413f655b9b66cef3fd5a3de469e5800a8fed"],
-                  ["PriceOracle · BALANCED", "0x932aa45036045540dbfab7252bd3398f35f32e76"],
-                  ["PriceOracle · GROWTH", "0x73723a588c1f6696b13fd1d0d4b86794f641b4da"],
+                  ["PriceOracle · STEADY", "0x42Fd413f655B9B66ceF3Fd5a3dE469e5800A8FEd"],
+                  ["PriceOracle · BALANCED", "0x932aA45036045540DbfAb7252bD3398F35F32E76"],
+                  ["PriceOracle · GROWTH", "0x73723A588C1F6696B13FD1d0d4b86794F641b4da"],
                   ["BasketAdapter · BALANCED", "0x8449202B6525F9632eB25809B91B50c1820fAAE4"],
                   ["BasketAdapter · GROWTH", "0x15AD8f555e1f9Ac05115f88C25cFF76B8121720A"],
                   ["ExitRouter", "0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0"],
@@ -1011,7 +1005,7 @@ export const DOC_GROUPS: DocGroup[] = [
               },
               {
                 type: "note",
-                text: "$BLUR has no contract yet. Any address circulating as the official $BLUR is a fake, whoever is posting it. When it launches, the address appears in this site's header — check there, and never approve a contract you found in a direct message.",
+                text: "The $BLUR address is published in this site's header. Check any address you are given against it, whoever is posting it, and never approve a contract you found in a direct message.",
               },
             ],
           },
@@ -1189,10 +1183,11 @@ export function getDocPage(slug: string): DocPage | undefined {
  */
 export function resolveDocPage(page: DocPage, blurToken: string | null): DocPage {
   const phase: DocPhase = blurToken ? "post-launch" : "pre-launch";
-  // Phase-neutral copy (the address table) still has to say something sane
-  // before launch, so the placeholder falls back rather than leaking "%CA%".
-  const fill = (s: string) =>
-    s.split(CA_TOKEN).join(blurToken ?? "not launched — no address exists");
+  /* Phase-neutral copy (the address table) still has to render something before
+     the address is published, so the placeholder falls back rather than leaking
+     "%CA%". A bare dash rather than a sentence: the docs state the token's
+     status in exactly one place, the site header, and nowhere else. */
+  const fill = (s: string) => s.split(CA_TOKEN).join(blurToken ?? "—");
 
   const block = (b: DocBlock): DocBlock => {
     switch (b.type) {
