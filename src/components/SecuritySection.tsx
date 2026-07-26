@@ -19,11 +19,13 @@ interface SecurityCard {
  * idea before the heading is read, and they are drawn in the same cell grid as
  * the company marks and the mechanics diagram, so nothing new is introduced.
  *
- * On the fee: the copy no longer says the rate. `setPerformanceFeeBps` is
- * onlyOwner and capped at 2_000 bps, so the current 5% is a setting rather
- * than a property of the vault, and a card is the wrong place to explain that.
- * What is structural — that it touches gains above a high-water mark and never
- * the deposit — is what the card says.
+ * On the fee: the card states 5%, which is the rate the vaults are deployed
+ * with and which is not going to change — a product decision, taken knowing
+ * that `setPerformanceFeeBps` is onlyOwner and capped at 2_000 bps, so the
+ * rate is settable in principle. The unhedged claim is deliberate: "designed
+ * to apply only to gains" is the kind of phrasing that reads as a let-out in
+ * a section about trust. What it says is what `accrueFee` does — it measures
+ * against `highWaterMark` and takes nothing from the deposit.
  */
 const cards: SecurityCard[] = [
   {
@@ -42,7 +44,7 @@ const cards: SecurityCard[] = [
     glyph: PERCENT,
     num: "03",
     title: "REAL YIELD, HONEST FEE",
-    body: "Yield is real lending interest, not emissions. The fee is charged on gains above your high-water mark, and never on the deposit itself.",
+    body: "Yield is real lending interest, not emissions. The 5% fee is charged on gains above your high-water mark, and never on the deposit itself.",
   },
 ];
 
