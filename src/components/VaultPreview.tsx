@@ -164,7 +164,7 @@ export function VaultPreview() {
                   <div className="font-mono text-[10px] text-wire-muted tracking-[0.32em] mb-2">
                     YOU DEPOSIT
                   </div>
-                  <div className="figure-in font-digits text-5xl md:text-7xl text-wire-cyan glow-cyan leading-none">
+                  <div className="figure-blur font-digits text-5xl md:text-7xl text-wire-cyan glow-cyan leading-none">
                     {usd(EXAMPLE)}
                   </div>
                   <div className="mt-3 flex items-center gap-2 font-mono text-[10px] text-wire-muted tracking-[0.2em]">
@@ -180,7 +180,7 @@ export function VaultPreview() {
                 <div className="font-mono text-[10px] text-wire-muted tracking-[0.32em] mb-1.5">
                   TARGET SPLIT
                 </div>
-                <div className="figure-in font-digits text-4xl md:text-5xl text-wire-cyan leading-none">
+                <div className="figure-blur font-digits text-4xl md:text-5xl text-wire-cyan leading-none">
                   {strategy.split}
                 </div>
                 <div className="font-mono text-[10px] text-wire-muted tracking-[0.2em] mt-1.5">

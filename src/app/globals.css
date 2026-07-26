@@ -229,6 +229,12 @@
 }
 .animate-flicker {
   animation: flicker 6s infinite;
+  /* The flickering element is the ASCII logo, which carries a three-layer glow
+     over ~43000 square pixels. Un-promoted, animating its opacity repaints all
+     three shadow layers every frame for as long as the hero is on screen --
+     which is the top of the page, where scrolling starts. Promoted, the same
+     animation is a compositor opacity change and costs nothing to repaint. */
+  will-change: opacity;
 }
 .animate-marquee {
   animation: marquee 25s linear infinite;
@@ -393,12 +399,31 @@
   animation: figureIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes figureIn {
+  /* No blur here any more.
+
+     An animated filter cannot be composited: every frame the element has to be
+     re-rasterised at a new blur radius, and this animation fires on the panel
+     rows of the mechanics and trust sections as they scroll into view -- eight
+     of them at once, mid-scroll, which is exactly when there is no frame budget
+     to spare. Opacity and transform do the same job on the compositor.
+
+     The blur survives where it is worth paying for: .figure-blur below, used by
+     the two money figures in the vault preview, which replay on a click rather
+     than on a scroll. */
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.figure-blur {
+  animation: figureBlurIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes figureBlurIn {
   from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
   to { opacity: 1; transform: none; filter: blur(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .figure-in {
+  .figure-in,
+  .figure-blur {
     animation: none;
   }
 }
