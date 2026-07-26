@@ -43,9 +43,32 @@ function Node({ node, hub = false }: { node: FlowNode; hub?: boolean }) {
       <div className="font-mono text-[11px] text-wire-muted tracking-[0.1em] mt-2">
         {node.role}
       </div>
-      <div className="mt-4">
-        <ContractLink address={node.address} />
-      </div>
+      {node.holdings ? (
+        <div className="mt-4">
+          <div className="grid grid-cols-2 gap-1.5">
+            {node.holdings.map((h) => (
+              <ContractLink
+                key={h.symbol}
+                address={h.token}
+                label={h.symbol}
+                variant="ticker"
+              />
+            ))}
+          </div>
+          <div className="mt-3">
+            <ContractLink
+              address={node.address}
+              label="ADAPTER"
+              variant="bare"
+              className="opacity-70"
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="mt-4">
+          <ContractLink address={node.address} />
+        </div>
+      )}
     </div>
   );
 }

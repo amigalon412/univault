@@ -1,6 +1,7 @@
 import type { Address } from "viem";
 import {
   BASKET_ADAPTER,
+  BASKET_STOCKS,
   EXIT_ROUTER_FALLBACK,
   KEEPER_GUARD,
   PRICE_ORACLE,
@@ -30,6 +31,11 @@ export interface FlowNode {
   role: string;
   /** Null renders the node without a link rather than with a dead one. */
   address: Address | null;
+  /**
+   * Constituents to link individually, when the node's own contract is not
+   * the useful thing to open.
+   */
+  holdings?: { symbol: string; token: Address }[];
 }
 
 export interface TraceStep {
@@ -73,8 +79,19 @@ export const LEG_NODES: FlowNode[] = [
   {
     glyph: BASKET,
     name: "STOCK BASKET",
-    role: "NVDA · AAPL · TSLA · AMZN",
+    role: "FOUR NAMES, EVENLY WEIGHTED",
     address: BASKET_ADAPTER,
+    /*
+     * The four tickers link to the token contracts, not to the adapter.
+     *
+     * Opening the adapter answers nothing: an explorer's token tab lists
+     * balances, and the constituents are configuration held in storage, so
+     * until someone deposits it shows an empty contract -- decorated, in
+     * practice, with airdropped spam tokens impersonating USDG. Somebody
+     * checking whether this is really NVIDIA needs the token, and the tokens
+     * are third-party and verified, which ours are not yet.
+     */
+    holdings: BASKET_STOCKS,
   },
 ];
 

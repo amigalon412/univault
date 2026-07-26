@@ -5,8 +5,13 @@ interface ContractLinkProps {
   address: Address | null;
   /** Shown before the address, e.g. "VAULT". Omit for a bare chip. */
   label?: string;
-  /** `chip` is bordered, for diagram nodes. `bare` is inline, for lists. */
-  variant?: "chip" | "bare";
+  /**
+   * `chip` is bordered, for diagram nodes. `bare` is inline, for lists.
+   * `ticker` shows the label alone -- for a set of holdings, where four
+   * truncated addresses side by side are noise and the symbol is the thing
+   * being checked. The address stays in the title and in the href.
+   */
+  variant?: "chip" | "bare" | "ticker";
   className?: string;
 }
 
@@ -29,7 +34,9 @@ export function ContractLink({
   const base =
     variant === "chip"
       ? "inline-block border border-wire-cyan/25 px-3 py-1 text-xs text-wire-muted hover:text-wire-cyan hover:border-wire-cyan transition-colors"
-      : "text-xs text-wire-muted hover:text-wire-cyan border-b border-dotted border-wire-cyan/30 transition-colors";
+      : variant === "ticker"
+        ? "inline-block border border-wire-cyan/25 px-2.5 py-1 text-xs tracking-[0.1em] text-wire-cyan/85 hover:text-wire-cyan hover:border-wire-cyan transition-colors"
+        : "text-xs text-wire-muted hover:text-wire-cyan border-b border-dotted border-wire-cyan/30 transition-colors";
 
   return (
     <a
@@ -40,7 +47,7 @@ export function ContractLink({
       className={`${base} ${className}`}
     >
       {label ? `${label} ` : ""}
-      {short} ↗
+      {variant === "ticker" ? "↗" : `${short} ↗`}
     </a>
   );
 }
