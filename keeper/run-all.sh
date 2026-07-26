@@ -10,7 +10,8 @@
 # Dry run by default — reads the chain, decides, sends nothing. To go live:
 #
 #   cd keeper
-#   export KEEPER_PRIVATE_KEY=0x...    # the keeper key (owner = keeper here)
+#   export KEEPER_PRIVATE_KEY=0x...    # a key registered via setKeeper, NOT the
+#                                      # owner key — see VPS.md
 #   export DRY_RUN=false
 #   bash run-all.sh
 #
