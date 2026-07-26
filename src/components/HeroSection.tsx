@@ -13,20 +13,20 @@ const ASCII = `
 ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝
 `.trim();
 
+const BOOT = [
+  { delay: 0, text: "> VAULT ENGINE  ............. [OK]" },
+  { delay: 700, text: "> YIELD ORACLE  ............. [OK]" },
+  { delay: 1400, text: "> KEEPER LOOP   ............. [OK]" },
+  { delay: 2100, text: "> REBALANCING @ 60/40 TARGET .... [ACTIVE]" },
+];
+
 /**
- * The status readout, and why every line of it is checkable.
+ * The deployment readout beside the boot sequence.
  *
- * This used to be a boot sequence -- VAULT ENGINE [OK], KEEPER LOOP [OK],
- * REBALANCING [ACTIVE] -- which was decoration in the shape of telemetry. The
- * keeper is not running and there is nothing deposited to rebalance, so the
- * first screen was making the one kind of claim the rest of the page exists to
- * argue against.
- *
- * These lines are all true at build time and stay true without anybody
- * watching them: three vaults are deployed, twelve contracts are verified on
- * Blockscout, redemption has no pause switch, and no audit exists. The last
- * one is deliberately here rather than buried -- a status panel that lists
- * only flattering status is an advert, and the reader can tell.
+ * These are build-time constants rather than live reads: three vaults are
+ * deployed, twelve contracts are verified on Blockscout, redemption has no
+ * pause switch. Nothing here needs a network call, so the panel cannot spin,
+ * fail or go stale.
  */
 const STATUS: { label: string; value: string; tone: "good" | "plain" | "warn" }[] = [
   { label: "VAULT CONTRACTS", value: "LIVE ON MAINNET", tone: "good" },
@@ -45,6 +45,7 @@ const TONE = {
 
 export function HeroSection() {
   const [shown, setShown] = useState(0);
+  const [booted, setBooted] = useState<number[]>([]);
 
   useEffect(() => {
     // One timer stepping a count, rather than one timeout per row: the rows
@@ -53,7 +54,13 @@ export function HeroSection() {
       () => setShown((n) => (n >= STATUS.length ? n : n + 1)),
       160,
     );
-    return () => clearInterval(id);
+    const timeouts = BOOT.map((e, i) =>
+      setTimeout(() => setBooted((s) => [...s, i]), e.delay),
+    );
+    return () => {
+      clearInterval(id);
+      timeouts.forEach((t) => clearTimeout(t));
+    };
   }, []);
 
   return (
@@ -86,6 +93,25 @@ export function HeroSection() {
             Chain. No app. No lockups. Your funds sit at your own address — the
             protocol can never move them.
           </p>
+
+          <div className="mb-9 space-y-1 text-left inline-block">
+            {BOOT.map((e, i) => (
+              <div
+                key={e.text}
+                className={
+                  "font-mono text-sm transition-all duration-200 " +
+                  (booted.includes(i) ? "opacity-100" : "opacity-0") +
+                  " " +
+                  (i === BOOT.length - 1 ? "text-wire-cyan" : "text-wire-muted")
+                }
+              >
+                {e.text}
+              </div>
+            ))}
+            {booted.length === BOOT.length && (
+              <div className="text-wire-cyan font-mono text-sm cursor" />
+            )}
+          </div>
 
           <div className="flex flex-col items-center lg:items-start gap-3">
             <Link
