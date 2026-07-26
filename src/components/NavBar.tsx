@@ -33,7 +33,7 @@ export function NavBar() {
         <Link href="/#vaults" className="hover:text-wire-cyan hover:glow-cyan transition-all">
           VAULTS
         </Link>
-        <Link href="/#flywheel" className="hover:text-wire-cyan hover:glow-cyan transition-all">
+        <Link href="/#mechanics" className="hover:text-wire-cyan hover:glow-cyan transition-all">
           HOW IT WORKS
         </Link>
         <Link href="/#token" className="hover:text-wire-cyan hover:glow-cyan transition-all">

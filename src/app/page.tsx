@@ -3,9 +3,8 @@ import { HeroSection } from "@/components/HeroSection";
 import { TickerMarquee } from "@/components/TickerMarquee";
 import { VaultPreview } from "@/components/VaultPreview";
 import { AboutSection } from "@/components/AboutSection";
-import { CommandsSection } from "@/components/CommandsSection";
-import { GuideSection } from "@/components/GuideSection";
-import { SecuritySection } from "@/components/SecuritySection";
+import { MechanicsSection } from "@/components/MechanicsSection";
+import { TrustSection } from "@/components/TrustSection";
 import { TokenSection } from "@/components/TokenSection";
 import { LiveFeed } from "@/components/LiveFeed";
 import { Footer } from "@/components/Footer";
@@ -23,9 +22,11 @@ export default function Home() {
       {/* Straight after the fold: the product itself, before any prose. */}
       <VaultPreview />
       <AboutSection />
-      <CommandsSection />
-      <GuideSection />
-      <SecuritySection />
+      {/* The two sections that are not grids of text cards. Mechanics replaces
+          a duplicate of the vault preview and absorbs the old flywheel; trust
+          absorbs the old security cards. */}
+      <MechanicsSection />
+      <TrustSection />
       <TokenSection />
       <LiveFeed />
       <Footer />

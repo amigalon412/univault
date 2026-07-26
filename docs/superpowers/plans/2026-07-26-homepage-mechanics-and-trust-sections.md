@@ -241,16 +241,21 @@ Three addresses the diagram links to live only in `contracts/DEPLOYMENTS.md`. Th
 
    Run: node scripts/check-addresses.mjs */
 
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 
 const chain = readFileSync("src/lib/chain.ts", "utf8");
 const deployments = readFileSync("contracts/DEPLOYMENTS.md", "utf8").toLowerCase();
 
-/* Only the named constants — not every 0x string in the file. Multicall3 is a
-   canonical cross-chain address and is deliberately not in DEPLOYMENTS.md. */
+/* Only the addresses this project deployed, because DEPLOYMENTS.md is the
+   record of what this team deployed and nothing else.
+
+   Deliberately absent: USDG and STEAK_USDG are third-party contracts (Global
+   Dollar, and Steakhouse's MetaMorpho vault), and Multicall3 is a canonical
+   cross-chain address. There is no second source of truth to check any of them
+   against, so listing them here would produce a permanent false alarm rather
+   than catching anything. */
 const CHECKED = [
-  "USDG",
-  "STEAK_USDG",
   "BASKET_ADAPTER",
   "PRICE_ORACLE",
   "KEEPER_GUARD",
@@ -271,15 +276,30 @@ for (const name of CHECKED) {
   }
 }
 
-/* The superseded vaults must never appear in shipped code. */
+/* The superseded vaults must never appear anywhere in shipped source -- the
+   mistake this guards against was a dead address pasted into a component, not
+   into this file. */
 const SUPERSEDED = [
   "0xFd7223d33335c5A7bdFA44C8Fa0B212cA045A996",
   "0x066d4661A5419A68b64a0dCF51f5c295185dB175",
   "0xBF2b621E86e762C6f4C78aCAc4F1C41087CaB787",
 ];
-for (const dead of SUPERSEDED) {
-  if (chain.toLowerCase().includes(dead.toLowerCase())) {
-    failures.push(`superseded vault ${dead} is referenced in chain.ts`);
+
+const sources = [];
+(function walk(dir) {
+  for (const entry of readdirSync(dir)) {
+    const p = join(dir, entry);
+    if (statSync(p).isDirectory()) walk(p);
+    else if (/\.(ts|tsx|mjs)$/.test(entry)) sources.push(p);
+  }
+})("src");
+
+for (const file of sources) {
+  const text = readFileSync(file, "utf8").toLowerCase();
+  for (const dead of SUPERSEDED) {
+    if (text.includes(dead.toLowerCase())) {
+      failures.push(`superseded vault ${dead} is referenced in ${file}`);
+    }
   }
 }
 
@@ -288,8 +308,18 @@ if (failures.length) {
   for (const f of failures) console.error("  - " + f);
   process.exit(1);
 }
-console.log(`address check passed (${CHECKED.length} constants)`);
+console.log(
+  `address check passed (${CHECKED.length} deployed constants, ${sources.length} source files scanned)`,
+);
 ```
+
+> **Corrected during execution.** The first draft of this script also listed
+> `USDG` and `STEAK_USDG` in `CHECKED`, and scanned only `chain.ts` for the
+> superseded vaults. Both were wrong. Those two addresses are third-party — a
+> stablecoin and someone else's MetaMorpho vault — so they are not in
+> `DEPLOYMENTS.md` and never will be; checking them could only ever fire
+> falsely. And the mistake the superseded list exists to catch was an address
+> pasted into a *component*, which a scan of `chain.ts` alone would miss.
 
 - [ ] **Step 2: Run it to verify it fails**
 
@@ -345,7 +375,7 @@ export const EXIT_ROUTER_FALLBACK: Address = getAddress(
 - [ ] **Step 4: Run the check to verify it passes**
 
 Run: `node scripts/check-addresses.mjs`
-Expected: `address check passed (6 constants)`, exit code 0.
+Expected: `address check passed (4 deployed constants, N source files scanned)`, exit code 0.
 
 - [ ] **Step 5: Wire it into the repo's check command**
 

@@ -58,9 +58,11 @@ export function VaultPreview() {
   const perStock = basket / PIXEL_LOGOS.length;
   const weight = strategy.stockPct / PIXEL_LOGOS.length;
 
+  // Carries id="vaults": the nav links to /#vaults, and the section that used
+  // to own that anchor is gone. This is the vaults section now.
   return (
     <section
-      id="preview"
+      id="vaults"
       className="relative border-b border-wire-border px-4 sm:px-6 md:px-8 py-16 md:py-24 scroll-mt-16"
     >
       <div className="relative max-w-5xl mx-auto" ref={root}>
