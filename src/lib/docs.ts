@@ -53,7 +53,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   },
                   {
                     lead: "Hands off.",
-                    text: "A keeper harvests and rebalances on a schedule. You are not asked to time anything.",
+                    text: "Your deposit allocates itself on the way in. Drift is corrected afterwards by a keeper that is capped by contract. You are not asked to time anything.",
                   },
                   {
                     lead: "Exit is yours.",
@@ -114,7 +114,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   },
                   {
                     lead: "2 — Deploy.",
-                    text: "The stablecoin half is supplied to a lending market. The equity half is bought into the basket, spread over several trades rather than in one hit.",
+                    text: "In the same transaction: the stablecoin portion is supplied to a lending market and the equity portion is bought into the basket. Your deposit is working before the call returns.",
                   },
                   {
                     lead: "3 — Maintain.",
@@ -168,7 +168,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   },
                   {
                     lead: "Leave it.",
-                    text: "The keeper takes over from here. Check in whenever you feel like it.",
+                    text: "The deposit allocates itself in that same transaction; from there the keeper handles drift. Check in whenever you feel like it.",
                   },
                 ],
               },
@@ -280,7 +280,7 @@ export const DOC_GROUPS: DocGroup[] = [
             blocks: [
               {
                 type: "p",
-                text: "New deposits land in an idle buffer rather than being converted immediately. The keeper works them into the target split over several trades, which keeps a large deposit from moving the pool against itself. The stablecoin portion starts earning right away.",
+                text: "A deposit splits itself in the same transaction that mints your shares: the stablecoin portion is supplied to the lending market and the equity portion is bought into the basket before the call returns. Nothing sits idle waiting for a bot, and you pay the gas for your own allocation rather than sharing someone else's.",
               },
               {
                 type: "note",
@@ -472,7 +472,7 @@ export const DOC_GROUPS: DocGroup[] = [
             blocks: [
               {
                 type: "p",
-                text: "Collected fees fund the buyback: revenue is used to purchase $BLUR on the open market, and what is bought is burned. Usage feeds the token instead of the other way round.",
+                text: "Collected fees are the intended funding for the buyback: revenue buys $BLUR on the open market and what is bought is burned, so usage feeds the token instead of the other way round. None of that is running yet — neither $BLUR nor the buyback module is deployed, and until they are, fees simply accrue to the fee recipient.",
               },
             ],
           },
@@ -487,8 +487,8 @@ export const DOC_GROUPS: DocGroup[] = [
         slug: "keeper",
         title: "The keeper",
         intro: [
-          "The keeper is an off-chain bot that does the boring work: harvesting interest, rebalancing drift, and spreading large deposits into the basket over time.",
-          "It is also the part of the system most worth being paranoid about, so it is the part with the tightest leash.",
+          "The keeper is an off-chain bot that does the boring work: harvesting interest and trading drift back to target. Allocating a deposit is no longer part of its job — a deposit does that itself, in the transaction that mints your shares — so nothing you put in is waiting on a bot to start earning.",
+          "It is still the part of the system most worth being paranoid about, so it is the part with the tightest leash.",
         ],
         sections: [
           {
@@ -500,7 +500,6 @@ export const DOC_GROUPS: DocGroup[] = [
                 items: [
                   { text: "Harvest accrued lending interest back into the vault." },
                   { text: "Trade toward the target split when drift crosses the band." },
-                  { text: "Work idle deposits into the basket over several transactions." },
                 ],
               },
             ],
@@ -569,7 +568,7 @@ export const DOC_GROUPS: DocGroup[] = [
         slug: "blur-token",
         title: "$BLUR overview",
         intro: [
-          "$BLUR is the protocol token, live on Robinhood Chain. It is not required to use the vaults — you can deposit, earn and redeem without ever touching it.",
+          "$BLUR is the protocol token. It has not launched — there is no contract and no address — and it is not required to use the vaults either way: you can deposit, earn and redeem without ever touching it.",
         ],
         sections: [
           {
@@ -586,7 +585,7 @@ export const DOC_GROUPS: DocGroup[] = [
               },
               {
                 type: "note",
-                text: "Burned means burned: the module calls burn on the token, so totalSupply falls by exactly the amount bought and you can check it against the contract yourself. It is not a transfer to a dead address dressed up as a burn. The module also keeps its own totalRetired counter, and the two should move together.",
+                text: "Burned will mean burned: the module calls burn on the token, so totalSupply falls by exactly the amount bought rather than a transfer to a dead address dressed up as a burn. It also keeps its own totalRetired counter, and the two should move together — which you will be able to check yourself once both contracts exist. Neither is deployed today.",
               },
             ],
           },
@@ -874,26 +873,29 @@ export const DOC_GROUPS: DocGroup[] = [
                 type: "table",
                 head: ["Contract", "Responsibility"],
                 rows: [
-                  ["BlurVault", "ERC-4626 core: shares, NAV, deposit and redeem"],
-                  ["YieldAdapter", "Wraps the lending market behind one interface"],
+                  ["BlurVault", "ERC-4626 core: shares, NAV, deposit, redeem, and the high-water-mark fee accounting"],
                   ["BasketAdapter", "Holds the equity basket and executes its trades"],
                   ["PriceOracle", "Prices holdings in USD and reports staleness"],
                   ["KeeperGuard", "Enforces every limit before a keeper action runs"],
-                  ["FeeController", "High-water mark accounting and fee accrual"],
-                  ["BuybackModule", "Converts fee revenue into $BLUR"],
+                  ["ExitRouter", "Sells a whole position, equities included, to USDG in one transaction"],
+                  ["BuybackModule", "Converts fee revenue into $BLUR — not deployed"],
                 ],
               },
               {
                 type: "code",
                 lines: [
-                  "user --deposit--> BlurVault --+--> YieldAdapter   (lending leg)",
-                  "                              |",
-                  "                              +--> BasketAdapter  (equity leg)",
+                  "user --deposit--> BlurVault --+--> lending vault   (stablecoin leg)",
+                  "                              |   external ERC-4626",
+                  "                              +--> BasketAdapter   (equity leg)",
                   "                                        ^",
                   "keeper --> KeeperGuard ------------------+",
                   "",
-                  "BlurVault --> FeeController --> BuybackModule --> $BLUR",
+                  "user --exit--> ExitRouter --> BlurVault.redeemInKind + v4 swaps --> USDG",
                 ],
+              },
+              {
+                type: "note",
+                text: "There is no separate YieldAdapter or FeeController contract. The lending leg is an external ERC-4626 vault the BlurVault supplies into directly, and fee accounting lives inside BlurVault — fewer moving parts, and fewer contracts you have to read to know what happens to your money.",
               },
             ],
           },
@@ -1047,6 +1049,10 @@ export const DOC_GROUPS: DocGroup[] = [
                   {
                     lead: "Do I need $BLUR to use the vaults?",
                     text: "No. It is entirely optional.",
+                  },
+                  {
+                    lead: "Can I read the code that is actually running?",
+                    text: "Yes. All twelve deployed contracts are source-verified on Blockscout, so the explorer shows Solidity rather than bytecode. Addresses are on Contracts & chain. That is not the same as an audit — see Audits.",
                   },
                   {
                     lead: "What is the yield?",
