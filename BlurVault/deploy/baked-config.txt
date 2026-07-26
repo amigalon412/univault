@@ -22,3 +22,11 @@ putting it on the site never requires a rebuild.
 
 Chain: Robinhood Chain, id 4663, RPC https://rpc.mainnet.chain.robinhood.com
 Built for Node >= 24. Contracts owner/keeper/fee: 0x56D89b63192677c72fCf4C9CB64de592F2833A63
+
+This snapshot
+=============
+Built 2026-07-26 from commit 4e0010b, BUILD_ID bcGz4_G0ZvuZvPmV8zM0p.
+All twelve deployed contracts are source-verified on Blockscout as of this
+build. Smoke-tested from this folder before packing: the site serves, /admin
+refuses to sign in until ADMIN_PASSWORD is set, and publishing, rejecting a
+malformed address, and clearing all behave as DEPLOY.md describes.
