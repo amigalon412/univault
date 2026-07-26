@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { VT323, Share_Tech_Mono, Chakra_Petch } from "next/font/google";
 import { cookieToInitialState } from "wagmi";
 import { Web3Provider } from "@/components/providers/Web3Provider";
+import { Starfall } from "@/components/Starfall";
 import { wagmiConfig } from "@/lib/wagmi";
 import "./globals.css";
 
@@ -87,6 +88,11 @@ export default async function RootLayout({
       className={`${vt323.variable} ${shareTechMono.variable} ${chakraPetch.variable} dark`}
     >
       <body>
+        {/* Sits behind every route rather than on the homepage alone. The page
+            backgrounds are transparent so it shows through; each <main> carries
+            `relative z-10` to stay above this canvas, which is positioned and
+            would otherwise paint over static content. */}
+        <Starfall />
         <Web3Provider initialState={initialState}>{children}</Web3Provider>
       </body>
     </html>

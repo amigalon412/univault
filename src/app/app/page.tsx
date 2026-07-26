@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AppPage() {
   return (
-    <main className="min-h-screen bg-black text-wire-cyan overflow-x-hidden page-enter">
+    <main className="relative z-10 min-h-screen text-wire-cyan overflow-x-hidden page-enter">
       <BackgroundGrid />
       <AnimationGovernor />
       <NavBar />

@@ -49,7 +49,7 @@ export default async function DocsPage({
   const { prev, next } = getDocNeighbours(slug);
 
   return (
-    <main className="min-h-screen bg-black text-wire-cyan overflow-x-hidden page-enter">
+    <main className="relative z-10 min-h-screen text-wire-cyan overflow-x-hidden page-enter">
       <AnimationGovernor />
       <NavBar />
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-14">

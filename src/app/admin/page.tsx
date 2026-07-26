@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AdminPage() {
   return (
-    <main className="min-h-screen bg-black px-6 py-16">
+    <main className="relative z-10 min-h-screen px-6 py-16">
       <div className="mx-auto w-full max-w-lg">
         <h1 className="wire-title text-3xl text-wire-cyan glow-cyan tracking-widest">
           BLUR · ADMIN
