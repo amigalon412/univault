@@ -71,9 +71,8 @@ The `tee` prints the password once — **copy it into your password manager now.
 
 ### 4. Run it as a service
 ```bash
-sudo cp /var/www/blurvault/../blurvault.service /etc/systemd/system/ 2>/dev/null || \
-  sudo tee /etc/systemd/system/blurvault.service < deploy/blurvault.service
-# (or just paste deploy/blurvault.service into /etc/systemd/system/blurvault.service)
+# Run this from the unpacked BlurVault/ folder, where deploy/ lives.
+sudo cp deploy/blurvault.service /etc/systemd/system/blurvault.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now blurvault
 sudo systemctl status blurvault        # active (running)
