@@ -43,6 +43,37 @@ export const STEAK_USDG: Address = getAddress(
 );
 
 /**
+ * The rest of the BALANCED vault's machinery, addressed here rather than in a
+ * component because that is where every other address on this chain lives.
+ *
+ * BALANCED is the strategy the homepage diagram traces: it is the only one of
+ * the three that exercises both legs, so it is the only one that shows the
+ * whole machine. GROWTH has its own adapter, oracle and guard; STEADY has no
+ * basket at all. See contracts/DEPLOYMENTS.md.
+ */
+export const BASKET_ADAPTER: Address = getAddress(
+  "0x8449202B6525F9632eB25809B91B50c1820fAAE4",
+);
+export const PRICE_ORACLE: Address = getAddress(
+  "0x932aa45036045540dbfab7252bd3398f35f32e76",
+);
+export const KEEPER_GUARD: Address = getAddress(
+  "0x35304Ceb350C6ab8d93f99C002d268DbA4Ff0613",
+);
+
+/**
+ * The deployed ExitRouter, for display only.
+ *
+ * `EXIT_ROUTER` below reads the environment and is null until it is set, which
+ * is right for the app -- it must not offer a button backed by nothing. The
+ * homepage is describing what exists on chain, not offering to call it, so it
+ * uses this constant and always has something to link to.
+ */
+export const EXIT_ROUTER_FALLBACK: Address = getAddress(
+  "0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0",
+);
+
+/**
  * Chainlink USD feeds for the basket, 8 decimals each, confirmed on-chain.
  *
  * A feed is not a tradable asset -- SPY has a feed here and no token, which is
