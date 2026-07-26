@@ -41,6 +41,12 @@ EXIT_ROUTER=0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
 call() { cast call "$1" "$2" --rpc-url "$RPC" 2>/dev/null; }
 unquote() { sed 's/^"//; s/"$//'; }
 
+# Blockscout rate-limits, and it does so by returning an HTML error page or
+# "Too many requests" rather than anything forge recognises -- which reads as a
+# verification failure when it is nothing of the sort. Six of thirteen failed
+# that way on the first run and verified on a slower one.
+THROTTLE="${THROTTLE:-12}"
+
 verify() { # address  path:Name  encoded-args
   local addr="$1" target="$2" args="$3"
   if [ "$DRY" = "1" ]; then
@@ -56,6 +62,7 @@ verify() { # address  path:Name  encoded-args
     --num-of-optimizations "$RUNS" \
     --constructor-args "$args" \
     || echo "  !! failed: $target $addr"
+  sleep "$THROTTLE"
 }
 
 for row in "${STACKS[@]}"; do

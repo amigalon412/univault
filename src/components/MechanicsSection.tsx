@@ -190,12 +190,15 @@ function Fork() {
  * both. Every node links to the live contract at the address it runs at, so
  * the wiring is checkable rather than asserted.
  *
- * The copy deliberately does NOT say "verified". None of the BLUR contracts
- * are source-verified on Blockscout yet -- checked against its API -- so a
- * link opens bytecode, not Solidity. Saying otherwise would be the same
- * mistake as the launch video that showed superseded addresses under a green
- * VERIFIED tick. When `forge verify-contract` has been run against them, the
- * word can come back and this note can go.
+ * On "verified", which the copy now claims of some nodes and not others:
+ * nine of the twelve deployed contracts are source-verified on Blockscout --
+ * all three vaults, two of three oracles, both basket adapters and the exit
+ * router. The three KeeperGuards are not and will not be; their source has
+ * moved on from the deployed bytecode, so the explorer rejects them. The
+ * sentence therefore names what is verified instead of covering the diagram,
+ * because a blanket claim would be false of the guard chip sitting right
+ * under it. Re-run contracts/script/verify-all.sh to check the current state
+ * before widening it.
  */
 export function MechanicsSection() {
   const [seen, setSeen] = useState(false);
@@ -253,9 +256,10 @@ export function MechanicsSection() {
           Follow the money. Every box is a contract.
         </h2>
         <p className="font-mono text-sm text-wire-muted leading-relaxed max-w-2xl mb-8">
-          Not a diagram of an intention. Every node opens the live contract on
-          the explorer, at the address it actually runs at — check the wiring
-          rather than taking this page&apos;s word for it.
+          Not a diagram of an intention. Every node opens the deployed contract
+          on the explorer, at the address it actually runs at — the vaults, the
+          basket and the router with their source verified, so you can read what
+          they do rather than taking this page&apos;s word for it.
         </p>
 
         <div className="relative border border-wire-cyan/25 bg-black/25">
