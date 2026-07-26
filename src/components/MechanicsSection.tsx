@@ -16,14 +16,23 @@ import {
 } from "@/lib/mechanics";
 
 /** One box in the diagram. */
-function Node({ node, hub = false }: { node: FlowNode; hub?: boolean }) {
+function Node({
+  node,
+  hub = false,
+  className = "",
+}: {
+  node: FlowNode;
+  hub?: boolean;
+  className?: string;
+}) {
   return (
     <div
       className={
-        "relative bg-black text-center " +
+        "relative flex flex-col items-center justify-center bg-black text-center " +
         (hub
-          ? "border border-wire-cyan shadow-[0_0_40px_rgba(214,254,81,0.16)] px-7 py-8"
-          : "border border-wire-cyan/35 px-6 py-6")
+          ? "border border-wire-cyan shadow-[0_0_40px_rgba(214,254,81,0.16)] px-7 py-8 "
+          : "border border-wire-cyan/35 px-6 py-6 ") +
+        className
       }
     >
       <PixelLogo
@@ -73,24 +82,101 @@ function Node({ node, hub = false }: { node: FlowNode; hub?: boolean }) {
   );
 }
 
-/**
- * A dashed connector with a dot running along it.
- *
- * It carries no label. It used to print the leg's share of the deposit, but
- * that share is BALANCED's and nobody else's — STEADY sends nothing this way
- * and GROWTH sends most of it. The ratio belongs to the strategy, not to the
- * machine, and the machine is what this diagram is of.
- */
-function Connector({ delay = 0 }: { delay?: number }) {
+/* ── The wiring ────────────────────────────────────────────────────────────
+   Drawn as SVG on a fixed grid rather than as flexbox rules.
+
+   Rules in a flex row cannot make a fork: each one is an independent
+   horizontal stub that floats wherever the box model leaves it, so the two
+   branches to the legs pointed at nothing and started nowhere. A fork needs a
+   trunk, a riser and two arms that actually meet, which means real geometry.
+
+   The heights below are fixed for the same reason -- the legs column is given
+   a known height and its two cards split it, so every coordinate here is a
+   number rather than a guess about how flexbox will resolve.
+
+   The travelling dots ride a CSS offset-path rather than SMIL animateMotion.
+   Both draw the same thing, but AnimationGovernor finds endless animations
+   through document.getAnimations(), which does not see SMIL -- these would
+   have run forever behind a scrolled-past section, which is exactly the
+   compositor load this page was cleaned up to remove. */
+const LEGS_H = 356;         // height of the legs column at md and up
+const CARD_H = (LEGS_H - 20) / 2;   // two cards, one gap-5 between them
+const ARM_1 = CARD_H / 2;
+const ARM_2 = LEGS_H - CARD_H / 2;
+const FORK_W = 92;
+const SPLIT_X = 38;         // where the trunk turns into the riser
+
+const DASH = "5 7";
+
+/** Straight run from the source into the vault. */
+function Feed() {
   return (
-    <div className="relative mx-4 min-w-10 flex-1">
-      <div className="h-px bg-[repeating-linear-gradient(90deg,rgba(214,254,81,0.55)_0_5px,transparent_5px_12px)]" />
-      <span
-        aria-hidden
-        className="flow-dot absolute -top-[3px] h-[7px] w-[7px] rounded-full bg-wire-cyan shadow-[0_0_12px_#d6fe51]"
-        style={{ animationDelay: `${delay}ms` }}
+    <svg
+      aria-hidden
+      width="100%"
+      height="14"
+      viewBox="0 0 100 14"
+      preserveAspectRatio="none"
+      className="overflow-visible"
+    >
+      <line
+        x1="0"
+        y1="7"
+        x2="100"
+        y2="7"
+        stroke="rgba(214,254,81,0.55)"
+        strokeWidth="1"
+        strokeDasharray={DASH}
+        vectorEffect="non-scaling-stroke"
       />
-    </div>
+      <circle
+        r="3.5"
+        cx="0"
+        cy="0"
+        fill="#d6fe51"
+        className="flow-dot drop-shadow-[0_0_7px_#d6fe51]"
+        style={{ offsetPath: 'path("M0 7 L100 7")' }}
+      />
+    </svg>
+  );
+}
+
+/** Trunk out of the vault, splitting to meet each leg where it actually is. */
+function Fork() {
+  return (
+    <svg
+      aria-hidden
+      width={FORK_W}
+      height={LEGS_H}
+      viewBox={`0 0 ${FORK_W} ${LEGS_H}`}
+      className="shrink-0 overflow-visible"
+    >
+      <g
+        fill="none"
+        stroke="rgba(214,254,81,0.55)"
+        strokeWidth="1"
+        strokeDasharray={DASH}
+      >
+        <path d={`M0 ${LEGS_H / 2} H${SPLIT_X}`} />
+        <path d={`M${SPLIT_X} ${ARM_1} V${ARM_2}`} />
+        <path d={`M${SPLIT_X} ${ARM_1} H${FORK_W}`} />
+        <path d={`M${SPLIT_X} ${ARM_2} H${FORK_W}`} />
+      </g>
+      {[ARM_1, ARM_2].map((y, i) => (
+        <circle
+          key={y}
+          r="3.5"
+          cx="0"
+          cy="0"
+          fill="#d6fe51"
+          className="flow-dot drop-shadow-[0_0_7px_#d6fe51]"
+          style={{
+            offsetPath: `path("M0 ${LEGS_H / 2} H${SPLIT_X} V${y} H${FORK_W}")`,
+            animationDelay: `${i * 900}ms`,
+          }}
+        />
+      ))}
+    </svg>
   );
 }
 
@@ -190,34 +276,36 @@ export function MechanicsSection() {
           </div>
 
           <div className="relative px-5 sm:px-9 py-9 sm:py-12">
-            {/* Stacks under md: a horizontal flow has nowhere to go on a phone. */}
+            {/* Stacks under md: a horizontal flow has nowhere to go on a phone.
+                Above md the widths are fixed, so the wiring can be drawn to
+                coordinates instead of hoping flexbox lands where the SVG
+                expects. The source and the vault sit close together — the two
+                of them are one movement, and the interesting split is the fork
+                on the right, which is where the room should go. */}
             <div
               className={
                 "flex flex-col md:flex-row md:items-center gap-5 md:gap-0 " +
                 (seen ? "figure-in" : "opacity-0")
               }
             >
-              <Node node={SOURCE_NODE} />
-              <div className="hidden md:block flex-1">
-                <Connector />
+              <div className="w-full md:w-[212px] md:flex-none">
+                <Node node={SOURCE_NODE} />
               </div>
-              <Node node={VAULT_NODE} hub />
-              {/* Each leg carries its own connector so the line meets the box
-                  it points at. Spacing the two connectors inside one stretched
-                  column instead put them at the column's extremes -- the top
-                  one floated clear above the vault it was supposed to leave. */}
-              {/* min-w on the column, not just on the card: flex-1 alone gave
-                  this column less width than the card inside it needed, and the
-                  connector collapsed to a stub to make room. */}
-              <div className="flex flex-col gap-5 md:flex-1 md:min-w-[330px]">
-                {LEG_NODES.map((leg, i) => (
-                  <div key={leg.name} className="flex items-center">
-                    <div className="hidden md:block flex-1 min-w-[56px]">
-                      <Connector delay={400 + i * 700} />
-                    </div>
-                    <div className="w-full md:w-[240px] md:flex-none">
-                      <Node node={leg} />
-                    </div>
+              <div className="hidden md:block w-[86px] shrink-0 px-3">
+                <Feed />
+              </div>
+              <div className="w-full md:w-[228px] md:flex-none">
+                <Node node={VAULT_NODE} hub />
+              </div>
+              <div className="hidden md:block">
+                <Fork />
+              </div>
+              <div
+                className="flex flex-col gap-5 md:flex-1 md:min-w-[236px]"
+              >
+                {LEG_NODES.map((leg) => (
+                  <div key={leg.name} className="md:h-[168px]">
+                    <Node node={leg} className="h-full" />
                   </div>
                 ))}
               </div>

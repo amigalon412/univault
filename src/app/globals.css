@@ -403,15 +403,20 @@
   }
 }
 
-/* A dot running along a connector in the mechanics diagram. Infinite, so
-   AnimationGovernor pauses it off-screen and in background tabs -- the same
-   treatment every other endless animation on this page gets. */
+/* A dot running along a connector in the mechanics diagram.
+
+   Driven by offset-distance along an offset-path set per element, so the two
+   forked branches follow their own elbow rather than a straight line. Infinite,
+   and a real CSS animation -- which matters: AnimationGovernor finds endless
+   animations via document.getAnimations() and pauses them off-screen, and that
+   call does not see SMIL. */
 .flow-dot {
-  animation: flowDot 2.6s linear infinite;
+  animation: flowDot 2.8s linear infinite;
+  offset-rotate: 0deg;
 }
 @keyframes flowDot {
-  from { left: -4px; }
-  to { left: 100%; }
+  from { offset-distance: 0%; }
+  to { offset-distance: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
