@@ -36,9 +36,6 @@ export function NavBar() {
         <Link href="/#mechanics" className="hover:text-wire-cyan hover:glow-cyan transition-all">
           HOW IT WORKS
         </Link>
-        <Link href="/#token" className="hover:text-wire-cyan hover:glow-cyan transition-all">
-          $BLUR
-        </Link>
         <Link href="/#feed" className="hover:text-wire-cyan hover:glow-cyan transition-all">
           LIVE
         </Link>

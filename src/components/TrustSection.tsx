@@ -97,7 +97,11 @@ export function TrustSection() {
 
           <div className="flex items-center gap-4 border-b border-wire-cyan/20 px-5 sm:px-7 py-3.5 font-mono text-[11px] tracking-[0.26em] text-wire-muted">
             <span className="text-wire-cyan glow-cyan">▸ PERMISSION MAP</span>
-            <span className="ml-auto text-wire-muted/70 whitespace-nowrap">
+            {/* Not mono, and not at this strip's tracking. Share Tech Mono at
+                11px with 0.26em between the letters is legible as a label of
+                four words in caps and not as two contract names in mixed case;
+                the digits face carries them at a size that can be read. */}
+            <span className="ml-auto font-digits text-sm tracking-normal text-wire-muted whitespace-nowrap">
               BlurVault · KeeperGuard
             </span>
           </div>

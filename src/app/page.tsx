@@ -5,7 +5,6 @@ import { VaultPreview } from "@/components/VaultPreview";
 import { AboutSection } from "@/components/AboutSection";
 import { MechanicsSection } from "@/components/MechanicsSection";
 import { TrustSection } from "@/components/TrustSection";
-import { TokenSection } from "@/components/TokenSection";
 import { LiveFeed } from "@/components/LiveFeed";
 import { Footer } from "@/components/Footer";
 import { MatrixScroll } from "@/components/MatrixScroll";
@@ -27,7 +26,6 @@ export default function Home() {
           absorbs the old security cards. */}
       <MechanicsSection />
       <TrustSection />
-      <TokenSection />
       <LiveFeed />
       <Footer />
     </main>
