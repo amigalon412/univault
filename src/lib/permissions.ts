@@ -1,10 +1,17 @@
 /**
- * Who can do what to a BLUR vault.
+ * Who can move a BLUR vault's assets.
  *
  * Read off contracts/src/BlurVault.sol and contracts/src/KeeperGuard.sol, not
  * off the site's own copy -- the existing prose hedges ("designed so a
  * compromised keeper can't touch your principal") and a hedge must not become
  * an unhedged dot in a table.
+ *
+ * Scoped to custody on purpose. An owner does have tuning powers -- the fee,
+ * the target split and the automation switch are all onlyOwner and all exist
+ * -- and an unscoped table that omitted them would be false by omission, since
+ * the caption below says an empty cell means no such function. Narrowing the
+ * question to "what can happen to the money" is what makes their absence
+ * principled rather than convenient: none of the three moves an asset.
  *
  * Each row carries the function it is about, so any row can be re-checked
  * without re-reading both contracts. A row that cannot name a function or a
@@ -31,7 +38,7 @@ export const ACTORS: { key: Actor; label: string }[] = [
 export const PERMISSIONS: PermissionRow[] = [
   {
     action: "DEPOSIT",
-    can: ["you", "owner", "anyone"],
+    can: ["you", "keeper", "owner", "anyone"],
     source: "BlurVault.deposit / mint — public, no gate",
   },
   {
@@ -68,22 +75,6 @@ export const PERMISSIONS: PermissionRow[] = [
     can: ["keeper", "owner"],
     source: "BlurVault._requireAutomation — msg.sender must be owner() or guard",
   },
-  {
-    action: "HALT AUTOMATION",
-    can: ["owner"],
-    source: "KeeperGuard.pause — owner or an allowlisted sentinel",
-  },
-  {
-    action: "CHANGE THE TARGET SPLIT",
-    can: ["owner"],
-    source: "BlurVault.setTargetStableBps — onlyOwner, capped at BPS",
-  },
-  {
-    action: "CHANGE THE FEE",
-    can: ["owner"],
-    source:
-      "BlurVault.setPerformanceFeeBps — onlyOwner, reverts FeeTooHigh above 2_000 bps, and settles the old rate first",
-  },
 ];
 
 /**
@@ -93,7 +84,7 @@ export const PERMISSIONS: PermissionRow[] = [
  * something.
  */
 export const PERMISSION_CAPTION = {
-  lead: "An owner can retune this vault. They cannot reach into it.",
+  lead: "Nobody can take your position off you.",
   body:
-    "Every dot is a function with a modifier on it. The empty cells are not guarded functions — they are functions that were never written, which is why the fee, the split and the automation switch are listed here alongside them.",
+    "Every dot is a function with a modifier on it. Every dash is a function that does not exist — not one that is guarded, one that was never written. There is no pause on this vault, no rescue path, and no address an admin can send the assets to.",
 };

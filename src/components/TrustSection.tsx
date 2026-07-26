@@ -76,41 +76,17 @@ export function TrustSection() {
     >
       <div className="max-w-5xl mx-auto" ref={root}>
         <div className="font-mono text-xs text-wire-muted tracking-[0.4em] mb-2">
-          {"// WHO CAN DO WHAT"}
+          {"// WHO CAN MOVE YOUR MONEY"}
         </div>
         <h2 className="font-mono text-2xl md:text-3xl text-wire-cyan glow-cyan mb-3 leading-snug">
           Read the permissions, not the promises.
         </h2>
         <p className="font-mono text-sm text-wire-muted leading-relaxed max-w-2xl mb-9">
-          Taken from the deployed source, function by function. Where a cell is
-          empty it is because no such function exists — not because one is
-          guarded.
+          Every way a vault&apos;s assets can move, and who is allowed to move
+          them — taken from the deployed source, function by function. Where a
+          cell is empty it is because no such function exists, not because one
+          is guarded.
         </p>
-
-        {/* The conclusions, compact. */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-7">
-          {CLAIMS.map((c) => (
-            <div
-              key={c.title}
-              className="flex items-start gap-4 border border-wire-cyan/15 bg-black/30 px-5 py-5"
-            >
-              <PixelLogo
-                logo={c.glyph}
-                grid={GLYPH_GRID}
-                size={40}
-                className="text-wire-cyan shrink-0 mt-0.5 drop-shadow-[0_0_10px_rgba(214,254,81,0.3)]"
-              />
-              <div>
-                <div className="font-mono text-xs text-wire-cyan tracking-[0.14em]">
-                  {c.title}
-                </div>
-                <div className="font-mono text-[12px] text-wire-muted leading-relaxed mt-2">
-                  {c.body}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
 
         {/* The evidence. */}
         <div className="relative border border-wire-cyan/25 bg-black/25">
@@ -127,14 +103,14 @@ export function TrustSection() {
           </div>
 
           <div className="p-4 sm:p-8 overflow-x-auto">
-            <table className="w-full border-collapse min-w-[560px]">
+            <table className="w-full border-collapse min-w-[620px]">
               <thead>
                 <tr>
                   <th className="text-left" />
                   {ACTORS.map((a) => (
                     <th
                       key={a.key}
-                      className="font-mono text-[11px] font-normal text-wire-muted/70 tracking-[0.14em] text-center pb-3 px-2 border-b border-wire-cyan/25"
+                      className="font-mono text-[13px] font-normal text-wire-muted/80 tracking-[0.16em] text-center pb-4 px-2 border-b border-wire-cyan/25"
                     >
                       {a.label}
                     </th>
@@ -148,7 +124,7 @@ export function TrustSection() {
                     className={seen ? "figure-in" : "opacity-0"}
                     style={{ animationDelay: `${i * 55}ms` }}
                   >
-                    <td className="font-mono text-[11px] text-wire-cyan tracking-[0.1em] py-3 pr-4 border-b border-wire-cyan/10">
+                    <td className="font-mono text-[15px] text-wire-cyan tracking-[0.1em] py-4 pr-5 border-b border-wire-cyan/10">
                       {row.action}
                     </td>
                     {ACTORS.map((a) => {
@@ -156,13 +132,13 @@ export function TrustSection() {
                       return (
                         <td
                           key={a.key}
-                          className="text-center py-3 px-2 border-b border-wire-cyan/10"
+                          className="text-center py-4 px-2 border-b border-wire-cyan/10"
                         >
                           <span
                             className={
                               yes
-                                ? "text-wire-cyan text-base [text-shadow:0_0_9px_rgba(214,254,81,0.6)]"
-                                : "text-wire-cyan/15 text-base"
+                                ? "text-wire-cyan text-xl [text-shadow:0_0_10px_rgba(214,254,81,0.65)]"
+                                : "text-wire-cyan/15 text-xl"
                             }
                             title={yes ? "can" : "no such function"}
                           >
@@ -177,7 +153,7 @@ export function TrustSection() {
             </table>
 
             <div className="mt-6 pt-5 border-t border-wire-cyan/15">
-              <div className="font-mono text-base text-wire-cyan">
+              <div className="font-mono text-lg text-wire-cyan glow-cyan">
                 {PERMISSION_CAPTION.lead}
               </div>
               <div className="font-mono text-[13px] text-wire-muted leading-relaxed mt-2.5 max-w-3xl">
@@ -197,6 +173,38 @@ export function TrustSection() {
             />
             <ContractLink address={KEEPER_GUARD} label="KEEPERGUARD" variant="bare" />
           </div>
+        </div>
+
+        {/* The conclusions, after the evidence rather than before it: the table
+            is what earns them, so it reads first and these read as what it
+            adds up to.
+
+            No boxes. Three bordered cards under a bordered panel gave the
+            section four frames in a row and made the summary compete with the
+            thing it summarises; unboxed, it reads as the closing remark it
+            is. */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-12">
+          {CLAIMS.map((c) => (
+            <div
+              key={c.title}
+              className="flex flex-col items-start gap-5"
+            >
+              <PixelLogo
+                logo={c.glyph}
+                grid={GLYPH_GRID}
+                size={80}
+                className="text-wire-cyan shrink-0 drop-shadow-[0_0_16px_rgba(214,254,81,0.35)]"
+              />
+              <div>
+                <div className="font-mono text-base text-wire-cyan glow-cyan tracking-[0.14em]">
+                  {c.title}
+                </div>
+                <div className="font-mono text-[14px] text-wire-muted leading-relaxed mt-3">
+                  {c.body}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
