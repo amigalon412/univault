@@ -162,7 +162,12 @@ function Fork() {
         <path d={`M${SPLIT_X} ${ARM_1} H${FORK_W}`} />
         <path d={`M${SPLIT_X} ${ARM_2} H${FORK_W}`} />
       </g>
-      {[ARM_1, ARM_2].map((y, i) => (
+      {/* No stagger. The fork is symmetric -- both paths are the trunk plus an
+          equal riser plus an equal arm -- so with the same duration the two
+          dots stay in lockstep: they leave the vault as one, sit on top of
+          each other along the trunk, and separate exactly where the split is.
+          Offsetting them made the deposit look like it left twice. */}
+      {[ARM_1, ARM_2].map((y) => (
         <circle
           key={y}
           r="3.5"
@@ -170,10 +175,7 @@ function Fork() {
           cy="0"
           fill="#d6fe51"
           className="flow-dot drop-shadow-[0_0_7px_#d6fe51]"
-          style={{
-            offsetPath: `path("M0 ${LEGS_H / 2} H${SPLIT_X} V${y} H${FORK_W}")`,
-            animationDelay: `${i * 900}ms`,
-          }}
+          style={{ offsetPath: `path("M0 ${LEGS_H / 2} H${SPLIT_X} V${y} H${FORK_W}")` }}
         />
       ))}
     </svg>
