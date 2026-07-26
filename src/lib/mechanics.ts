@@ -88,8 +88,8 @@ export const LEG_NODES: FlowNode[] = [
      * balances, and the constituents are configuration held in storage, so
      * until someone deposits it shows an empty contract -- decorated, in
      * practice, with airdropped spam tokens impersonating USDG. Somebody
-     * checking whether this is really NVIDIA needs the token, and the tokens
-     * are third-party and verified, which ours are not yet.
+     * checking whether this is really NVIDIA needs the token contract itself,
+     * which is Robinhood's, not ours.
      */
     holdings: BASKET_STOCKS,
   },

@@ -627,7 +627,7 @@ export const DOC_GROUPS: DocGroup[] = [
             blocks: [
               {
                 type: "p",
-                text: "Supply is fixed — there is no inflation schedule and no emissions programme, which is the point of funding incentives out of revenue instead of out of a printer. Current supply and distribution are published on-chain; see Contracts & chain for the address to verify against.",
+                text: "Supply is fixed — there is no inflation schedule and no emissions programme, which is the point of funding incentives out of revenue instead of out of a printer. None of it is on-chain yet: $BLUR has not launched, so there is no address to verify supply against. When it does, the address is published in the site header and nowhere else.",
               },
             ],
           },
@@ -637,7 +637,7 @@ export const DOC_GROUPS: DocGroup[] = [
         slug: "launch",
         title: "Launch",
         intro: [
-          "$BLUR is already trading on Robinhood Chain. The vaults themselves ship in stages.",
+          "The vaults are live on Robinhood Chain. $BLUR is not — it has no contract address yet, and anything presenting one today is a fake.",
         ],
         sections: [
           {
@@ -648,16 +648,20 @@ export const DOC_GROUPS: DocGroup[] = [
                 type: "table",
                 head: ["Stage", "Status"],
                 rows: [
-                  ["$BLUR live on Robinhood Chain", "Done"],
-                  ["Vault terminal", "Live, wallet layer in progress"],
-                  ["Vault contracts on testnet", "In progress"],
+                  ["Vault contracts on mainnet", "Done — all twelve source-verified"],
+                  ["Vault terminal", "Live"],
+                  ["Mainnet deposits", "Open"],
                   ["Audit", "Not started"],
-                  ["Mainnet deposits", "Gated on the audit"],
+                  ["$BLUR on Robinhood Chain", "Not launched — no address exists"],
                 ],
               },
               {
                 type: "note",
-                text: "Mainnet deposits will not open before an audit is complete and published. If you find a page claiming otherwise, it is not ours.",
+                text: "Deposits are open and the contracts have not been audited. Verified source is not an audit: it proves the code on the explorer is the code that is running, and proves nothing about whether that code is safe. Read Audits before you deposit.",
+              },
+              {
+                type: "note",
+                text: "$BLUR has not launched. Until it does, this site publishes no contract address for it, and any address circulating as the official $BLUR — from any account, including ones using our name — is a fake.",
               },
             ],
           },
@@ -760,11 +764,19 @@ export const DOC_GROUPS: DocGroup[] = [
             blocks: [
               {
                 type: "p",
-                text: "The vault contracts have not been audited. No report exists, and none is scheduled for publication yet. Mainnet deposits stay closed until that changes.",
+                text: "The vault contracts have not been audited. No report exists, and none is scheduled for publication yet. Deposits are open anyway, so this page is the risk you are taking rather than a future concern.",
               },
               {
                 type: "note",
                 text: "Treat any claim that BLUR is audited as false until a report is linked from this page. This page is the only place we will publish one.",
+              },
+              {
+                type: "p",
+                text: "What does exist is verified source. All twelve deployed contracts — three vaults, three oracles, three keeper guards, two basket adapters and the exit router — are source-verified on Blockscout, so the explorer shows the Solidity that produced the running bytecode instead of the bytecode alone. That means you can read exactly what every function does before sending anything.",
+              },
+              {
+                type: "note",
+                text: "Verified source is not an audit and does not substitute for one. It proves the published code is the code that runs. It says nothing about whether that code has a bug in it, and an unaudited contract can be perfectly verified and still lose your money.",
               },
             ],
           },
@@ -907,20 +919,36 @@ export const DOC_GROUPS: DocGroup[] = [
             title: "Deployed",
             blocks: [
               {
+                type: "p",
+                text: "Every address below is live on Robinhood Chain and source-verified on Blockscout — paste one into the explorer and you get the Solidity, not bytecode. These are the only BLUR contracts that exist.",
+              },
+              {
                 type: "table",
                 head: ["Name", "Address"],
                 rows: [
-                  ["$BLUR", "not launched"],
-                  ["BlurVault · STEADY", "not deployed"],
-                  ["BlurVault · BALANCED", "not deployed"],
-                  ["BlurVault · GROWTH", "not deployed"],
-                  ["KeeperGuard", "not deployed"],
+                  ["BlurVault · STEADY", "0x583bce228448814bc42235d4761290f3ac710a09"],
+                  ["BlurVault · BALANCED", "0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7"],
+                  ["BlurVault · GROWTH", "0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c"],
+                  ["KeeperGuard · STEADY", "0xedc4d302ab6c87f77ed084462dc82530e460da11"],
+                  ["KeeperGuard · BALANCED", "0x35304Ceb350C6ab8d93f99C002d268DbA4Ff0613"],
+                  ["KeeperGuard · GROWTH", "0xFa71F59495e8c5E4d935b0dC76c327f9eCEf123A"],
+                  ["PriceOracle · STEADY", "0x42fd413f655b9b66cef3fd5a3de469e5800a8fed"],
+                  ["PriceOracle · BALANCED", "0x932aa45036045540dbfab7252bd3398f35f32e76"],
+                  ["PriceOracle · GROWTH", "0x73723a588c1f6696b13fd1d0d4b86794f641b4da"],
+                  ["BasketAdapter · BALANCED", "0x8449202B6525F9632eB25809B91B50c1820fAAE4"],
+                  ["BasketAdapter · GROWTH", "0x15AD8f555e1f9Ac05115f88C25cFF76B8121720A"],
+                  ["ExitRouter", "0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0"],
+                  ["$BLUR", "not launched — no address exists"],
                   ["BuybackModule", "not deployed"],
                 ],
               },
               {
                 type: "note",
-                text: "Nothing is deployed today, including the token. Any address circulating as $BLUR or as a BLUR vault is not one — check this page first, and never approve a contract you found in a direct message.",
+                text: "STEADY holds no equities, so it has no basket adapter by design. Its oracle is deployed for symmetry and prices nothing.",
+              },
+              {
+                type: "note",
+                text: "$BLUR has no contract yet. Any address circulating as the official $BLUR is a fake, whoever is posting it. When it launches, the address appears in this site's header — check there, and never approve a contract you found in a direct message.",
               },
             ],
           },
@@ -934,6 +962,8 @@ export const DOC_GROUPS: DocGroup[] = [
                 rows: [
                   ["Chain", "Robinhood Chain"],
                   ["Chain ID", "4663"],
+                  ["RPC", "https://rpc.mainnet.chain.robinhood.com"],
+                  ["Explorer", "https://robinhoodchain.blockscout.com"],
                   ["Vault asset", "USDG"],
                 ],
               },
@@ -955,9 +985,10 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "list",
                 items: [
-                  { text: "Vault terminal and strategy picker — live." },
-                  { text: "Wallet layer, so the connect buttons do something — in progress." },
-                  { text: "Vault contracts against mocked lending, oracle and venue — in progress." },
+                  { text: "Vault terminal, strategy picker and wallet layer — live." },
+                  { text: "All three vaults deployed on Robinhood Chain mainnet, with every contract source-verified." },
+                  { text: "Deposits open, against real lending and real equity venues rather than mocks." },
+                  { text: "Sell-everything exit through the router, in one transaction." },
                 ],
               },
             ],
@@ -969,9 +1000,9 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "list",
                 items: [
-                  { text: "Testnet deployment with a public keeper log." },
-                  { text: "External audit, published in full." },
-                  { text: "Mainnet with a deposit cap." },
+                  { text: "External audit, published in full including findings we did not fix." },
+                  { text: "$BLUR launch — the address will be published in the site header." },
+                  { text: "Public keeper log, so rebalances can be read without an explorer." },
                   { text: "Auto-save scheduling." },
                 ],
               },
