@@ -55,21 +55,26 @@ export const VAULT_NODE: FlowNode = {
   address: VAULT_ADDRESSES.balanced,
 };
 
-/** The two legs it splits into, with the target split for BALANCED. */
-export const LEG_NODES: (FlowNode & { pct: string })[] = [
+/**
+ * The two legs it splits into.
+ *
+ * Deliberately without a ratio. The diagram used to label the connectors 60%
+ * and 40%, which is BALANCED's target and nobody else's -- STEADY sends
+ * nothing to the basket and GROWTH sends most of it. A number that is right
+ * for one vault of three does not belong on a diagram of the machine.
+ */
+export const LEG_NODES: FlowNode[] = [
   {
     glyph: YIELD,
     name: "LENDING LEG",
     role: "STEAKHOUSE USDG",
     address: STEAK_USDG,
-    pct: "60%",
   },
   {
     glyph: BASKET,
     name: "STOCK BASKET",
     role: "NVDA · AAPL · TSLA · AMZN",
     address: BASKET_ADAPTER,
-    pct: "40%",
   },
 ];
 
@@ -86,6 +91,14 @@ export const RAIL_NODES: FlowNode[] = [
  * BlurVault._allocateOnDeposit runs inside deposit(), and step 4 says the
  * keeper is capped because KeeperGuard holds per-call size and slippage caps.
  */
+/**
+ * Which vault the linked addresses belong to. The machine is identical across
+ * the three strategies -- only the target ratio differs -- but the adapter,
+ * oracle and guard are deployed per vault, so the diagram has to name whose
+ * addresses it is showing.
+ */
+export const DIAGRAM_VAULT = "BALANCED";
+
 export const TRACE_STEPS: TraceStep[] = [
   {
     num: "01",
@@ -104,7 +117,7 @@ export const TRACE_STEPS: TraceStep[] = [
     num: "03",
     title: "IT SPLITS ITSELF IN THE SAME TRANSACTION",
     body:
-      "60% is supplied to the lending venue, 40% buys the four stock tokens at 25% each. Nobody has to come along later and do it.",
+      "Part is supplied to the lending venue and the rest buys the four stock tokens, evenly weighted. Your strategy sets the ratio; nobody has to come along later and apply it.",
     links: [
       { label: "LENDING", address: STEAK_USDG },
       { label: "BASKET", address: BASKET_ADAPTER },

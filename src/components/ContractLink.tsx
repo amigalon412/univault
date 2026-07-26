@@ -28,8 +28,8 @@ export function ContractLink({
   const short = `${address.slice(0, 6)}…${address.slice(-4)}`;
   const base =
     variant === "chip"
-      ? "inline-block border border-wire-cyan/25 px-2 py-0.5 text-[10px] text-wire-muted hover:text-wire-cyan hover:border-wire-cyan transition-colors"
-      : "text-[10px] text-wire-muted hover:text-wire-cyan border-b border-dotted border-wire-cyan/30 transition-colors";
+      ? "inline-block border border-wire-cyan/25 px-3 py-1 text-xs text-wire-muted hover:text-wire-cyan hover:border-wire-cyan transition-colors"
+      : "text-xs text-wire-muted hover:text-wire-cyan border-b border-dotted border-wire-cyan/30 transition-colors";
 
   return (
     <a
