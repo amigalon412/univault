@@ -1,5 +1,6 @@
 "use client";
 
+import type { Address } from "viem";
 import { explorerAddressUrl } from "@/lib/chain";
 import { useBlurToken } from "@/hooks/useBlurToken";
 
@@ -15,8 +16,8 @@ import { useBlurToken } from "@/hooks/useBlurToken";
  * The address comes from useBlurToken, which reads it at runtime -- publishing
  * it from /admin takes effect on the next page load with no rebuild.
  */
-export function CaBar() {
-  const { token, copied, copy } = useBlurToken();
+export function CaBar({ initialToken }: { initialToken?: Address | null }) {
+  const { token, copied, copy } = useBlurToken(initialToken);
 
   if (!token) {
     return (

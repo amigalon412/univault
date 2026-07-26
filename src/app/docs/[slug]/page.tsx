@@ -5,7 +5,8 @@ import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { DocBody } from "@/components/docs/DocBody";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
-import { DOC_PAGES, getDocNeighbours, getDocPage } from "@/lib/docs";
+import { DOC_PAGES, getDocNeighbours, getDocPage, resolveDocPage } from "@/lib/docs";
+import { readSiteConfig } from "@/lib/site-config";
 import { AsciiRule } from "@/components/AsciiRule";
 import { AnimationGovernor } from "@/components/AnimationGovernor";
 
@@ -19,8 +20,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const page = getDocPage(slug);
-  if (!page) return { title: "BLUR — Docs" };
+  const stored = getDocPage(slug);
+  if (!stored) return { title: "BLUR — Docs" };
+  // Resolved here too, or the share card for /docs/blur-token keeps announcing
+  // that the token has not launched after it has.
+  const { blurToken } = await readSiteConfig();
+  const page = resolveDocPage(stored, blurToken);
   return {
     title: `${page.title} — BLUR docs`,
     description: page.intro[0],
@@ -33,8 +38,13 @@ export default async function DocsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const page = getDocPage(slug);
-  if (!page) notFound();
+  const stored = getDocPage(slug);
+  if (!stored) notFound();
+
+  // Read on the server, per request, so publishing the address from /admin
+  // rewrites the docs on the next load -- no rebuild and no edit to docs.ts.
+  const { blurToken } = await readSiteConfig();
+  const page = resolveDocPage(stored, blurToken);
 
   const { prev, next } = getDocNeighbours(slug);
 

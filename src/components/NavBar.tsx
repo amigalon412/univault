@@ -2,8 +2,13 @@ import Link from "next/link";
 import { CaBar } from "@/components/CaBar";
 import { ConnectButton } from "@/components/ConnectButton";
 import { XIcon } from "@/components/icons";
+import { readSiteConfig } from "@/lib/site-config";
 
-export function NavBar() {
+export async function NavBar() {
+  // Server-side read so the CA strip is correct in the HTML itself rather than
+  // corrected a moment later by the client fetch.
+  const { blurToken } = await readSiteConfig();
+
   return (
     // The CA strip and the nav stick to the top as one unit, so the address
     // stays reachable on every page without stacking two sticky offsets.
@@ -13,7 +18,7 @@ export function NavBar() {
     // page something is always moving (the marquee sits directly beneath it).
     // Over 92%-opaque black it was buying almost nothing visually.
     <header className="sticky top-0 z-50 bg-black/92">
-      <CaBar />
+      <CaBar initialToken={blurToken} />
       <nav className="grid grid-cols-2 lg:grid-cols-3 items-center px-6 py-3 border-b border-wire-border">
       <div className="flex items-center gap-3">
         {/* The wordmark is the way home from /app and /docs, which is where

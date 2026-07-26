@@ -1,9 +1,25 @@
-export type DocBlock =
+/**
+ * Whether a block belongs to the world before $BLUR exists or after it does.
+ *
+ * Blocks without a phase are shown in both. The phase is decided per request
+ * from the address published in /admin, so launch day is one paste in the
+ * admin panel and nothing else: no edit here, no rebuild, no redeploy. The
+ * alternative -- writing "the token is live" ahead of time so it is one less
+ * thing to do later -- would put a claim on the docs that the site's own
+ * header calls a scam for the entire window before launch.
+ */
+export type DocPhase = "pre-launch" | "post-launch";
+
+/** Replaced with the published $BLUR address wherever it appears in copy. */
+export const CA_TOKEN = "%CA%";
+
+export type DocBlock = (
   | { type: "p"; text: string }
   | { type: "list"; items: { lead?: string; text: string }[] }
   | { type: "table"; head: string[]; rows: string[][] }
   | { type: "code"; lines: string[] }
-  | { type: "note"; text: string };
+  | { type: "note"; text: string }
+) & { only?: DocPhase };
 
 export interface DocSection {
   id: string;
@@ -16,6 +32,8 @@ export interface DocPage {
   title: string;
   /** Lead paragraphs shown above the first section. */
   intro: string[];
+  /** Replaces `intro` once the token is live. Omit when the lead is unaffected. */
+  introWhenLaunched?: string[];
   sections: DocSection[];
 }
 
@@ -472,7 +490,13 @@ export const DOC_GROUPS: DocGroup[] = [
             blocks: [
               {
                 type: "p",
+                only: "pre-launch",
                 text: "Collected fees are the intended funding for the buyback: revenue buys $BLUR on the open market and what is bought is burned, so usage feeds the token instead of the other way round. None of that is running yet — neither $BLUR nor the buyback module is deployed, and until they are, fees simply accrue to the fee recipient.",
+              },
+              {
+                type: "p",
+                only: "post-launch",
+                text: "Collected fees fund the buyback: revenue is used to purchase $BLUR on the open market, and what is bought is burned. Usage feeds the token instead of the other way round. The buyback module is not deployed yet, so until it is, fees accrue to the fee recipient rather than being spent.",
               },
             ],
           },
@@ -570,6 +594,9 @@ export const DOC_GROUPS: DocGroup[] = [
         intro: [
           "$BLUR is the protocol token. It has not launched — there is no contract and no address — and it is not required to use the vaults either way: you can deposit, earn and redeem without ever touching it.",
         ],
+        introWhenLaunched: [
+          "$BLUR is the protocol token, live on Robinhood Chain at %CA%. It is not required to use the vaults — you can deposit, earn and redeem without ever touching it.",
+        ],
         sections: [
           {
             id: "utility",
@@ -585,7 +612,13 @@ export const DOC_GROUPS: DocGroup[] = [
               },
               {
                 type: "note",
+                only: "pre-launch",
                 text: "Burned will mean burned: the module calls burn on the token, so totalSupply falls by exactly the amount bought rather than a transfer to a dead address dressed up as a burn. It also keeps its own totalRetired counter, and the two should move together — which you will be able to check yourself once both contracts exist. Neither is deployed today.",
+              },
+              {
+                type: "note",
+                only: "post-launch",
+                text: "Burned means burned: the module calls burn on the token, so totalSupply falls by exactly the amount bought and you can check it against %CA% yourself. It is not a transfer to a dead address dressed up as a burn. The module also keeps its own totalRetired counter, and the two should move together.",
               },
             ],
           },
@@ -626,7 +659,13 @@ export const DOC_GROUPS: DocGroup[] = [
             blocks: [
               {
                 type: "p",
+                only: "pre-launch",
                 text: "Supply is fixed — there is no inflation schedule and no emissions programme, which is the point of funding incentives out of revenue instead of out of a printer. None of it is on-chain yet: $BLUR has not launched, so there is no address to verify supply against. When it does, the address is published in the site header and nowhere else.",
+              },
+              {
+                type: "p",
+                only: "post-launch",
+                text: "Supply is fixed — there is no inflation schedule and no emissions programme, which is the point of funding incentives out of revenue instead of out of a printer. Current supply and distribution are published on-chain: read them off %CA% rather than taking this page's word for it.",
               },
             ],
           },
@@ -638,6 +677,9 @@ export const DOC_GROUPS: DocGroup[] = [
         intro: [
           "The vaults are live on Robinhood Chain. $BLUR is not — it has no contract address yet, and anything presenting one today is a fake.",
         ],
+        introWhenLaunched: [
+          "The vaults and $BLUR are both live on Robinhood Chain. The token is at %CA% — that address, published here and in the site header, is the only one that is ours.",
+        ],
         sections: [
           {
             id: "order",
@@ -646,6 +688,7 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "table",
                 head: ["Stage", "Status"],
+                only: "pre-launch",
                 rows: [
                   ["Vault contracts on mainnet", "Done — all twelve source-verified"],
                   ["Vault terminal", "Live"],
@@ -655,12 +698,30 @@ export const DOC_GROUPS: DocGroup[] = [
                 ],
               },
               {
+                type: "table",
+                only: "post-launch",
+                head: ["Stage", "Status"],
+                rows: [
+                  ["Vault contracts on mainnet", "Done — all twelve source-verified"],
+                  ["Vault terminal", "Live"],
+                  ["Mainnet deposits", "Open"],
+                  ["$BLUR on Robinhood Chain", "Live"],
+                  ["Audit", "Not started"],
+                ],
+              },
+              {
                 type: "note",
                 text: "Deposits are open and the contracts have not been audited. Verified source is not an audit: it proves the code on the explorer is the code that is running, and proves nothing about whether that code is safe. Read Audits before you deposit.",
               },
               {
                 type: "note",
+                only: "pre-launch",
                 text: "$BLUR has not launched. Until it does, this site publishes no contract address for it, and any address circulating as the official $BLUR — from any account, including ones using our name — is a fake.",
+              },
+              {
+                type: "note",
+                only: "post-launch",
+                text: "$BLUR is at %CA%. Check any address you are given against this page and the site header before you buy — an address posted in a reply, a DM or a lookalike account is the oldest trick there is, and nobody here will ever send you one privately.",
               },
             ],
           },
@@ -940,7 +1001,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   ["BasketAdapter · BALANCED", "0x8449202B6525F9632eB25809B91B50c1820fAAE4"],
                   ["BasketAdapter · GROWTH", "0x15AD8f555e1f9Ac05115f88C25cFF76B8121720A"],
                   ["ExitRouter", "0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0"],
-                  ["$BLUR", "not launched — no address exists"],
+                  ["$BLUR", "%CA%"],
                   ["BuybackModule", "not deployed"],
                 ],
               },
@@ -1117,6 +1178,54 @@ export const DOC_PAGES: DocPage[] = DOC_GROUPS.flatMap((g) => g.pages);
 
 export function getDocPage(slug: string): DocPage | undefined {
   return DOC_PAGES.find((p) => p.slug === slug);
+}
+
+/**
+ * Resolve a page against the published $BLUR address.
+ *
+ * Drops the blocks belonging to the other phase and substitutes the address
+ * into whatever copy references it. Pure and synchronous -- the caller does
+ * the one filesystem read, so this stays usable from anywhere.
+ */
+export function resolveDocPage(page: DocPage, blurToken: string | null): DocPage {
+  const phase: DocPhase = blurToken ? "post-launch" : "pre-launch";
+  // Phase-neutral copy (the address table) still has to say something sane
+  // before launch, so the placeholder falls back rather than leaking "%CA%".
+  const fill = (s: string) =>
+    s.split(CA_TOKEN).join(blurToken ?? "not launched — no address exists");
+
+  const block = (b: DocBlock): DocBlock => {
+    switch (b.type) {
+      case "p":
+      case "note":
+        return { ...b, text: fill(b.text) };
+      case "list":
+        return {
+          ...b,
+          items: b.items.map((i) => ({
+            ...i,
+            lead: i.lead ? fill(i.lead) : i.lead,
+            text: fill(i.text),
+          })),
+        };
+      case "table":
+        return { ...b, rows: b.rows.map((r) => r.map(fill)) };
+      case "code":
+        return { ...b, lines: b.lines.map(fill) };
+    }
+  };
+
+  return {
+    ...page,
+    intro: (page.introWhenLaunched && blurToken
+      ? page.introWhenLaunched
+      : page.intro
+    ).map(fill),
+    sections: page.sections.map((s) => ({
+      ...s,
+      blocks: s.blocks.filter((b) => !b.only || b.only === phase).map(block),
+    })),
+  };
 }
 
 export function getDocNeighbours(slug: string): {
