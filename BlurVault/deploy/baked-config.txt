@@ -25,8 +25,16 @@ Built for Node >= 24. Contracts owner/keeper/fee: 0x56D89b63192677c72fCf4C9CB64d
 
 This snapshot
 =============
-Built 2026-07-26 from commit 4e0010b, BUILD_ID bcGz4_G0ZvuZvPmV8zM0p.
+Built 2026-07-26 from commit c8842e3, BUILD_ID CzaRHZxRig0xgCAJFXeoJ.
 All twelve deployed contracts are source-verified on Blockscout as of this
-build. Smoke-tested from this folder before packing: the site serves, /admin
-refuses to sign in until ADMIN_PASSWORD is set, and publishing, rejecting a
-malformed address, and clearing all behave as DEPLOY.md describes.
+build.
+
+Publishing the CA from /admin now rewrites the docs as well as the header.
+Launch, $BLUR overview, Tokenomics, Fees and Contracts & chain each carry a
+pre-launch and a post-launch version, and the address is substituted into the
+copy -- so launch day really is one paste, with no rebuild and no code edit.
+
+Smoke-tested from this folder before packing, not from the repo build: the
+site serves, /admin refuses to sign in until ADMIN_PASSWORD is set, and with
+one set, publishing an address flips the header and all four docs pages,
+clearing it puts them back, and a malformed address is rejected.
