@@ -1,0 +1,43 @@
+[Unit]
+Description=BLUR keeper (drives all three vaults through their guards)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Change User and the path to wherever the keeper folder was copied.
+User=blurkeeper
+WorkingDirectory=/opt/blur-keeper
+ExecStart=/usr/bin/env bash run-all.sh
+
+# run-all.sh launches one process per vault and forwards their logs. Each polls
+# every POLL_MS; the guard's own cooldown (3600s) is what actually paces the
+# transactions, so a short poll costs RPC reads and nothing else.
+Environment=NODE_ENV=production
+Environment=DRY_RUN=false
+Environment=POLL_MS=60000
+
+# BUYBACK_ADDRESS is deliberately unset: the buyback module is not deployed, and
+# without it the keeper runs only the vault half of its job. Do not invent one.
+
+# The key lives in a root-owned chmod-600 file rather than in this unit, which
+# is world-readable. Without the file the service starts and stays in dry run,
+# which is the safe failure: it reads the chain and sends nothing.
+EnvironmentFile=-/etc/blur-keeper.env
+
+# The keeper needs its key, an outbound connection and nothing else.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/blur-keeper
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
