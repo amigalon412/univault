@@ -12,6 +12,8 @@ interface PixelLogoProps {
    */
   grid?: number;
   className?: string;
+  /** For the caller to stagger a reveal — see .pixel-draw in globals.css. */
+  style?: React.CSSProperties;
 }
 
 /**
@@ -30,6 +32,7 @@ export function PixelLogo({
   size = 96,
   grid = PIXEL_GRID,
   className = "",
+  style,
 }: PixelLogoProps) {
   const levels = pixelLevels(logo.rows);
 
@@ -41,6 +44,7 @@ export function PixelLogo({
       role="img"
       aria-label={`${logo.name} (${logo.key})`}
       className={className}
+      style={style}
       shapeRendering="crispEdges"
     >
       {levels.map((l) => (

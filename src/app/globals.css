@@ -450,3 +450,117 @@
     left: 50%;
   }
 }
+
+/* A segment of the allocation meter switching on.
+
+   Written as an animation rather than a transition so it replays when the
+   strategy changes: the meter's subtree is keyed on the strategy and remounts,
+   and a remounted element has no previous value to transition FROM -- it would
+   simply appear already lit, which is why switching vaults used to snap.
+
+   `backwards` fill is the whole safety argument. The element's own style is the
+   lit one; the animation only holds it dark during its stagger delay and then
+   hands control back. So if the animation never runs at all -- reduced motion,
+   an old engine, a paused compositor -- the meter still reads the correct
+   allocation instead of an empty bar. Same reasoning as .figure-in: the resting
+   state cannot be wrong. */
+.seg-fill {
+  animation: segFill 0.68s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@keyframes segFill {
+  from { opacity: 0; }
+}
+
+/* A pixel mark drawing itself in, over about a second.
+
+   Grows outwards from the centre in rings rather than sweeping in from a
+   corner: the mark builds up evenly around its own middle, so nothing about it
+   reads as having a leading edge or a direction.
+
+   Stepped rather than smooth, and that is the whole point. A continuous clip
+   would slice cells in half and look like a wipe; steps() lands the boundary
+   between cells, so the mark arrives one ring of pixels at a time -- which on a
+   16-cell grid is drawing. Sixteen steps is about one cell-ring per step at
+   that grid size, which is what makes the rings countable rather than a smear.
+
+   The radius has to clear the corners, which sit at 50%*sqrt(2) = 70.7% from
+   the centre. With steps(16, end) the last frame rendered is 15/16 of the
+   range, so the range runs to 80% and the final drawn ring is 75% -- past the
+   corners with room to spare.
+
+   `backwards` fill again: the element's own state is fully visible, and the
+   animation only hides it during its stagger delay. A mark whose animation
+   never runs is a mark that is simply there. */
+.pixel-draw {
+  animation: pixelDraw 1s steps(16, end) backwards;
+}
+@keyframes pixelDraw {
+  from { clip-path: circle(0% at 50% 50%); }
+  to { clip-path: circle(80% at 50% 50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pixel-draw {
+    animation: none;
+  }
+}
+
+/* The stock basket drifting off its target weight and being pulled back.
+
+   The card claims "REBALANCED ON DRIFT" and then shows four bars that never
+   move. This animates the claim: weights wander apart, cross the band, and all
+   four snap back together on the same frame -- one rebalance, not four.
+
+   Per-row direction and size come from --drift set inline, so one keyframe set
+   serves every row and the rows still move independently. Only transform
+   animates, so the whole thing lives on the compositor.
+
+   Infinite on purpose: AnimationGovernor finds endless animations through
+   document.getAnimations() and pauses them off-screen and in background tabs,
+   so this costs nothing while nobody is looking at it. */
+.weight-drift {
+  transform-origin: left center;
+  animation: weightDrift 9s infinite;
+}
+@keyframes weightDrift {
+  /* Slow wander out... */
+  0% { transform: scaleX(1); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
+  46% { transform: scaleX(var(--drift, 1)); animation-timing-function: linear; }
+  /* ...held past the band, so the drift is legible before it is corrected... */
+  63% { transform: scaleX(var(--drift, 1)); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+  /* ...then pulled back to target and left there for the rest of the cycle. */
+  71% { transform: scaleX(1); }
+  100% { transform: scaleX(1); }
+}
+
+/* The status line under the basket, cross-fading on the same 9s timeline: the
+   resting label for most of the cycle, "rebalancing" across the snap. */
+.drift-label {
+  animation: driftLabel 9s infinite;
+}
+@keyframes driftLabel {
+  0%, 58% { opacity: 1; }
+  62%, 70% { opacity: 0; }
+  74%, 100% { opacity: 1; }
+}
+.drift-flash {
+  animation: driftFlash 9s infinite;
+}
+@keyframes driftFlash {
+  0%, 58% { opacity: 0; }
+  62%, 70% { opacity: 1; }
+  74%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seg-fill,
+  .weight-drift,
+  .drift-label {
+    animation: none;
+  }
+  /* The flash has no resting state of its own -- without the animation it must
+     stay out of the way, or it would sit permanently on top of the label. */
+  .drift-flash {
+    animation: none;
+    opacity: 0;
+  }
+}

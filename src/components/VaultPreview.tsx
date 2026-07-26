@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Bracket } from "@/components/Bracket";
 import { PixelLogo } from "@/components/PixelLogo";
+import { ScrambleFigure } from "@/components/ScrambleFigure";
 import { PIXEL_LOGOS } from "@/lib/pixel-logos";
 import { STRATEGIES, type StrategyId } from "@/lib/strategies";
 
@@ -12,6 +13,18 @@ import { STRATEGIES, type StrategyId } from "@/lib/strategies";
    screen so nobody reads it as balance or performance. */
 const EXAMPLE = 10_000;
 const SEGMENTS = 48;
+
+/* Gap between one segment lighting and the next. With 48 segments and the
+   0.68s fade in .seg-fill, the meter takes a shade under two seconds to fill —
+   slow enough to watch the allocation being laid down rather than to catch it
+   already finished. */
+const SEG_STAGGER = 26;
+
+/* How far each holding wanders from its target before the rebalance pulls it
+   back, as a scale factor on its bar. Mixed directions and sizes so the basket
+   drifts the way a real one does — not four bars breathing in unison. Read by
+   the .weight-drift keyframes through --drift. */
+const DRIFT = [1.16, 0.86, 1.09, 0.9];
 
 const usd = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
@@ -165,7 +178,7 @@ export function VaultPreview() {
                     YOU DEPOSIT
                   </div>
                   <div className="figure-blur font-digits text-5xl md:text-7xl text-wire-cyan glow-cyan leading-none">
-                    {usd(EXAMPLE)}
+                    <ScrambleFigure value={usd(EXAMPLE)} active={seen} />
                   </div>
                   <div className="mt-3 flex items-center gap-2 font-mono text-[10px] text-wire-muted tracking-[0.2em]">
                     <span className="border border-wire-cyan/30 px-2 py-0.5 text-wire-cyan/80">
@@ -181,7 +194,7 @@ export function VaultPreview() {
                   TARGET SPLIT
                 </div>
                 <div className="figure-blur font-digits text-4xl md:text-5xl text-wire-cyan leading-none">
-                  {strategy.split}
+                  <ScrambleFigure value={strategy.split} active={seen} />
                 </div>
                 <div className="font-mono text-[10px] text-wire-muted tracking-[0.2em] mt-1.5">
                   YIELD / STOCKS
@@ -203,19 +216,22 @@ export function VaultPreview() {
                 role="img"
                 aria-label={`${strategy.stablePct}% lending yield, ${strategy.stockPct}% tokenized stocks`}
               >
+                {/* The track is always drawn; a lit segment gets an overlay on
+                    top of it. Two elements rather than one recoloured element
+                    so the fill can animate on opacity — the old version
+                    transitioned background-color and box-shadow across all 48,
+                    which is 48 repaints a frame for the length of the stagger. */}
                 {Array.from({ length: SEGMENTS }, (_, i) => {
                   const lit = i < litSegments;
                   return (
-                    <span
-                      key={i}
-                      className={
-                        "flex-1 transition-all duration-300 " +
-                        (lit
-                          ? "bg-wire-cyan shadow-[0_0_12px_rgba(214,254,81,0.6)]"
-                          : "bg-wire-cyan/[0.08]")
-                      }
-                      style={{ transitionDelay: `${i * 13}ms` }}
-                    />
+                    <span key={i} className="relative flex-1 bg-wire-cyan/[0.08]">
+                      {lit && (
+                        <span
+                          className="seg-fill absolute inset-0 bg-wire-cyan shadow-[0_0_12px_rgba(214,254,81,0.6)]"
+                          style={{ animationDelay: `${i * SEG_STAGGER}ms` }}
+                        />
+                      )}
+                    </span>
                   );
                 })}
               </div>
@@ -248,7 +264,7 @@ export function VaultPreview() {
                   </span>
                 </div>
                 <div className="figure-in font-digits text-4xl text-wire-cyan leading-none">
-                  {usd(lending)}
+                  <ScrambleFigure value={usd(lending)} active={seen} />
                 </div>
                 <div className="mt-3 mb-4 h-px bg-gradient-to-r from-wire-cyan/40 to-transparent" />
                 <div className="font-mono text-xs text-wire-muted leading-relaxed">
@@ -271,7 +287,7 @@ export function VaultPreview() {
                   </span>
                 </div>
                 <div className="figure-in font-digits text-4xl text-wire-cyan leading-none">
-                  {usd(basket)}
+                  <ScrambleFigure value={usd(basket)} active={seen} />
                 </div>
                 <div className="mt-3 mb-5 h-px bg-gradient-to-r from-wire-cyan/40 to-transparent" />
 
@@ -291,20 +307,54 @@ export function VaultPreview() {
                         <span className="font-mono text-[11px] text-wire-muted tracking-[0.18em] w-11 shrink-0">
                           {logo.key}
                         </span>
-                        {/* per-holding weight, drawn rather than stated */}
+                        {/* Per-holding weight, drawn rather than stated — and
+                            live: the bar wanders off its target and is pulled
+                            back, which is what the line below claims happens.
+                            The tick marks the target it returns to, so the
+                            movement reads as drift against a goal rather than
+                            as decoration. */}
                         <span className="relative h-1.5 flex-1 bg-wire-cyan/[0.08] min-w-8">
                           <span
-                            className="absolute inset-y-0 left-0 bg-wire-cyan/70"
-                            style={{ width: `${weight * 2.6}%` }}
+                            aria-hidden
+                            className="absolute inset-y-[-2px] w-px bg-wire-cyan/30"
+                            style={{ left: `${weight * 2.6}%` }}
+                          />
+                          <span
+                            className="weight-drift absolute inset-y-0 left-0 bg-wire-cyan/70"
+                            style={
+                              {
+                                width: `${weight * 2.6}%`,
+                                "--drift": DRIFT[i % DRIFT.length],
+                              } as React.CSSProperties
+                            }
                           />
                         </span>
                         <span className="font-digits text-xs text-wire-cyan/90 w-16 text-right shrink-0">
-                          {usd(perStock)}
+                          {/* Each row settles a beat after the one above it, so
+                              the basket resolves top-down instead of all four
+                              landing on the same frame. */}
+                          <ScrambleFigure
+                            value={usd(perStock)}
+                            active={seen}
+                            durationMs={520 + i * 90}
+                          />
                         </span>
                       </div>
                     ))}
-                    <div className="pt-1.5 font-mono text-[10px] text-wire-muted/70 tracking-[0.2em]">
-                      {weight}% EACH · REBALANCED ON DRIFT
+                    {/* Two lines in one slot, cross-fading on the drift's own
+                        timeline. The resting label is the real one and carries
+                        the accessible text; the flash is decoration for the
+                        moment the bars snap back, so it is hidden from readers. */}
+                    <div className="relative pt-1.5 font-mono text-[10px] tracking-[0.2em]">
+                      <span className="drift-label text-wire-muted/70">
+                        {weight}% EACH · REBALANCED ON DRIFT
+                      </span>
+                      <span
+                        aria-hidden
+                        className="drift-flash absolute left-0 top-1.5 text-wire-cyan whitespace-nowrap"
+                      >
+                        ▸ DRIFT OVER BAND · REBALANCING
+                      </span>
                     </div>
                   </div>
                 )}

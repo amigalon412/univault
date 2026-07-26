@@ -198,16 +198,23 @@ export function TrustSection() {
             thing it summarises; unboxed, it reads as the closing remark it
             is. */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-12">
-          {CLAIMS.map((c) => (
+          {CLAIMS.map((c, i) => (
             <div
               key={c.title}
               className="flex flex-col items-start gap-5"
             >
+              {/* Drawn in rather than simply present, once the section is
+                  reached. Held at opacity 0 until then, or all three would have
+                  finished drawing long before anyone scrolled this far. */}
               <PixelLogo
                 logo={c.glyph}
                 grid={GLYPH_GRID}
                 size={80}
-                className="text-wire-cyan shrink-0 drop-shadow-[0_0_16px_rgba(214,254,81,0.35)]"
+                className={
+                  "text-wire-cyan shrink-0 drop-shadow-[0_0_16px_rgba(214,254,81,0.35)] " +
+                  (seen ? "pixel-draw" : "opacity-0")
+                }
+                style={{ animationDelay: `${i * 220}ms` }}
               />
               <div>
                 <div className="font-mono text-base text-wire-cyan glow-cyan tracking-[0.14em]">
