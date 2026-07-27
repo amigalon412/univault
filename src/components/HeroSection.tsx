@@ -109,7 +109,11 @@ export function HeroSection() {
           <div className="flex flex-col items-center gap-3">
             <Link
               href="/app"
-              className="inline-flex items-center gap-3 bg-wire-cyan text-black font-mono font-bold text-base px-10 py-4 hover:opacity-90 hover:shadow-[0_0_40px_rgba(214,254,81,0.35)] transition-all tracking-widest"
+              /* pulse-glow idles a halo around the primary action. It stops on
+                 hover by design — an animated box-shadow outranks the hover
+                 shadow in the cascade, so leaving it running would swallow the
+                 button's own feedback. Stopping hands the shadow back. */
+              className="pulse-glow inline-flex items-center gap-3 bg-wire-cyan text-black font-mono font-bold text-base px-10 py-4 hover:opacity-90 hover:shadow-[0_0_40px_rgba(214,254,81,0.35)] transition-all tracking-widest"
             >
               START GROWING →
             </Link>

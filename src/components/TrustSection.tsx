@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useReveal } from "@/hooks/useReveal";
 import { Bracket } from "@/components/Bracket";
 import { ContractLink } from "@/components/ContractLink";
 import { PixelLogo } from "@/components/PixelLogo";
@@ -46,28 +46,7 @@ const CLAIMS: { glyph: PixelLogoData; title: string; body: string }[] = [
  * from that array and this component neither knows nor cares.
  */
 export function TrustSection() {
-  const [seen, setSeen] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = root.current;
-    if (!el) return;
-    if (typeof IntersectionObserver === "undefined") {
-      const id = setTimeout(() => setSeen(true), 0);
-      return () => clearTimeout(id);
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setSeen(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.15 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref: root, seen } = useReveal<HTMLDivElement>();
 
   return (
     <section

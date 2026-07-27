@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { useReveal } from "@/hooks/useReveal";
 import { Bracket } from "@/components/Bracket";
 import { PixelLogo } from "@/components/PixelLogo";
 import { ScrambleFigure } from "@/components/ScrambleFigure";
@@ -31,8 +32,6 @@ const usd = (n: number) =>
 
 export function VaultPreview() {
   const [selected, setSelected] = useState<StrategyId>("balanced");
-  const [seen, setSeen] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
 
   /* Nothing animates until the card is actually on screen — the reveal would
      otherwise be over long before anyone scrolled here.
@@ -44,25 +43,7 @@ export function VaultPreview() {
      the numbers stayed at zero. Rather than ship a card whose resting state
      can read $0, the motion is CSS only: it is keyed off one boolean, it goes
      through the compositor, and it cannot leave a wrong number on screen. */
-  useEffect(() => {
-    const el = root.current;
-    if (!el) return;
-    if (typeof IntersectionObserver === "undefined") {
-      const id = setTimeout(() => setSeen(true), 0);
-      return () => clearTimeout(id);
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setSeen(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref: root, seen } = useReveal<HTMLDivElement>(0.2);
 
   const strategy = STRATEGIES.find((s) => s.id === selected)!;
   const lending = (EXAMPLE * strategy.stablePct) / 100;
@@ -95,8 +76,12 @@ export function VaultPreview() {
 
         {/* The panel. Deliberately not the app's terminal card: no prompt line,
             no tabs for deposit/withdraw, no input, no ASCII bars. This is an
-            instrument reading out a position, not a form for opening one. */}
-        <div className="relative border border-wire-cyan/25 bg-wire-card">
+            instrument reading out a position, not a form for opening one.
+
+            .float-panel keeps it drifting a few pixels vertically on a
+            nine-second cycle, matching the drift/rebalance loop inside it — the
+            panel breathes on the same period as the basket it is showing. */}
+        <div className="float-panel relative border border-wire-cyan/25 bg-wire-card">
           <Bracket at="tl" />
           <Bracket at="tr" />
           <Bracket at="bl" />
