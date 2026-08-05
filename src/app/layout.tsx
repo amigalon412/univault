@@ -1,37 +1,26 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { VT323, Share_Tech_Mono, Chakra_Petch } from "next/font/google";
+import { Inter } from "next/font/google";
 import { cookieToInitialState } from "wagmi";
 import { Web3Provider } from "@/components/providers/Web3Provider";
-import { Starfall } from "@/components/Starfall";
+import { LogoFall } from "@/components/LogoFall";
 import { wagmiConfig } from "@/lib/wagmi";
 import "./globals.css";
 
-const vt323 = VT323({
-  weight: "400",
+/**
+ * One family for the whole site.
+ *
+ * Uniswap sets its interface in "Basel", which is not distributable; Inter is
+ * what it used before that and what every clone of it uses now. Both --font-sans
+ * and --font-mono in globals.css point here, so the ~200 `font-mono` classes
+ * this codebase inherited from its terminal era render as UI text without any
+ * of them being touched.
+ */
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-vt323",
-  fallback: ["monospace"],
-  adjustFontFallback: false,
-});
-
-const shareTechMono = Share_Tech_Mono({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-share-tech-mono",
-  fallback: ["ui-monospace", "monospace"],
-  adjustFontFallback: false,
-});
-
-// Squared, technological face used only for the money read-outs and split
-// numbers — cut-corner geometry that fits the terminal/matrix look while
-// staying legible, with tabular figures so digits never jitter.
-const chakraPetch = Chakra_Petch({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  variable: "--font-digits",
+  variable: "--font-inter",
+  display: "swap",
   fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
-  adjustFontFallback: false,
 });
 
 // Vercel injects the production domain, so social images resolve correctly
@@ -44,18 +33,18 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "BLUR — Grow your bag, automatically",
+  title: "UNIVAULT — Grow your bag, automatically",
   description:
     "A non-custodial auto-yield vault on Robinhood Chain. Deposit stablecoin, earn real yield, grow into tokenized stocks — auto-rebalanced.",
   openGraph: {
-    title: "BLUR",
+    title: "UNIVAULT",
     description:
       "Deposit stablecoin. Earn real yield. Grow into tokenized stocks, auto-rebalanced. Non-custodial.",
     images: ["/seo/banner.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BLUR",
+    title: "UNIVAULT",
     description:
       "Deposit stablecoin. Earn real yield. Grow into tokenized stocks, auto-rebalanced. Non-custodial.",
     images: ["/seo/banner.png"],
@@ -83,16 +72,13 @@ export default async function RootLayout({
   );
 
   return (
-    <html
-      lang="en"
-      className={`${vt323.variable} ${shareTechMono.variable} ${chakraPetch.variable} dark`}
-    >
+    <html lang="en" className={`${inter.variable} dark`}>
       <body>
         {/* Sits behind every route rather than on the homepage alone. The page
             backgrounds are transparent so it shows through; each <main> carries
             `relative z-10` to stay above this canvas, which is positioned and
             would otherwise paint over static content. */}
-        <Starfall />
+        <LogoFall />
         <Web3Provider initialState={initialState}>{children}</Web3Provider>
       </body>
     </html>

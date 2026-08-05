@@ -14,8 +14,7 @@ export function DocsSidebar() {
     >
       {DOC_GROUPS.map((group) => (
         <div key={group.label} className="mb-9">
-          <div className="font-mono text-sm text-wire-muted tracking-[0.3em] mb-4">
-            {"// "}
+          <div className="text-xs font-semibold uppercase tracking-wider text-wire-muted mb-4">
             {group.label}
           </div>
           <ul className="space-y-1">
@@ -28,13 +27,12 @@ export function DocsSidebar() {
                     href={href}
                     aria-current={active ? "page" : undefined}
                     className={
-                      "flex items-center gap-2.5 font-mono text-base px-3 py-2 border-l-2 transition-all " +
+                      "flex items-center gap-2.5 rounded-xl text-sm px-3 py-2 transition-colors " +
                       (active
-                        ? "border-wire-cyan text-wire-cyan glow-cyan bg-wire-card"
-                        : "border-transparent text-wire-cyan/85 hover:text-wire-cyan hover:border-wire-border")
+                        ? "bg-wire-cyan/12 text-wire-cyan font-medium"
+                        : "text-wire-muted hover:text-white hover:bg-white/5")
                     }
                   >
-                    <span className={active ? "opacity-100" : "opacity-0"}>▸</span>
                     {page.title}
                   </Link>
                 </li>

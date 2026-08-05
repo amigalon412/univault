@@ -12,8 +12,6 @@ export interface Strategy {
   tag: string;
   /** One-line label used in the app's strategy picker. */
   short: string;
-  /** Width class for the filled half of the picker's allocation bar. */
-  barClass: string;
   description: string;
   rows: { label: string; pct: string }[];
 }
@@ -22,13 +20,12 @@ export const STRATEGIES: Strategy[] = [
   {
     id: "steady",
     num: "[01]",
-    name: "STEADY",
+    name: "Steady",
     split: "100 / 0",
     stablePct: 100,
     stockPct: 0,
-    tag: "USDG YIELD · OPEN 24/7",
-    short: "YIELD FLOOR ONLY",
-    barClass: "w-full",
+    tag: "USDG yield · open 24/7",
+    short: "Yield floor only",
     description:
       "All stablecoin. Your USDG earns real on-chain lending yield. No stocks, no lockups.",
     rows: [{ label: "USDG yield", pct: "100%" }],
@@ -36,13 +33,12 @@ export const STRATEGIES: Strategy[] = [
   {
     id: "balanced",
     num: "[02]",
-    name: "BALANCED",
+    name: "Balanced",
     split: "60 / 40",
     stablePct: 60,
     stockPct: 40,
-    tag: "YIELD FLOOR · STOCKS",
-    short: "YIELD PLUS A SLICE OF THE MARKET",
-    barClass: "w-[60%]",
+    tag: "Yield floor · stocks",
+    short: "Yield plus a slice of the market",
     description:
       "60% earning yield, 40% in a curated basket of stock tokens (NVDA · AAPL · TSLA · AMZN), auto-rebalanced.",
     rows: [
@@ -53,13 +49,12 @@ export const STRATEGIES: Strategy[] = [
   {
     id: "growth",
     num: "[03]",
-    name: "GROWTH",
+    name: "Growth",
     split: "30 / 70",
     stablePct: 30,
     stockPct: 70,
-    tag: "YIELD FLOOR · STOCKS",
-    short: "MOSTLY MARKET",
-    barClass: "w-[30%]",
+    tag: "Yield floor · stocks",
+    short: "Mostly market",
     description:
       "30% yield floor, 70% tokenized stocks. For savers who want their idle cash to chase the market.",
     rows: [
@@ -68,13 +63,6 @@ export const STRATEGIES: Strategy[] = [
     ],
   },
 ];
-
-/**
- * More block characters than any bar can show — the bar's container clips them,
- * so the fill tracks the container width instead of a fixed cell count.
- */
-export const BAR_FILL = "█".repeat(200);
-export const BAR_TRACK = "░".repeat(200);
 
 export function formatUsd(value: number): string {
   return value.toLocaleString("en-US", {

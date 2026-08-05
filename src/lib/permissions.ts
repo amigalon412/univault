@@ -1,5 +1,5 @@
 /**
- * Who can move a BLUR vault's assets.
+ * Who can move a UNIVAULT vault's assets.
  *
  * Read off contracts/src/BlurVault.sol and contracts/src/KeeperGuard.sol, not
  * off the site's own copy -- the existing prose hedges ("designed so a

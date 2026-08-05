@@ -14,7 +14,6 @@ import {
 } from "@/hooks/useVault";
 import { NOTHING_DEPLOYED } from "@/lib/chain";
 import { STRATEGIES, type StrategyId } from "@/lib/strategies";
-import { AsciiRule } from "@/components/AsciiRule";
 
 export function VaultApp() {
   const [selected, setSelected] = useState<StrategyId>("balanced");
@@ -32,24 +31,24 @@ export function VaultApp() {
 
   const stats = [
     {
-      label: "TOTAL VALUE LOCKED",
+      label: "Total value locked",
       value: total === undefined ? "—" : formatUsdg(total, 0),
-      sub: NOTHING_DEPLOYED ? "NO VAULT DEPLOYED YET" : "ACROSS 3 VAULTS",
+      sub: NOTHING_DEPLOYED ? "No vault deployed yet" : "Across 3 vaults",
       lit: true,
     },
     {
-      label: "YOUR POSITION",
+      label: "Your position",
       value:
         live && vault.positionAssets !== undefined
           ? formatUsdg(vault.positionAssets)
           : "—",
-      sub: `IN ${strategy.name}`,
+      sub: `In ${strategy.name}`,
       lit: false,
     },
     {
-      label: "WALLET",
+      label: "Wallet",
       value: live && balance !== undefined ? formatUsdg(balance) : "—",
-      sub: "USDG AVAILABLE",
+      sub: "USDG available",
       lit: false,
     },
   ];
@@ -57,20 +56,17 @@ export function VaultApp() {
   return (
     <div className="px-6 md:px-10 py-12 md:py-16">
       <div className="max-w-7xl mx-auto">
-        <div className="font-mono text-sm text-wire-muted tracking-[0.4em] mb-3">
-          {"// VAULT TERMINAL"}
-        </div>
-        <AsciiRule className="text-xs text-wire-cyan/40 mb-7" />
-        <h1 className="font-mono text-3xl md:text-5xl text-wire-cyan glow-cyan mb-10 leading-tight">
+        <div className="text-sm font-semibold text-wire-cyan mb-3">Vault app</div>
+        <h1 className="text-4xl md:text-5xl font-semibold tracking-[-0.035em] text-white mb-10 leading-tight">
           Put your cash to work.
         </h1>
 
         {NOTHING_DEPLOYED && (
-          <div className="border border-wire-cyan/40 bg-wire-card px-7 py-5 mb-8">
-            <div className="font-mono text-sm text-wire-cyan tracking-[0.25em] mb-2">
-              ⚠ NO CONTRACTS DEPLOYED
+          <div className="uni-card border-wire-cyan/35 px-6 py-5 mb-8">
+            <div className="text-sm font-semibold text-wire-cyan mb-1.5">
+              No contracts deployed
             </div>
-            <div className="font-mono text-xs text-wire-muted leading-relaxed">
+            <div className="text-sm text-wire-muted leading-relaxed">
               The vaults are written and tested but not yet live on Robinhood
               Chain. Nothing on this page can take a deposit, and every figure
               reads as blank rather than pretending otherwise.
@@ -78,23 +74,19 @@ export function VaultApp() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-wire-border border border-wire-border mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {stats.map((s) => (
-            <div key={s.label} className="bg-black px-8 py-7">
-              <div className="font-mono text-xs text-wire-muted tracking-[0.25em] mb-3">
-                {s.label}
-              </div>
+            <div key={s.label} className="uni-card px-6 py-6">
+              <div className="text-xs text-wire-muted mb-3">{s.label}</div>
               <div
                 className={
-                  "font-digits text-3xl md:text-4xl mb-2 " +
-                  (s.lit ? "text-wire-cyan glow-cyan" : "text-wire-cyan")
+                  "font-digits text-3xl md:text-4xl font-semibold mb-2 " +
+                  (s.lit ? "text-wire-cyan" : "text-white")
                 }
               >
                 {s.value}
               </div>
-              <div className="font-mono text-xs text-wire-muted tracking-[0.2em]">
-                {s.sub}
-              </div>
+              <div className="text-xs text-wire-muted">{s.sub}</div>
             </div>
           ))}
         </div>

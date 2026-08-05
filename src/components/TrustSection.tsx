@@ -1,7 +1,6 @@
 "use client";
 
 import { useReveal } from "@/hooks/useReveal";
-import { Bracket } from "@/components/Bracket";
 import { ContractLink } from "@/components/ContractLink";
 import { PixelLogo } from "@/components/PixelLogo";
 import { KEEPER_GUARD, VAULT_ADDRESSES } from "@/lib/chain";
@@ -19,17 +18,17 @@ import { ACTORS, PERMISSIONS, PERMISSION_CAPTION } from "@/lib/permissions";
 const CLAIMS: { glyph: PixelLogoData; title: string; body: string }[] = [
   {
     glyph: KEY,
-    title: "YOUR KEYS",
+    title: "Your keys",
     body: "Every position is yours. Withdrawals are permissionless and in-kind — your pro-rata slice comes back even when markets are closed.",
   },
   {
     glyph: ROBOT,
-    title: "THE KEEPER IS ON A LEASH",
+    title: "The keeper is on a leash",
     body: "It harvests and rebalances. Per-call size and slippage limits live on the guard contract, not in a promise.",
   },
   {
     glyph: PERCENT,
-    title: "5% OF GAINS ONLY",
+    title: "5% of gains only",
     body: "Charged above your high-water mark, and never on the deposit itself. Yield is real lending interest, not emissions.",
   },
 ];
@@ -51,16 +50,16 @@ export function TrustSection() {
   return (
     <section
       id="trust"
-      className="border-b border-wire-border px-4 sm:px-6 md:px-8 py-16 md:py-24 scroll-mt-16"
+      className="px-4 sm:px-6 md:px-8 py-16 md:py-24 scroll-mt-16"
     >
       <div className="max-w-5xl mx-auto" ref={root}>
-        <div className="font-mono text-xs text-wire-muted tracking-[0.4em] mb-2">
-          {"// WHO CAN MOVE YOUR MONEY"}
+        <div className="text-sm font-semibold text-wire-cyan mb-3">
+          Who can move your money
         </div>
-        <h2 className="font-mono text-2xl md:text-3xl text-wire-cyan glow-cyan mb-3 leading-snug">
+        <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.03em] text-white mb-4 leading-tight">
           Read the permissions, not the promises.
         </h2>
-        <p className="font-mono text-sm text-wire-muted leading-relaxed max-w-2xl mb-9">
+        <p className="text-base text-wire-muted leading-relaxed max-w-2xl mb-9">
           Every way a vault&apos;s assets can move, and who is allowed to move
           them — taken from the deployed source, function by function. Where a
           cell is empty it is because no such function exists, not because one
@@ -68,19 +67,10 @@ export function TrustSection() {
         </p>
 
         {/* The evidence. */}
-        <div className="relative border border-wire-cyan/25 bg-black/25">
-          <Bracket at="tl" />
-          <Bracket at="tr" />
-          <Bracket at="bl" />
-          <Bracket at="br" />
-
-          <div className="flex items-center gap-4 border-b border-wire-cyan/20 px-5 sm:px-7 py-3.5 font-mono text-[11px] tracking-[0.26em] text-wire-muted">
-            <span className="text-wire-cyan glow-cyan">▸ PERMISSION MAP</span>
-            {/* Not mono, and not at this strip's tracking. Share Tech Mono at
-                11px with 0.26em between the letters is legible as a label of
-                four words in caps and not as two contract names in mixed case;
-                the digits face carries them at a size that can be read. */}
-            <span className="ml-auto font-digits text-sm tracking-normal text-wire-muted whitespace-nowrap">
+        <div className="relative uni-card overflow-hidden">
+          <div className="flex items-center gap-4 border-b border-wire-border px-5 sm:px-7 py-4 text-xs">
+            <span className="font-semibold text-white">Permission map</span>
+            <span className="ml-auto text-wire-muted whitespace-nowrap">
               BlurVault · KeeperGuard
             </span>
           </div>
@@ -93,7 +83,7 @@ export function TrustSection() {
                   {ACTORS.map((a) => (
                     <th
                       key={a.key}
-                      className="font-mono text-[13px] font-normal text-wire-muted/80 tracking-[0.16em] text-center pb-4 px-2 border-b border-wire-cyan/25"
+                      className="text-[13px] font-medium text-wire-muted text-center pb-4 px-2 border-b border-wire-border"
                     >
                       {a.label}
                     </th>
@@ -107,7 +97,7 @@ export function TrustSection() {
                     className={seen ? "figure-in" : "opacity-0"}
                     style={{ animationDelay: `${i * 55}ms` }}
                   >
-                    <td className="font-mono text-[15px] text-wire-cyan tracking-[0.1em] py-4 pr-5 border-b border-wire-cyan/10">
+                    <td className="text-[15px] font-medium text-white py-4 pr-5 border-b border-wire-border">
                       {row.action}
                     </td>
                     {ACTORS.map((a) => {
@@ -115,13 +105,13 @@ export function TrustSection() {
                       return (
                         <td
                           key={a.key}
-                          className="text-center py-4 px-2 border-b border-wire-cyan/10"
+                          className="text-center py-4 px-2 border-b border-wire-border"
                         >
                           <span
                             className={
                               yes
-                                ? "text-wire-cyan text-xl [text-shadow:0_0_10px_rgba(214,254,81,0.65)]"
-                                : "text-wire-cyan/15 text-xl"
+                                ? "text-wire-cyan text-xl glow-cyan"
+                                : "text-white/15 text-xl"
                             }
                             title={yes ? "can" : "no such function"}
                           >
@@ -135,34 +125,32 @@ export function TrustSection() {
               </tbody>
             </table>
 
-            <div className="mt-6 pt-5 border-t border-wire-cyan/15">
-              <div className="font-mono text-lg text-wire-cyan glow-cyan">
+            <div className="mt-6 pt-5 border-t border-wire-border">
+              <div className="text-lg font-semibold text-white">
                 {PERMISSION_CAPTION.lead}
               </div>
-              <div className="font-mono text-[13px] text-wire-muted leading-relaxed mt-2.5 max-w-3xl">
+              <div className="text-[13px] text-wire-muted leading-relaxed mt-2.5 max-w-3xl">
                 {PERMISSION_CAPTION.body}
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-wire-cyan/20 px-5 sm:px-8 py-4">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-wire-border px-5 sm:px-8 py-4">
             {/* The two contracts the rows above are read off. Both are
                 source-verified on Blockscout, so following either link lands
                 on the code rather than on bytecode -- which is the whole
                 claim this section makes. The guard verifies against 423d0b9^
                 rather than HEAD, because it was deployed before that commit
                 lowered the slippage ceiling; see contracts/DEPLOYMENTS.md. */}
-            <span className="font-mono text-[10px] text-wire-muted/70 tracking-[0.22em]">
-              VERIFIED SOURCE
-            </span>
+            <span className="text-xs text-wire-muted/70">Verified source</span>
             <ContractLink
               address={VAULT_ADDRESSES.balanced}
-              label="BLURVAULT"
+              label="BlurVault"
               variant="bare"
             />
             <ContractLink
               address={KEEPER_GUARD}
-              label="KEEPERGUARD"
+              label="KeeperGuard"
               variant="bare"
             />
           </div>
@@ -190,16 +178,14 @@ export function TrustSection() {
                 grid={GLYPH_GRID}
                 size={80}
                 className={
-                  "text-wire-cyan shrink-0 drop-shadow-[0_0_16px_rgba(214,254,81,0.35)] " +
+                  "text-wire-cyan shrink-0 drop-shadow-[0_0_16px_rgba(252,114,255,0.35)] " +
                   (seen ? "pixel-draw" : "opacity-0")
                 }
                 style={{ animationDelay: `${i * 220}ms` }}
               />
               <div>
-                <div className="font-mono text-base text-wire-cyan glow-cyan tracking-[0.14em]">
-                  {c.title}
-                </div>
-                <div className="font-mono text-[14px] text-wire-muted leading-relaxed mt-3">
+                <div className="text-lg font-semibold text-white">{c.title}</div>
+                <div className="text-sm text-wire-muted leading-relaxed mt-2.5">
                   {c.body}
                 </div>
               </div>

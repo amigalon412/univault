@@ -11,10 +11,10 @@ import { AnimationGovernor } from "@/components/AnimationGovernor";
 
 export default function Home() {
   return (
-    /* No background of its own: the starfall canvas in the root layout sits
-       behind every route, and body already paints the black. `relative z-10`
+    /* No background of its own: the falling-logo canvas in the root layout sits
+       behind every route, and body already paints the page grey. `relative z-10`
        keeps the content above that canvas. */
-    <main className="relative z-10 min-h-screen text-wire-cyan overflow-x-hidden page-enter">
+    <main className="relative z-10 min-h-screen text-white overflow-x-hidden page-enter">
       <AnimationGovernor />
       <NavBar />
       <HeroSection />

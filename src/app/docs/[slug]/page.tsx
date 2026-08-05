@@ -7,7 +7,6 @@ import { DocBody } from "@/components/docs/DocBody";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
 import { DOC_PAGES, getDocNeighbours, getDocPage, resolveDocPage } from "@/lib/docs";
 import { readSiteConfig } from "@/lib/site-config";
-import { AsciiRule } from "@/components/AsciiRule";
 import { AnimationGovernor } from "@/components/AnimationGovernor";
 
 export function generateStaticParams() {
@@ -21,13 +20,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const stored = getDocPage(slug);
-  if (!stored) return { title: "BLUR — Docs" };
-  // Resolved here too, or the share card for /docs/blur-token keeps announcing
+  if (!stored) return { title: "UNIVAULT — Docs" };
+  // Resolved here too, or the share card for the token page keeps announcing
   // that the token has not launched after it has.
   const { blurToken } = await readSiteConfig();
   const page = resolveDocPage(stored, blurToken);
   return {
-    title: `${page.title} — BLUR docs`,
+    title: `${page.title} — UNIVAULT docs`,
     description: page.intro[0],
   };
 }
@@ -49,7 +48,7 @@ export default async function DocsPage({
   const { prev, next } = getDocNeighbours(slug);
 
   return (
-    <main className="relative z-10 min-h-screen text-wire-cyan overflow-x-hidden page-enter">
+    <main className="relative z-10 min-h-screen text-white overflow-x-hidden page-enter">
       <AnimationGovernor />
       <NavBar />
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-14">
@@ -59,27 +58,21 @@ export default async function DocsPage({
           </aside>
 
           <article className="min-w-0">
-            <div className="font-mono text-sm text-wire-muted tracking-[0.4em] mb-3">
-              {"// DOCS"}
-            </div>
-            <h1 className="font-mono text-4xl md:text-5xl text-wire-cyan glow-cyan mb-8 leading-tight">
+            <div className="text-sm font-semibold text-wire-cyan mb-3">Docs</div>
+            <h1 className="text-4xl md:text-5xl font-semibold tracking-[-0.035em] text-white mb-8 leading-tight">
               {page.title}
             </h1>
             {page.intro.map((text) => (
-              <p
-                key={text}
-                className="font-mono text-base text-wire-muted leading-relaxed mb-5"
-              >
+              <p key={text} className="text-base text-wire-muted leading-relaxed mb-5">
                 {text}
               </p>
             ))}
 
             {page.sections.map((section) => (
               <section key={section.id} id={section.id} className="scroll-mt-24 mt-12">
-                <h2 className="font-mono text-2xl text-wire-cyan glow-cyan mb-3 tracking-wide">
+                <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-5">
                   {section.title}
                 </h2>
-                <AsciiRule className="text-xs text-wire-cyan/40 mb-6" length={44} />
                 <DocBody blocks={section.blocks} />
               </section>
             ))}
@@ -88,12 +81,10 @@ export default async function DocsPage({
               {prev && (
                 <Link
                   href={`/docs/${prev.slug}`}
-                  className="flex-1 border border-wire-border px-5 py-4 hover:border-wire-cyan transition-all group"
+                  className="flex-1 uni-card px-5 py-4 hover:border-wire-cyan/40 transition-colors group"
                 >
-                  <div className="font-mono text-xs text-wire-muted tracking-[0.3em] mb-1.5">
-                    ← PREVIOUS
-                  </div>
-                  <div className="font-mono text-base text-wire-cyan group-hover:glow-cyan transition-all">
+                  <div className="text-xs text-wire-muted mb-1.5">← Previous</div>
+                  <div className="text-base font-medium text-white group-hover:text-wire-cyan transition-colors">
                     {prev.title}
                   </div>
                 </Link>
@@ -101,12 +92,10 @@ export default async function DocsPage({
               {next && (
                 <Link
                   href={`/docs/${next.slug}`}
-                  className="flex-1 border border-wire-border px-5 py-4 hover:border-wire-cyan transition-all group sm:text-right"
+                  className="flex-1 uni-card px-5 py-4 hover:border-wire-cyan/40 transition-colors group sm:text-right"
                 >
-                  <div className="font-mono text-xs text-wire-muted tracking-[0.3em] mb-1.5">
-                    NEXT →
-                  </div>
-                  <div className="font-mono text-base text-wire-cyan group-hover:glow-cyan transition-all">
+                  <div className="text-xs text-wire-muted mb-1.5">Next →</div>
+                  <div className="text-base font-medium text-white group-hover:text-wire-cyan transition-colors">
                     {next.title}
                   </div>
                 </Link>
@@ -116,15 +105,15 @@ export default async function DocsPage({
 
           <aside className="hidden lg:block">
             <div className="sticky top-24">
-              <div className="font-mono text-sm text-wire-muted tracking-[0.3em] mb-4">
-                {"// ON THIS PAGE"}
+              <div className="text-xs font-semibold uppercase tracking-wider text-wire-muted mb-4">
+                On this page
               </div>
               <ul className="space-y-2.5">
                 {page.sections.map((section) => (
                   <li key={section.id}>
                     <a
                       href={`#${section.id}`}
-                      className="font-mono text-sm text-wire-cyan/85 hover:text-wire-cyan hover:glow-cyan transition-all leading-relaxed"
+                      className="text-sm text-wire-muted hover:text-wire-cyan transition-colors leading-relaxed"
                     >
                       {section.title}
                     </a>

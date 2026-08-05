@@ -153,7 +153,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
     { label: "Strategy", value: strategy.name },
     {
       label: mode === "deposit" ? "You receive" : "You redeem",
-      value: mode === "deposit" ? "blur-shares" : "USDG",
+      value: mode === "deposit" ? "UNIVAULT shares" : "USDG",
     },
   ];
 
@@ -183,21 +183,19 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
     insufficient;
 
   return (
-    <div className="border border-wire-border bg-black">
-      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-wire-border bg-wire-card">
-        <span className="font-mono text-xs text-wire-cyan/50 tracking-widest">
-          ◉ ◉ ◉
-        </span>
-        <span className="font-mono text-sm text-wire-muted tracking-widest">
-          root@blurvault:~$ {mode}
-        </span>
-        <span className="ml-auto font-mono text-sm text-wire-cyan animate-blink">
-          █
+    <div className="uni-card overflow-hidden">
+      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-wire-border">
+        <span className="text-sm font-semibold text-white capitalize">{mode}</span>
+        <span className="ml-auto flex items-center gap-1.5 text-xs text-wire-muted">
+          <span className="h-1.5 w-1.5 rounded-full bg-wire-cyan animate-blink" />
+          USDG
         </span>
       </div>
 
-      <div className="p-6 space-y-6">
-        <div className="grid grid-cols-2 gap-px bg-wire-border">
+      <div className="p-5 space-y-5">
+        {/* The deposit/withdraw switch, as the segmented control on a recessed
+            track that the app this borrows from uses for every binary mode. */}
+        <div className="flex gap-1 rounded-2xl bg-white/[0.04] p-1">
           {(["deposit", "withdraw"] as Mode[]).map((m) => (
             <button
               key={m}
@@ -208,27 +206,27 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
               }}
               aria-pressed={mode === m}
               className={
-                "font-mono text-sm py-3 tracking-widest transition-all " +
+                "flex-1 rounded-xl py-2.5 text-sm font-semibold capitalize transition-colors " +
                 (mode === m
-                  ? "bg-wire-cyan text-black font-bold"
-                  : "bg-black text-wire-muted hover:text-wire-cyan")
+                  ? "bg-wire-cyan text-black"
+                  : "text-wire-muted hover:text-white hover:bg-white/5")
               }
             >
-              {m.toUpperCase()}
+              {m}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-3 border border-wire-border px-5 py-5 focus-within:border-wire-cyan transition-colors">
+        <div className="flex items-center gap-3 uni-raised px-5 py-5 border border-transparent focus-within:border-wire-cyan/50 transition-colors">
           <input
             value={amount}
             onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
             inputMode="decimal"
             placeholder="0"
             aria-label={`Amount to ${mode}`}
-            className="flex-1 min-w-0 bg-transparent font-digits text-3xl text-wire-cyan placeholder:text-wire-cyan/25 outline-none"
+            className="flex-1 min-w-0 bg-transparent font-digits text-3xl font-semibold text-white placeholder:text-white/20 outline-none"
           />
-          <span className="flex items-center gap-2 font-mono text-sm text-wire-muted tracking-widest shrink-0">
+          <span className="flex items-center gap-2 rounded-full bg-white/[0.07] px-3 py-1.5 text-sm font-medium text-white shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-wire-cyan" />
             USDG
           </span>
@@ -238,10 +236,10 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
           {rows.map((r) => (
             <div
               key={r.label}
-              className="flex items-baseline justify-between gap-4 font-mono text-sm border-b border-dashed border-wire-border pb-3"
+              className="flex items-baseline justify-between gap-4 text-sm"
             >
               <span className="text-wire-muted">{r.label}</span>
-              <span className={"text-wire-cyan" + (r.numeric ? " font-digits" : "")}>
+              <span className={"text-white" + (r.numeric ? " font-digits" : "")}>
                 {r.value}
               </span>
             </div>
@@ -249,13 +247,13 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
         </div>
 
         {!ready ? (
-          <ConnectButton className="w-full bg-wire-cyan text-black font-bold text-base py-4 hover:opacity-90 hover:shadow-[0_0_40px_rgba(214,254,81,0.35)]" />
+          <ConnectButton className="uni-pill w-full bg-wire-cyan text-black font-semibold text-base py-4 hover:shadow-[0_10px_34px_rgba(252,114,255,0.3)]" />
         ) : (
           <button
             type="button"
             onClick={submit}
             disabled={disabled}
-            className="w-full bg-wire-cyan text-black font-mono font-bold text-base py-4 tracking-widest hover:opacity-90 hover:shadow-[0_0_40px_rgba(214,254,81,0.35)] transition-all disabled:opacity-40 disabled:hover:shadow-none"
+            className="uni-pill w-full bg-wire-cyan text-black font-semibold text-base py-4 hover:shadow-[0_10px_34px_rgba(252,114,255,0.3)] disabled:opacity-40 disabled:hover:shadow-none disabled:hover:translate-y-0"
           >
             {actionLabel()}
           </button>
@@ -266,21 +264,21 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
             type="button"
             onClick={redeemInKind}
             disabled={busy}
-            className="w-full font-mono text-xs text-wire-cyan border border-wire-border py-3 tracking-widest hover:border-wire-cyan hover:glow-cyan transition-all disabled:opacity-40"
+            className="uni-pill w-full text-sm font-medium text-wire-cyan bg-wire-cyan/10 py-3 hover:bg-wire-cyan/20 disabled:opacity-40"
           >
-            REDEEM EVERYTHING IN KIND
+            Redeem everything in kind
           </button>
         )}
 
         {/* Sell the whole position — stocks included — to USDG in one go. Only
-            meaningful for a basketed vault; STEADY already exits fully in USDG. */}
+            meaningful for a basketed vault; Steady already exits fully in USDG. */}
         {ready && mode === "withdraw" && Boolean(vault.shares) &&
           strategy.id !== "steady" && vault.address && (
             <ExitAllButton vault={vault.address} shares={vault.shares!} />
           )}
 
         {vault.isPriceable === false && (
-          <div className="font-mono text-xs text-wire-cyan/80 leading-relaxed border border-wire-cyan/40 p-3">
+          <div className="rounded-2xl border border-wire-cyan/35 bg-wire-cyan/[0.06] p-4 text-xs text-white/85 leading-relaxed">
             The vault cannot value its basket right now — a price feed is stale
             or a stock split has not been acknowledged. Deposits and USDG
             withdrawals are halted until it clears. In-kind redemption still
@@ -289,7 +287,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
         )}
 
         {error && (
-          <div className="font-mono text-xs text-wire-muted leading-relaxed break-words">
+          <div className="text-xs text-wire-muted leading-relaxed break-words">
             {error}
           </div>
         )}
@@ -299,14 +297,14 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
             href={explorerTxUrl(hash)}
             target="_blank"
             rel="noopener noreferrer"
-            className="block font-mono text-xs text-wire-cyan tracking-widest hover:glow-cyan"
+            className="block text-xs font-medium text-wire-cyan hover:underline"
           >
-            {isSuccess ? "✓ CONFIRMED — VIEW ON EXPLORER" : "VIEW ON EXPLORER"}
+            {isSuccess ? "✓ Confirmed — view on explorer" : "View on explorer"}
           </a>
         )}
 
-        <div className="font-mono text-xs text-wire-muted text-center tracking-[0.15em] leading-relaxed">
-          NON-CUSTODIAL · NOBODY CAN MOVE YOUR SHARES
+        <div className="text-xs text-wire-muted text-center leading-relaxed">
+          Non-custodial · nobody can move your shares
         </div>
       </div>
     </div>

@@ -140,7 +140,7 @@ export const DEPLOYED_VAULTS = Object.entries(VAULT_ADDRESSES).filter(
 );
 
 /**
- * The $BLUR token, once it exists. Null until then, and the UI says so rather
+ * The $UNIVAULT token, once it exists. Null until then, and the UI says so rather
  * than showing a placeholder anyone could mistake for the real contract --
  * before a launch a wrong "CA" is exactly what a scammer wants circulating.
  */

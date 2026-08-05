@@ -6,14 +6,14 @@ import { BackgroundGrid } from "@/components/app/BackgroundGrid";
 import { VaultApp } from "@/components/app/VaultApp";
 
 export const metadata: Metadata = {
-  title: "BLUR — Vault terminal",
+  title: "UNIVAULT — Vault app",
   description:
     "Pick a strategy, deposit USDG and let the vault do the rest. Non-custodial, on Robinhood Chain.",
 };
 
 export default function AppPage() {
   return (
-    <main className="relative z-10 min-h-screen text-wire-cyan overflow-x-hidden page-enter">
+    <main className="relative z-10 min-h-screen text-white overflow-x-hidden page-enter">
       <BackgroundGrid />
       <AnimationGovernor />
       <NavBar />

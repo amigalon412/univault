@@ -49,15 +49,15 @@ export interface TraceStep {
 export const SOURCE_NODE: FlowNode = {
   glyph: COIN,
   name: "USDG",
-  role: "WHAT YOU SEND",
+  role: "What you send",
   address: USDG,
 };
 
 /** The hub everything passes through. */
 export const VAULT_NODE: FlowNode = {
   glyph: VAULT,
-  name: "BLUR VAULT",
-  role: "MINTS YOUR SHARES",
+  name: "UNIVAULT Vault",
+  role: "Mints your shares",
   address: VAULT_ADDRESSES.balanced,
 };
 
@@ -72,14 +72,14 @@ export const VAULT_NODE: FlowNode = {
 export const LEG_NODES: FlowNode[] = [
   {
     glyph: YIELD,
-    name: "LENDING LEG",
-    role: "STEAKHOUSE USDG",
+    name: "Lending leg",
+    role: "Steakhouse USDG",
     address: STEAK_USDG,
   },
   {
     glyph: BASKET,
-    name: "STOCK BASKET",
-    role: "FOUR NAMES, EVENLY WEIGHTED",
+    name: "Stock basket",
+    role: "Four names, evenly weighted",
     address: BASKET_ADAPTER,
     /*
      * The four tickers link to the token contracts, not to the adapter.
@@ -97,9 +97,9 @@ export const LEG_NODES: FlowNode[] = [
 
 /** Machinery that keeps it on target. Listed, not wired into the path. */
 export const RAIL_NODES: FlowNode[] = [
-  { glyph: ORACLE, name: "ORACLE", role: "PRICES THE BASKET", address: PRICE_ORACLE },
-  { glyph: GUARD, name: "KEEPER GUARD", role: "CAPS THE KEEPER", address: KEEPER_GUARD },
-  { glyph: EXIT, name: "EXIT ROUTER", role: "SELLS A POSITION OUT", address: EXIT_ROUTER_FALLBACK },
+  { glyph: ORACLE, name: "Oracle", role: "Prices the basket", address: PRICE_ORACLE },
+  { glyph: GUARD, name: "Keeper guard", role: "Caps the keeper", address: KEEPER_GUARD },
+  { glyph: EXIT, name: "Exit router", role: "Sells a position out", address: EXIT_ROUTER_FALLBACK },
 ];
 
 /**
@@ -119,35 +119,35 @@ export const DIAGRAM_VAULT = "BALANCED";
 export const TRACE_STEPS: TraceStep[] = [
   {
     num: "01",
-    title: "YOU SEND USDG",
+    title: "You send USDG",
     body: "An ordinary ERC-20 transfer. Six decimals, not eighteen.",
     links: [{ label: "USDG", address: USDG }],
   },
   {
     num: "02",
-    title: "THE VAULT MINTS SHARES TO YOUR ADDRESS",
+    title: "The vault mints shares to your address",
     body:
       "Standard ERC-4626. The shares are yours, and no function on the vault moves the assets behind them anywhere but back to a holder.",
-    links: [{ label: "VAULT", address: VAULT_ADDRESSES.balanced }],
+    links: [{ label: "Vault", address: VAULT_ADDRESSES.balanced }],
   },
   {
     num: "03",
-    title: "IT SPLITS ITSELF IN THE SAME TRANSACTION",
+    title: "It splits itself in the same transaction",
     body:
       "Part is supplied to the lending venue and the rest buys the four stock tokens, evenly weighted. Your strategy sets the ratio; nobody has to come along later and apply it.",
     links: [
-      { label: "LENDING", address: STEAK_USDG },
-      { label: "BASKET", address: BASKET_ADAPTER },
+      { label: "Lending", address: STEAK_USDG },
+      { label: "Basket", address: BASKET_ADAPTER },
     ],
   },
   {
     num: "04",
-    title: "A KEEPER PULLS IT BACK ON TARGET",
+    title: "A keeper pulls it back on target",
     body:
       "When the split drifts, automation trades it back. Per-call size and slippage caps live on the guard, so what it may move is bounded on chain.",
     links: [
-      { label: "GUARD", address: KEEPER_GUARD },
-      { label: "ORACLE", address: PRICE_ORACLE },
+      { label: "Guard", address: KEEPER_GUARD },
+      { label: "Oracle", address: PRICE_ORACLE },
     ],
   },
 ];

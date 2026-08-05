@@ -24,7 +24,7 @@ interface ConnectButtonProps {
  */
 export function ConnectButton({
   className,
-  label = "CONNECT WALLET",
+  label = "Connect wallet",
 }: ConnectButtonProps) {
   const mounted = useMounted();
   const { address, isConnected, chainId } = useAccount();
@@ -35,7 +35,7 @@ export function ConnectButton({
   const injected = connectors[0];
   const wrongChain = isConnected && chainId !== robinhoodChain.id;
 
-  const base = cn("font-mono tracking-widest transition-all", className);
+  const base = cn("transition-all", className);
 
   if (!mounted) {
     return (
@@ -53,7 +53,7 @@ export function ConnectButton({
         rel="noopener noreferrer"
         className={base}
       >
-        NO WALLET FOUND
+        No wallet found
       </a>
     );
   }
@@ -66,7 +66,7 @@ export function ConnectButton({
         disabled={isSwitching}
         className={base}
       >
-        {isSwitching ? "SWITCHING…" : "SWITCH TO ROBINHOOD CHAIN"}
+        {isSwitching ? "Switching…" : "Switch to Robinhood Chain"}
       </button>
     );
   }
@@ -92,7 +92,7 @@ export function ConnectButton({
       className={base}
       title={error ? error.message : undefined}
     >
-      {isPending ? "CONNECTING…" : label}
+      {isPending ? "Connecting…" : label}
     </button>
   );
 }

@@ -15,7 +15,7 @@ export async function GET() {
 }
 
 /**
- * Publish (or clear) the $BLUR address.
+ * Publish (or clear) the $UNIVAULT address.
  *
  * Validation is not politeness here: whatever lands in this field is what the
  * header tells every visitor to copy. An address that fails the checksum is

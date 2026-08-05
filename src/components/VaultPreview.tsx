@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useReveal } from "@/hooks/useReveal";
-import { Bracket } from "@/components/Bracket";
 import { PixelLogo } from "@/components/PixelLogo";
 import { ScrambleFigure } from "@/components/ScrambleFigure";
 import { PIXEL_LOGOS } from "@/lib/pixel-logos";
@@ -57,89 +56,67 @@ export function VaultPreview() {
   return (
     <section
       id="vaults"
-      className="relative border-b border-wire-border px-4 sm:px-6 md:px-8 py-16 md:py-24 scroll-mt-16"
+      className="relative px-4 sm:px-6 md:px-8 py-16 md:py-24 scroll-mt-16"
     >
       <div className="relative max-w-5xl mx-auto" ref={root}>
         <div className="relative flex flex-wrap items-end justify-between gap-3 mb-7">
           <div>
-            <div className="font-mono text-xs text-wire-muted tracking-[0.4em] mb-2">
-              {"// WHAT YOU GET"}
-            </div>
-            <h2 className="font-mono text-2xl md:text-3xl text-wire-cyan glow-cyan leading-snug">
+            <div className="text-sm font-semibold text-wire-cyan mb-2">What you get</div>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.03em] text-white leading-tight">
               One deposit, split and working.
             </h2>
           </div>
-          <div className="font-mono text-[10px] text-wire-muted tracking-[0.3em] border border-wire-border px-3 py-1.5">
-            SIMULATED · EXAMPLE FIGURES
+          <div className="rounded-full border border-wire-border px-3.5 py-1.5 text-xs text-wire-muted">
+            Simulated · example figures
           </div>
         </div>
 
-        {/* The panel. Deliberately not the app's terminal card: no prompt line,
-            no tabs for deposit/withdraw, no input, no ASCII bars. This is an
-            instrument reading out a position, not a form for opening one.
+        {/* The panel. Deliberately not the app's deposit card: no tabs, no
+            input, no submit. This is an instrument reading out a position, not
+            a form for opening one.
 
             .float-panel keeps it drifting a few pixels vertically on a
             nine-second cycle, matching the drift/rebalance loop inside it — the
             panel breathes on the same period as the basket it is showing. */}
-        <div className="float-panel relative border border-wire-cyan/25 bg-wire-card">
-          <Bracket at="tl" />
-          <Bracket at="tr" />
-          <Bracket at="bl" />
-          <Bracket at="br" />
-
-          {/* Fine hatch, so the panel has a surface instead of being a hole. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-[0.05]"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(45deg, #d6fe51 0 1px, transparent 1px 7px)",
-            }}
-          />
-
+        <div className="float-panel uni-card overflow-hidden">
           {/* instrument header */}
-          <div className="relative flex items-center gap-3 border-b border-wire-cyan/20 px-4 sm:px-6 py-2.5 font-mono text-[10px] tracking-[0.26em] text-wire-muted">
-            <span className="text-wire-cyan glow-cyan whitespace-nowrap">
-              ▸ VAULT://{strategy.name}
+          <div className="flex flex-wrap items-center gap-3 border-b border-wire-border px-5 sm:px-7 py-4 text-xs">
+            <span className="font-semibold text-white whitespace-nowrap">
+              {strategy.name} vault
             </span>
-            <span className="hidden md:inline text-wire-muted/70">
-              ERC-4626 · ROBINHOOD CHAIN · NON-CUSTODIAL
+            <span className="hidden md:inline text-wire-muted">
+              ERC-4626 · Robinhood Chain · Non-custodial
             </span>
-            <span className="ml-auto flex items-center gap-2 whitespace-nowrap">
+            <span className="ml-auto flex items-center gap-2 text-wire-muted whitespace-nowrap">
               <span className="h-1.5 w-1.5 rounded-full bg-wire-cyan animate-earn" />
-              LIVE CONTRACT
+              Live contract
             </span>
           </div>
 
-          {/* strategy select */}
-          <div className="relative flex flex-wrap gap-px bg-wire-cyan/15 border-b border-wire-cyan/20">
-            {STRATEGIES.map((s, i) => {
-              const active = s.id === selected;
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => setSelected(s.id)}
-                  aria-pressed={active}
-                  className={
-                    "group relative flex-1 min-w-[120px] px-4 py-3.5 font-mono text-xs tracking-[0.2em] transition-colors " +
-                    (active
-                      ? "bg-wire-cyan text-black font-bold"
-                      : "bg-black text-wire-muted hover:text-wire-cyan hover:bg-wire-cyan/5")
-                  }
-                >
-                  <span
+          {/* Strategy select, as a segmented control on a recessed track —
+              the shape the real app uses for anything with three states. */}
+          <div className="px-4 sm:px-6 pt-5">
+            <div className="flex flex-wrap gap-1 rounded-2xl bg-white/[0.04] p-1">
+              {STRATEGIES.map((s) => {
+                const active = s.id === selected;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setSelected(s.id)}
+                    aria-pressed={active}
                     className={
-                      "mr-2 text-[9px] align-middle " +
-                      (active ? "text-black/60" : "text-wire-cyan/40")
+                      "flex-1 min-w-[104px] rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors " +
+                      (active
+                        ? "bg-wire-cyan text-black"
+                        : "text-wire-muted hover:text-white hover:bg-white/5")
                     }
                   >
-                    0{i + 1}
-                  </span>
-                  {s.name}
-                </button>
-              );
-            })}
+                    {s.name}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Keyed on the strategy, so switching rebuilds this subtree rather
@@ -149,55 +126,43 @@ export function VaultPreview() {
               switching to GROWTH the amounts were right but the line reading
               "Evenly weighted — $1,000 each" kept BALANCED's figure, because
               that value sits between two literal strings inside one element
-              and React did not rewrite that text node. The same shape is what
-              made the earlier count-up render $0 for ever. Remounting the body
+              and React did not rewrite that text node. Remounting the body
               removes the whole class of problem, and it costs one small
               subtree per click. */}
-          <div key={selected} className="relative p-5 sm:p-8 md:p-10">
+          <div key={selected} className="relative p-5 sm:p-7 md:p-9">
             {/* deposit + split readout */}
             <div className="flex flex-wrap items-end justify-between gap-8 mb-10">
-              <div className="flex items-stretch gap-4">
-                <span aria-hidden className="w-[3px] bg-wire-cyan/70 glow-box-cyan" />
-                <div>
-                  <div className="font-mono text-[10px] text-wire-muted tracking-[0.32em] mb-2">
-                    YOU DEPOSIT
-                  </div>
-                  <div className="figure-blur font-digits text-5xl md:text-7xl text-wire-cyan glow-cyan leading-none">
-                    <ScrambleFigure value={usd(EXAMPLE)} active={seen} />
-                  </div>
-                  <div className="mt-3 flex items-center gap-2 font-mono text-[10px] text-wire-muted tracking-[0.2em]">
-                    <span className="border border-wire-cyan/30 px-2 py-0.5 text-wire-cyan/80">
-                      USDG
-                    </span>
-                    ONCE · NO LOCKUP
-                  </div>
+              <div>
+                <div className="text-xs text-wire-muted mb-2">You deposit</div>
+                <div className="figure-blur font-digits text-5xl md:text-7xl font-semibold text-white leading-none">
+                  <ScrambleFigure value={usd(EXAMPLE)} active={seen} />
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-xs text-wire-muted">
+                  <span className="uni-wash rounded-full px-2.5 py-1 font-semibold">USDG</span>
+                  Once · no lockup
                 </div>
               </div>
 
-              <div className="relative border border-wire-cyan/25 px-5 py-3 text-right">
-                <div className="font-mono text-[10px] text-wire-muted tracking-[0.32em] mb-1.5">
-                  TARGET SPLIT
-                </div>
-                <div className="figure-blur font-digits text-4xl md:text-5xl text-wire-cyan leading-none">
+              <div className="uni-raised px-5 py-4 text-right">
+                <div className="text-xs text-wire-muted mb-1.5">Target split</div>
+                <div className="figure-blur font-digits text-4xl md:text-5xl font-semibold text-wire-cyan leading-none">
                   <ScrambleFigure value={strategy.split} active={seen} />
                 </div>
-                <div className="font-mono text-[10px] text-wire-muted tracking-[0.2em] mt-1.5">
-                  YIELD / STOCKS
-                </div>
+                <div className="text-xs text-wire-muted mt-1.5">Yield / stocks</div>
               </div>
             </div>
 
-            {/* Allocation as a lit segment display with a scale under it, not a
-                row of block glyphs. Each segment carries its own delay so the
-                bar fills left to right; only opacity and colour animate. */}
+            {/* Allocation as a lit segment display with a scale under it. Each
+                segment carries its own delay so the bar fills left to right;
+                only opacity animates. */}
             <div className="mb-10">
-              <div className="flex items-baseline justify-between font-mono text-[10px] tracking-[0.26em] mb-2.5">
-                <span className="text-wire-cyan">◂ LENDING YIELD</span>
-                <span className="text-wire-muted">ALLOCATION METER</span>
-                <span className="text-wire-cyan">TOKENIZED STOCKS ▸</span>
+              <div className="flex items-baseline justify-between text-xs mb-2.5">
+                <span className="text-white/80">◂ Lending yield</span>
+                <span className="text-wire-muted">Allocation</span>
+                <span className="text-wire-cyan">Tokenized stocks ▸</span>
               </div>
               <div
-                className="flex gap-[2px] h-10 border-y border-wire-cyan/20 py-1"
+                className="flex gap-[2px] h-9 rounded-xl bg-white/[0.04] p-1.5"
                 role="img"
                 aria-label={`${strategy.stablePct}% lending yield, ${strategy.stockPct}% tokenized stocks`}
               >
@@ -209,10 +174,10 @@ export function VaultPreview() {
                 {Array.from({ length: SEGMENTS }, (_, i) => {
                   const lit = i < litSegments;
                   return (
-                    <span key={i} className="relative flex-1 bg-wire-cyan/[0.08]">
+                    <span key={i} className="relative flex-1 rounded-sm bg-white/[0.06]">
                       {lit && (
                         <span
-                          className="seg-fill absolute inset-0 bg-wire-cyan shadow-[0_0_12px_rgba(214,254,81,0.6)]"
+                          className="seg-fill absolute inset-0 rounded-sm bg-wire-cyan"
                           style={{ animationDelay: `${i * SEG_STAGGER}ms` }}
                         />
                       )}
@@ -225,10 +190,10 @@ export function VaultPreview() {
                 {[0, 25, 50, 75, 100].map((p) => (
                   <span
                     key={p}
-                    className="absolute top-0 -translate-x-1/2 font-mono text-[9px] text-wire-muted/60"
+                    className="absolute top-0 -translate-x-1/2 text-[10px] text-wire-muted/70"
                     style={{ left: `${p}%` }}
                   >
-                    <span className="block h-1 w-px bg-wire-cyan/25 mx-auto mb-1" />
+                    <span className="block h-1 w-px bg-white/15 mx-auto mb-1" />
                     {p}
                   </span>
                 ))}
@@ -236,60 +201,58 @@ export function VaultPreview() {
             </div>
 
             {/* the two legs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-wire-cyan/15">
-              <div className="bg-black p-5 sm:p-7">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="uni-raised p-5 sm:p-6">
                 <div className="flex items-center gap-2.5 mb-4">
-                  <span className="font-mono text-[10px] text-wire-cyan/50">[01]</span>
-                  <span className="font-mono text-[10px] text-wire-muted tracking-[0.3em]">
-                    LENDING LEG
-                  </span>
-                  <span className="ml-auto flex items-center gap-1.5 font-mono text-[9px] text-wire-cyan tracking-[0.2em]">
+                  <span className="text-xs font-medium text-wire-muted">Lending leg</span>
+                  <span className="ml-auto flex items-center gap-1.5 text-[11px] text-wire-cyan">
                     <span className="h-1 w-1 rounded-full bg-wire-cyan animate-earn" />
-                    EARNING
+                    Earning
                   </span>
                 </div>
-                <div className="figure-in font-digits text-4xl text-wire-cyan leading-none">
+                <div className="figure-in font-digits text-4xl font-semibold text-white leading-none">
                   <ScrambleFigure value={usd(lending)} active={seen} />
                 </div>
-                <div className="mt-3 mb-4 h-px bg-gradient-to-r from-wire-cyan/40 to-transparent" />
-                <div className="font-mono text-xs text-wire-muted leading-relaxed">
-                  Supplied to an on-chain lending venue. Real interest, not
-                  emissions.
+                <div className="mt-4 mb-4 h-px bg-white/8" />
+                <div className="text-sm text-wire-muted leading-relaxed">
+                  Supplied to an on-chain lending venue. Real interest, not emissions.
                 </div>
-                <div className="mt-4 font-mono text-[10px] text-wire-muted/70 tracking-[0.2em]">
-                  {strategy.stablePct}% OF DEPOSIT
+                <div className="mt-4 text-xs text-wire-muted/70">
+                  {strategy.stablePct}% of deposit
                 </div>
               </div>
 
-              <div className="bg-black p-5 sm:p-7">
+              <div className="uni-raised p-5 sm:p-6">
                 <div className="flex items-center gap-2.5 mb-4">
-                  <span className="font-mono text-[10px] text-wire-cyan/50">[02]</span>
-                  <span className="font-mono text-[10px] text-wire-muted tracking-[0.3em]">
-                    STOCK BASKET
-                  </span>
-                  <span className="ml-auto font-mono text-[9px] text-wire-muted/70 tracking-[0.2em]">
-                    {strategy.stockPct === 0 ? "EMPTY" : "EVENLY WEIGHTED"}
+                  <span className="text-xs font-medium text-wire-muted">Stock basket</span>
+                  <span className="ml-auto text-[11px] text-wire-muted/70">
+                    {strategy.stockPct === 0 ? "Empty" : "Evenly weighted"}
                   </span>
                 </div>
-                <div className="figure-in font-digits text-4xl text-wire-cyan leading-none">
+                <div className="figure-in font-digits text-4xl font-semibold text-white leading-none">
                   <ScrambleFigure value={usd(basket)} active={seen} />
                 </div>
-                <div className="mt-3 mb-5 h-px bg-gradient-to-r from-wire-cyan/40 to-transparent" />
+                <div className="mt-4 mb-5 h-px bg-white/8" />
 
                 {strategy.stockPct === 0 ? (
-                  <div className="font-mono text-xs text-wire-muted leading-relaxed">
-                    STEADY holds no stocks. All of it stays in the yield leg.
+                  <div className="text-sm text-wire-muted leading-relaxed">
+                    Steady holds no stocks. All of it stays in the yield leg.
                   </div>
                 ) : (
-                  <div className="space-y-2.5">
+                  <div className="space-y-3">
                     {PIXEL_LOGOS.map((logo, i) => (
                       <div
                         key={logo.key}
                         className="figure-in flex items-center gap-3"
                         style={{ animationDelay: `${120 + i * 80}ms` }}
                       >
-                        <PixelLogo logo={logo} size={26} className="text-wire-cyan shrink-0" />
-                        <span className="font-mono text-[11px] text-wire-muted tracking-[0.18em] w-11 shrink-0">
+                        {/* The mark in a round token badge, the way an asset
+                            row is drawn everywhere in the app this borrows
+                            from. */}
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.07]">
+                          <PixelLogo logo={logo} size={17} className="text-white/85" />
+                        </span>
+                        <span className="text-xs font-medium text-white/85 w-12 shrink-0">
                           {logo.key}
                         </span>
                         {/* Per-holding weight, drawn rather than stated — and
@@ -298,14 +261,14 @@ export function VaultPreview() {
                             The tick marks the target it returns to, so the
                             movement reads as drift against a goal rather than
                             as decoration. */}
-                        <span className="relative h-1.5 flex-1 bg-wire-cyan/[0.08] min-w-8">
+                        <span className="relative h-1.5 flex-1 rounded-full bg-white/[0.07] min-w-8">
                           <span
                             aria-hidden
-                            className="absolute inset-y-[-2px] w-px bg-wire-cyan/30"
+                            className="absolute inset-y-[-2px] w-px bg-white/25"
                             style={{ left: `${weight * 2.6}%` }}
                           />
                           <span
-                            className="weight-drift absolute inset-y-0 left-0 bg-wire-cyan/70"
+                            className="weight-drift absolute inset-y-0 left-0 rounded-full bg-wire-cyan/80"
                             style={
                               {
                                 width: `${weight * 2.6}%`,
@@ -314,7 +277,7 @@ export function VaultPreview() {
                             }
                           />
                         </span>
-                        <span className="font-digits text-xs text-wire-cyan/90 w-16 text-right shrink-0">
+                        <span className="font-digits text-xs text-white/90 w-16 text-right shrink-0">
                           {/* Each row settles a beat after the one above it, so
                               the basket resolves top-down instead of all four
                               landing on the same frame. */}
@@ -330,15 +293,15 @@ export function VaultPreview() {
                         timeline. The resting label is the real one and carries
                         the accessible text; the flash is decoration for the
                         moment the bars snap back, so it is hidden from readers. */}
-                    <div className="relative pt-1.5 font-mono text-[10px] tracking-[0.2em]">
+                    <div className="relative pt-1.5 text-[11px]">
                       <span className="drift-label text-wire-muted/70">
-                        {weight}% EACH · REBALANCED ON DRIFT
+                        {weight}% each · rebalanced on drift
                       </span>
                       <span
                         aria-hidden
                         className="drift-flash absolute left-0 top-1.5 text-wire-cyan whitespace-nowrap"
                       >
-                        ▸ DRIFT OVER BAND · REBALANCING
+                        ▸ Drift over band · rebalancing
                       </span>
                     </div>
                   </div>
@@ -347,15 +310,15 @@ export function VaultPreview() {
             </div>
           </div>
 
-          <div className="relative flex flex-wrap items-center justify-between gap-4 border-t border-wire-cyan/20 px-5 sm:px-8 md:px-10 py-5">
-            <div className="font-mono text-[10px] text-wire-muted tracking-[0.22em]">
-              REDEEM ANYTIME · IN KIND · NOBODY CAN BLOCK IT
+          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-wire-border px-5 sm:px-8 md:px-9 py-5">
+            <div className="text-xs text-wire-muted">
+              Redeem anytime · in kind · nobody can block it
             </div>
             <Link
               href="/app"
-              className="group font-mono text-xs text-wire-cyan border border-wire-cyan px-6 py-2.5 tracking-widest hover:bg-wire-cyan hover:text-black transition-all"
+              className="group uni-pill bg-wire-cyan text-black text-sm font-semibold px-6 py-3 hover:shadow-[0_10px_34px_rgba(252,114,255,0.3)]"
             >
-              OPEN THE VAULT{" "}
+              Open the vault{" "}
               <span className="inline-block transition-transform group-hover:translate-x-1">
                 →
               </span>

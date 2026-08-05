@@ -127,9 +127,7 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-3">
-        <span className="font-mono text-[11px] text-wire-muted tracking-[0.2em]">
-          MAX SLIPPAGE
-        </span>
+        <span className="text-xs text-wire-muted">Max slippage</span>
         <div className="flex gap-1">
           {SLIPPAGE.map((s) => (
             <button
@@ -137,10 +135,10 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
               type="button"
               onClick={() => setSlippageBps(s.bps)}
               className={
-                "font-digits text-[11px] px-2.5 py-1 border transition-all " +
+                "font-digits rounded-full text-[11px] px-3 py-1 transition-colors " +
                 (slippageBps === s.bps
-                  ? "border-wire-cyan text-wire-cyan"
-                  : "border-wire-border text-wire-muted hover:border-wire-cyan/50")
+                  ? "bg-wire-cyan/15 text-wire-cyan"
+                  : "bg-white/[0.05] text-wire-muted hover:text-white")
               }
             >
               {s.label}
@@ -153,21 +151,21 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
         type="button"
         onClick={needsApproval ? approve : sell}
         disabled={busy}
-        className="w-full font-mono text-xs text-black bg-wire-purple/80 py-3 tracking-widest hover:bg-wire-purple transition-all disabled:opacity-40"
+        className="uni-pill w-full text-sm font-semibold text-black bg-wire-purple py-3 hover:shadow-[0_10px_30px_rgba(183,140,255,0.28)] disabled:opacity-40 disabled:hover:translate-y-0"
       >
         {busy
           ? quoting
-            ? "QUOTING…"
+            ? "Quoting…"
             : isConfirming
-              ? "CONFIRMING…"
-              : "CHECK YOUR WALLET…"
+              ? "Confirming…"
+              : "Check your wallet…"
           : needsApproval
-            ? "APPROVE SELL → USDG"
-            : "SELL EVERYTHING → USDG (MARKET)"}
+            ? "Approve sell → USDG"
+            : "Sell everything → USDG (market)"}
       </button>
 
       {error && (
-        <div className="font-mono text-[11px] text-wire-muted leading-relaxed break-words">
+        <div className="text-[11px] text-wire-muted leading-relaxed break-words">
           {error}
         </div>
       )}
@@ -176,9 +174,9 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
           href={explorerTxUrl(hash)}
           target="_blank"
           rel="noopener noreferrer"
-          className="block font-mono text-[11px] text-wire-cyan tracking-widest hover:glow-cyan"
+          className="block text-[11px] font-medium text-wire-cyan hover:underline"
         >
-          {isSuccess ? "✓ SOLD — VIEW ON EXPLORER" : "VIEW ON EXPLORER"}
+          {isSuccess ? "✓ Sold — view on explorer" : "View on explorer"}
         </a>
       )}
     </div>

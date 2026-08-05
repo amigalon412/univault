@@ -1,7 +1,6 @@
 "use client";
 
 import { useReveal } from "@/hooks/useReveal";
-import { Bracket } from "@/components/Bracket";
 import { ContractLink } from "@/components/ContractLink";
 import { PixelLogo } from "@/components/PixelLogo";
 import { GLYPH_GRID } from "@/lib/pixel-glyphs";
@@ -28,30 +27,28 @@ function Node({
   return (
     <div
       className={
-        "relative flex flex-col items-center justify-center bg-black text-center " +
+        "relative flex flex-col items-center justify-center rounded-2xl text-center " +
         (hub
-          ? "border border-wire-cyan shadow-[0_0_40px_rgba(214,254,81,0.16)] px-7 py-8 "
-          : "border border-wire-cyan/35 px-6 py-6 ") +
+          ? "bg-wire-raised border border-wire-cyan/45 shadow-[0_0_44px_rgba(252,114,255,0.14)] px-7 py-8 "
+          : "bg-wire-card border border-wire-border px-6 py-6 ") +
         className
       }
     >
       <PixelLogo
         logo={node.glyph}
         grid={GLYPH_GRID}
-        size={hub ? 60 : 46}
-        className="text-wire-cyan mx-auto"
+        size={hub ? 56 : 42}
+        className={(hub ? "text-wire-cyan" : "text-white/80") + " mx-auto"}
       />
       <div
         className={
-          "font-mono text-wire-cyan tracking-[0.2em] mt-4 " +
-          (hub ? "text-base glow-cyan" : "text-sm")
+          "font-semibold mt-4 " +
+          (hub ? "text-base text-wire-cyan" : "text-sm text-white")
         }
       >
         {node.name}
       </div>
-      <div className="font-mono text-[11px] text-wire-muted tracking-[0.1em] mt-2">
-        {node.role}
-      </div>
+      <div className="text-[11px] text-wire-muted mt-1.5">{node.role}</div>
       {node.holdings ? (
         <div className="mt-4">
           <div className="grid grid-cols-2 gap-1.5">
@@ -67,7 +64,7 @@ function Node({
           <div className="mt-3">
             <ContractLink
               address={node.address}
-              label="ADAPTER"
+              label="Adapter"
               variant="bare"
               className="opacity-70"
             />
@@ -99,7 +96,7 @@ function Node({
    through document.getAnimations(), which does not see SMIL -- these would
    have run forever behind a scrolled-past section, which is exactly the
    compositor load this page was cleaned up to remove. */
-const LEGS_H = 356;         // height of the legs column at md and up
+const LEGS_H = 356;         // height of the legs column at lg and up
 const CARD_H = (LEGS_H - 20) / 2;   // two cards, one gap-5 between them
 const ARM_1 = CARD_H / 2;
 const ARM_2 = LEGS_H - CARD_H / 2;
@@ -124,7 +121,7 @@ function Feed() {
         y1="7"
         x2="100"
         y2="7"
-        stroke="rgba(214,254,81,0.55)"
+        stroke="rgba(252,114,255,0.55)"
         strokeWidth="1"
         strokeDasharray={DASH}
         vectorEffect="non-scaling-stroke"
@@ -133,8 +130,8 @@ function Feed() {
         r="3.5"
         cx="0"
         cy="0"
-        fill="#d6fe51"
-        className="flow-dot drop-shadow-[0_0_7px_#d6fe51]"
+        fill="#fc72ff"
+        className="flow-dot drop-shadow-[0_0_7px_#fc72ff]"
         style={{ offsetPath: 'path("M0 7 L100 7")' }}
       />
     </svg>
@@ -153,7 +150,7 @@ function Fork() {
     >
       <g
         fill="none"
-        stroke="rgba(214,254,81,0.55)"
+        stroke="rgba(252,114,255,0.55)"
         strokeWidth="1"
         strokeDasharray={DASH}
       >
@@ -173,8 +170,8 @@ function Fork() {
           r="3.5"
           cx="0"
           cy="0"
-          fill="#d6fe51"
-          className="flow-dot drop-shadow-[0_0_7px_#d6fe51]"
+          fill="#fc72ff"
+          className="flow-dot drop-shadow-[0_0_7px_#fc72ff]"
           style={{ offsetPath: `path("M0 ${LEGS_H / 2} H${SPLIT_X} V${y} H${FORK_W}")` }}
         />
       ))}
@@ -204,135 +201,119 @@ export function MechanicsSection() {
   return (
     <section
       id="mechanics"
-      className="relative border-b border-wire-border px-4 sm:px-6 md:px-8 py-16 md:py-24 scroll-mt-16"
+      className="relative px-4 sm:px-6 md:px-8 py-16 md:py-24 scroll-mt-16"
     >
-      {/* One grid for the whole section rather than one inside the panel.
-          Continuity is then structural: the panel is a border drawn over the
-          same field, so the ruling runs out of it and across the page instead
-          of stopping at an edge. Masked so it dissolves before the margins and
-          does not read as a rectangle of its own. */}
+      {/* A pink wash floated behind the diagram, masked so it dissolves before
+          the margins. Replaces the graph-paper ruling this section used to
+          draw: a grid is terminal furniture, a soft accent bloom is the only
+          thing the app this borrows from ever puts behind a card. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(214,254,81,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(214,254,81,0.055) 1px, transparent 1px)",
-          backgroundSize: "34px 34px",
-          maskImage:
-            "radial-gradient(115% 80% at 50% 45%, #000 45%, rgba(0,0,0,0.35) 78%, transparent 100%)",
-          WebkitMaskImage:
-            "radial-gradient(115% 80% at 50% 45%, #000 45%, rgba(0,0,0,0.35) 78%, transparent 100%)",
-        }}
-      />
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+      >
+        <div className="absolute left-1/2 top-1/2 h-[70vmax] w-[70vmax] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(252,114,255,0.10),transparent_72%)] blur-3xl" />
+      </div>
       <div className="relative max-w-5xl mx-auto" ref={root}>
-        <div className="font-mono text-xs text-wire-muted tracking-[0.4em] mb-2">
-          {"// HOW ONE DEPOSIT MOVES"}
+        <div className="text-sm font-semibold text-wire-cyan mb-3">
+          How one deposit moves
         </div>
-        <h2 className="font-mono text-2xl md:text-3xl text-wire-cyan glow-cyan mb-3 leading-snug">
+        <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.03em] text-white mb-4 leading-tight">
           Follow the money. Every box is a contract.
         </h2>
-        <p className="font-mono text-sm text-wire-muted leading-relaxed max-w-2xl mb-8">
+        <p className="text-base text-wire-muted leading-relaxed max-w-2xl mb-9">
           Not a diagram of an intention. Every node opens the deployed contract
           on the explorer, at the address it actually runs at, with its source
           verified — so you can read what each one does rather than taking this
           page&apos;s word for it.
         </p>
 
-        <div className="relative border border-wire-cyan/25 bg-black/25">
-          <Bracket at="tl" />
-          <Bracket at="tr" />
-          <Bracket at="bl" />
-          <Bracket at="br" />
-
-          <div className="flex items-center gap-4 border-b border-wire-cyan/20 px-5 sm:px-7 py-3.5 font-mono text-[11px] tracking-[0.26em] text-wire-muted">
-            <span className="text-wire-cyan glow-cyan whitespace-nowrap">
-              ▸ BLUR VAULT · ERC-4626
+        <div className="relative uni-card overflow-hidden">
+          <div className="flex items-center gap-4 border-b border-wire-border px-5 sm:px-7 py-4 text-xs text-wire-muted">
+            <span className="font-semibold text-white whitespace-nowrap">
+              UNIVAULT · ERC-4626
             </span>
-            <span className="hidden lg:inline text-wire-muted/70 whitespace-nowrap">
-              {DIAGRAM_VAULT} ADDRESSES
+            <span className="hidden lg:inline whitespace-nowrap">
+              {DIAGRAM_VAULT} addresses
             </span>
-            <span className="ml-auto flex items-center gap-2.5 whitespace-nowrap">
-              <span className="h-2 w-2 rounded-full bg-wire-cyan animate-earn" />
-              LIVE ON ROBINHOOD CHAIN
+            <span className="ml-auto flex items-center gap-2 whitespace-nowrap">
+              <span className="h-1.5 w-1.5 rounded-full bg-wire-cyan animate-earn" />
+              Live on Robinhood Chain
             </span>
           </div>
 
           <div className="relative px-5 sm:px-9 py-9 sm:py-12">
-            {/* Stacks under md: a horizontal flow has nowhere to go on a phone.
-                Above md the widths are fixed, so the wiring can be drawn to
+            {/* Stacks under lg: a horizontal flow has nowhere to go on a phone,
+                and the fixed widths below add up to more than the panel is wide
+                anywhere short of lg — at ~930px the right-hand leg column was
+                being clipped off the card.
+                Above lg the widths are fixed, so the wiring can be drawn to
                 coordinates instead of hoping flexbox lands where the SVG
                 expects. The source and the vault sit close together — the two
                 of them are one movement, and the interesting split is the fork
                 on the right, which is where the room should go. */}
             <div
               className={
-                "flex flex-col md:flex-row md:items-center gap-5 md:gap-0 " +
+                "flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-0 " +
                 (seen ? "figure-in" : "opacity-0")
               }
             >
-              <div className="w-full md:w-[212px] md:flex-none">
+              <div className="w-full lg:w-[212px] lg:flex-none">
                 <Node node={SOURCE_NODE} />
               </div>
-              <div className="hidden md:block w-[86px] shrink-0 px-3">
+              <div className="hidden lg:block w-[86px] shrink-0 px-3">
                 <Feed />
               </div>
-              <div className="w-full md:w-[228px] md:flex-none">
+              <div className="w-full lg:w-[228px] lg:flex-none">
                 <Node node={VAULT_NODE} hub />
               </div>
-              <div className="hidden md:block">
+              <div className="hidden lg:block">
                 <Fork />
               </div>
               <div
-                className="flex flex-col gap-5 md:flex-1 md:min-w-[236px]"
+                className="flex flex-col gap-5 lg:flex-1 lg:min-w-[236px]"
               >
                 {LEG_NODES.map((leg) => (
-                  <div key={leg.name} className="md:h-[168px]">
+                  <div key={leg.name} className="lg:h-[168px]">
                     <Node node={leg} className="h-full" />
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-10 pt-6 border-t border-wire-cyan/15 flex flex-wrap items-center gap-3.5">
-              <span className="font-mono text-[11px] text-wire-muted/70 tracking-[0.26em]">
-                KEPT ON TARGET BY
-              </span>
+            <div className="mt-10 pt-6 border-t border-wire-border flex flex-wrap items-center gap-3">
+              <span className="text-xs text-wire-muted/70">Kept on target by</span>
               {RAIL_NODES.map((n) => (
                 <span
                   key={n.name}
-                  className="flex items-center gap-2.5 border border-wire-cyan/20 px-3.5 py-2.5 font-mono text-[11px] tracking-[0.14em] text-wire-muted"
+                  className="flex items-center gap-2.5 rounded-full border border-wire-border bg-white/[0.03] px-3.5 py-2 text-xs text-wire-muted"
                 >
                   <PixelLogo
                     logo={n.glyph}
                     grid={GLYPH_GRID}
-                    size={20}
+                    size={18}
                     className="text-wire-cyan shrink-0"
                   />
-                  <span className="text-wire-cyan">{n.name}</span>
+                  <span className="text-white font-medium">{n.name}</span>
                   <ContractLink address={n.address} variant="bare" />
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="border-t border-wire-cyan/20">
+          <div className="border-t border-wire-border">
             {TRACE_STEPS.map((s, i) => (
               <div
                 key={s.num}
                 className={
-                  "grid grid-cols-[44px_1fr] md:grid-cols-[44px_1fr_auto] gap-x-5 gap-y-3 px-5 sm:px-9 py-6 border-b border-wire-cyan/10 last:border-b-0 " +
+                  "grid grid-cols-[44px_1fr] md:grid-cols-[44px_1fr_auto] gap-x-5 gap-y-3 px-5 sm:px-9 py-6 border-b border-wire-border last:border-b-0 " +
                   (seen ? "figure-in" : "opacity-0")
                 }
                 style={{ animationDelay: `${200 + i * 90}ms` }}
               >
-                <div className="font-mono text-sm text-wire-cyan/45 pt-0.5">
-                  {s.num}
-                </div>
+                <div className="font-digits text-sm text-wire-cyan pt-0.5">{s.num}</div>
                 <div>
-                  <div className="font-mono text-sm text-wire-cyan tracking-[0.16em]">
-                    {s.title}
-                  </div>
-                  <div className="font-mono text-[13px] text-wire-muted leading-relaxed mt-2.5 max-w-2xl">
+                  <div className="text-sm font-semibold text-white">{s.title}</div>
+                  <div className="text-[13px] text-wire-muted leading-relaxed mt-2 max-w-2xl">
                     {s.body}
                   </div>
                 </div>

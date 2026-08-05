@@ -1,8 +1,16 @@
 import Link from "next/link";
 import { CaBar } from "@/components/CaBar";
 import { ConnectButton } from "@/components/ConnectButton";
-import { XIcon } from "@/components/icons";
+import { VaultMark, XIcon } from "@/components/icons";
 import { readSiteConfig } from "@/lib/site-config";
+
+const LINKS = [
+  { href: "/app", label: "App" },
+  { href: "/#vaults", label: "Vaults" },
+  { href: "/#mechanics", label: "How it works" },
+  { href: "/#feed", label: "Live" },
+  { href: "/docs", label: "Docs" },
+];
 
 export async function NavBar() {
   // Server-side read so the CA strip is correct in the HTML itself rather than
@@ -15,54 +23,55 @@ export async function NavBar() {
     //
     // No backdrop-blur: a blurred backdrop on a sticky bar has to be re-sampled
     // and re-blurred on every frame anything underneath it moves, and on this
-    // page something is always moving (the marquee sits directly beneath it).
-    // Over 92%-opaque black it was buying almost nothing visually.
+    // page something is always moving (the marquee sits directly beneath it,
+    // and the logo field falls behind everything).
     <header className="sticky top-0 z-50 bg-black/92">
       <CaBar initialToken={blurToken} />
-      <nav className="grid grid-cols-2 lg:grid-cols-3 items-center px-6 py-3 border-b border-wire-border">
-      <div className="flex items-center gap-3">
-        {/* The wordmark is the way home from /app and /docs, which is where
-            everyone reaches for it first. */}
-        <Link
-          href="/"
-          aria-label="BLUR — home"
-          className="wire-title text-2xl text-wire-cyan glow-cyan tracking-widest hover:opacity-80 transition-opacity"
-        >
-          BLUR
-        </Link>
-      </div>
-      <div className="hidden lg:flex items-center justify-center gap-8 font-mono text-xs tracking-widest text-wire-cyan/80">
-        <Link href="/app" className="hover:text-wire-cyan hover:glow-cyan transition-all">
-          APP
-        </Link>
-        <Link href="/#vaults" className="hover:text-wire-cyan hover:glow-cyan transition-all">
-          VAULTS
-        </Link>
-        <Link href="/#mechanics" className="hover:text-wire-cyan hover:glow-cyan transition-all">
-          HOW IT WORKS
-        </Link>
-        <Link href="/#feed" className="hover:text-wire-cyan hover:glow-cyan transition-all">
-          LIVE
-        </Link>
-        <Link href="/docs" className="hover:text-wire-cyan hover:glow-cyan transition-all">
-          DOCS
-        </Link>
-      </div>
-      <div className="flex items-center justify-end gap-2 sm:gap-3">
-        <a
-          href="https://x.com/BlurYield"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="@BlurYield on X"
-          className="flex items-center justify-center border border-wire-cyan text-wire-cyan glow-box-cyan p-2 hover:bg-wire-cyan hover:text-black transition-all"
-        >
-          <XIcon width={15} height={15} className="glow-svg-cyan" />
-        </a>
-        <ConnectButton
-          label="CONNECT"
-          className="flex items-center gap-2 border border-wire-cyan text-wire-cyan text-xs px-4 py-2 hover:bg-wire-cyan hover:text-black disabled:opacity-30 whitespace-nowrap"
-        />
-      </div>
+      <nav className="grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6 py-3">
+        <div className="flex items-center gap-2.5">
+          {/* The wordmark is the way home from /app and /docs, which is where
+              everyone reaches for it first. */}
+          <Link
+            href="/"
+            aria-label="UNIVAULT — home"
+            className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
+          >
+            <VaultMark className="h-7 w-7 text-wire-cyan shrink-0" />
+            <span className="wire-title text-lg sm:text-xl text-white">
+              UNIVAULT
+            </span>
+          </Link>
+        </div>
+
+        {/* Uniswap keeps its sections as a row of quiet pills that only take a
+            fill on hover, rather than as underlined links. */}
+        <div className="hidden lg:flex items-center justify-center gap-1">
+          {LINKS.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="rounded-xl px-3.5 py-2 text-sm font-medium text-wire-muted hover:text-white hover:bg-white/5 transition-colors"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex items-center justify-end gap-2">
+          <a
+            href="https://x.com/BlurYield"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Follow on X"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.06] text-wire-muted hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <XIcon width={14} height={14} />
+          </a>
+          <ConnectButton
+            label="Connect"
+            className="uni-pill bg-wire-cyan/[0.14] text-wire-cyan text-sm font-semibold px-4 sm:px-5 py-2.5 hover:bg-wire-cyan/25 disabled:opacity-40 whitespace-nowrap"
+          />
+        </div>
       </nav>
     </header>
   );

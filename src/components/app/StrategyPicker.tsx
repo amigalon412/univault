@@ -1,8 +1,7 @@
 "use client";
 
 import { formatUsdg } from "@/hooks/useVault";
-import { BAR_FILL, BAR_TRACK, STRATEGIES, type StrategyId } from "@/lib/strategies";
-import { AsciiRule } from "@/components/AsciiRule";
+import { STRATEGIES, type StrategyId } from "@/lib/strategies";
 
 interface StrategyPickerProps {
   selected: StrategyId;
@@ -13,17 +12,12 @@ interface StrategyPickerProps {
 
 export function StrategyPicker({ selected, onSelect, tvl }: StrategyPickerProps) {
   return (
-    <section className="border border-wire-border bg-black p-7 md:p-9">
+    <section className="uni-card p-5 sm:p-7">
       <div className="flex items-baseline justify-between mb-5">
-        <h2 className="font-mono text-lg text-wire-cyan glow-cyan tracking-[0.3em]">
-          SELECT STRATEGY
-        </h2>
-        <span className="font-mono text-xs text-wire-muted tracking-[0.2em]">
-          3 VAULTS
-        </span>
+        <h2 className="text-lg font-semibold text-white">Select strategy</h2>
+        <span className="text-xs text-wire-muted">3 vaults</span>
       </div>
-      <AsciiRule className="text-xs text-wire-cyan/40 mb-6" />
-      <div className="space-y-px bg-wire-border">
+      <div className="space-y-3">
         {STRATEGIES.map((s) => {
           const active = s.id === selected;
           return (
@@ -33,61 +27,48 @@ export function StrategyPicker({ selected, onSelect, tvl }: StrategyPickerProps)
               onClick={() => onSelect(s.id)}
               aria-pressed={active}
               className={
-                "w-full text-left p-7 transition-all group " +
+                "w-full text-left rounded-2xl p-5 sm:p-6 border transition-colors group " +
                 (active
-                  ? "bg-wire-card outline outline-wire-cyan glow-box-cyan"
-                  : "bg-black hover:bg-wire-card")
+                  ? "border-wire-cyan/50 bg-wire-cyan/[0.06]"
+                  : "border-wire-border bg-white/[0.02] hover:bg-white/[0.05]")
               }
             >
-              <div className="flex items-baseline justify-between gap-4 mb-3">
-                <span className="flex items-baseline gap-2.5 min-w-0">
-                  <span
-                    className={
-                      "font-mono text-sm " +
-                      (active ? "text-wire-cyan" : "text-wire-dim")
-                    }
-                  >
-                    {active ? "▸" : " "}
-                  </span>
-                  <span
-                    className={
-                      "font-mono text-2xl tracking-widest transition-all " +
-                      (active
-                        ? "text-wire-cyan glow-cyan"
-                        : "text-wire-cyan group-hover:glow-cyan")
-                    }
-                  >
-                    {s.name}
-                  </span>
+              <div className="flex items-baseline justify-between gap-4 mb-4">
+                <span
+                  className={
+                    "text-xl font-semibold transition-colors " +
+                    (active ? "text-wire-cyan" : "text-white")
+                  }
+                >
+                  {s.name}
                 </span>
                 <span
                   className={
-                    "font-digits text-3xl whitespace-nowrap " +
-                    (active ? "text-wire-cyan glow-cyan" : "text-wire-cyan")
+                    "font-digits text-2xl font-semibold whitespace-nowrap " +
+                    (active ? "text-wire-cyan" : "text-white")
                   }
                 >
                   {s.split}
                 </span>
               </div>
-              <div className="relative h-4 mb-4 font-mono text-base leading-4 tracking-tighter">
-                <div className="absolute inset-0 overflow-hidden whitespace-nowrap text-wire-dim">
-                  {BAR_TRACK}
-                </div>
-                <div
-                  className={
-                    "absolute inset-y-0 left-0 overflow-hidden whitespace-nowrap " +
-                    s.barClass +
-                    (active ? " text-wire-cyan glow-cyan" : " text-wire-cyan")
-                  }
-                >
-                  {BAR_FILL}
-                </div>
+              {/* The split as a two-tone track rather than a run of block
+                  glyphs: the stablecoin leg in the accent, the stock leg in
+                  the quiet fill, both in one bar so the ratio is the shape. */}
+              <div className="flex h-2 overflow-hidden rounded-full bg-white/[0.07] mb-4">
+                <span
+                  className="h-full bg-wire-cyan"
+                  style={{ width: `${s.stablePct}%` }}
+                />
+                <span
+                  className="h-full bg-white/30"
+                  style={{ width: `${s.stockPct}%` }}
+                />
               </div>
-              <div className="flex items-baseline justify-between gap-4 font-mono text-xs tracking-[0.2em]">
+              <div className="flex items-baseline justify-between gap-4 text-xs">
                 <span className="text-wire-muted truncate">{s.short}</span>
                 <span className="text-wire-muted whitespace-nowrap">
                   {tvl[s.id] === undefined
-                    ? "NOT DEPLOYED"
+                    ? "Not deployed"
                     : `${formatUsdg(tvl[s.id]!, 0)} TVL`}
                 </span>
               </div>

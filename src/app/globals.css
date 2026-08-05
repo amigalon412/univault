@@ -4,19 +4,55 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   app.uniswap.org theme.
+
+   The palette is retargeted rather than renamed. Every component in this repo
+   was written against a `wire-*` colour set plus bare `bg-black` / `text-black`,
+   so the cheapest correct way to re-skin the whole site is to move the VALUES
+   under those names and leave the class names alone. `wire-cyan` is now the
+   Uniswap pink, `black` is now the Uniswap dark-grey page surface, and every
+   panel, border and accent follows without touching the markup that draws it.
+
+   Reference tokens (Uniswap dark):
+     surface1  #131313   page
+     surface2  #1b1b1b   card
+     surface3  #242424   raised / input
+     accent1   #fc72ff   pink
+     accent2   #361a37   pink wash
+     neutral1  #ffffff   text
+     neutral2  #9b9b9b   secondary text
+     neutral3  #5e5e5e   disabled / hairline text
+   ───────────────────────────────────────────────────────────────────────────── */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-share-tech-mono), ui-monospace, monospace;
-  --font-mono: var(--font-share-tech-mono), ui-monospace, monospace;
+
+  /* One family for the whole site. Uniswap ships "Basel"; Inter is the closest
+     thing available from Google Fonts and reads identically at UI sizes. Both
+     --font-sans and --font-mono resolve to it on purpose: the codebase uses
+     `font-mono` as its default text class in ~200 places, and re-pointing it
+     here re-types the entire site without touching those files. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-sans);
-  --color-wire-cyan: #d6fe51;
-  --color-wire-green: #00ff41;
-  --color-wire-purple: #bf5fff;
-  --color-wire-dim: #003333;
-  --color-wire-muted: #c8c8c8;
-  --color-wire-border: #0a2020;
-  --color-wire-card: #030a0a;
+
+  /* The accent. Named `wire-cyan` for continuity with the markup; pink in fact. */
+  --color-wire-cyan: #fc72ff;
+  --color-wire-green: #40b66b;
+  --color-wire-purple: #b78cff;
+  --color-wire-dim: #2c2c2c;
+  --color-wire-muted: #9b9b9b;
+  --color-wire-border: rgba(255, 255, 255, 0.08);
+  --color-wire-card: #1b1b1b;
+  --color-wire-raised: #242424;
+
+  /* `bg-black` is this codebase's "page surface" and `text-black` its "ink on
+     an accent fill". Retargeting the two of them here is what turns every
+     black panel into a Uniswap grey card in one move. */
+  --color-black: #131313;
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -46,13 +82,15 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Uniswap's shape language: 20px cards, 16px inner blocks, pills for actions. */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --radius-4xl: 2.5rem;
 }
 
 :root {
@@ -79,7 +117,7 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 1.25rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -91,37 +129,37 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.185 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.222 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.222 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.73 0.235 328);
+  --primary-foreground: oklch(0.185 0 0);
+  --secondary: oklch(0.27 0 0);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.27 0 0);
+  --muted-foreground: oklch(0.68 0 0);
+  --accent: oklch(0.27 0 0);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.63 0.21 25);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.73 0.235 328 / 60%);
+  --chart-1: oklch(0.73 0.235 328);
+  --chart-2: oklch(0.68 0 0);
+  --chart-3: oklch(0.55 0 0);
+  --chart-4: oklch(0.42 0 0);
+  --chart-5: oklch(0.3 0 0);
+  --sidebar: oklch(0.222 0 0);
+  --sidebar-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.73 0.235 328);
+  --sidebar-primary-foreground: oklch(0.185 0 0);
+  --sidebar-accent: oklch(0.27 0 0);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.73 0.235 328 / 60%);
 }
 
 @layer base {
@@ -129,13 +167,16 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-black text-wire-cyan;
+    @apply bg-black text-white;
   }
   html {
-    background: #000;
-    color: var(--cyan);
-    font-family: var(--font-share-tech-mono), ui-monospace, monospace;
-    -webkit-font-smoothing: none;
+    background: #131313;
+    color: #ffffff;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    /* The old theme rendered aliased on purpose, to sell the terminal. Uniswap
+       is a smoothed UI face; keeping `none` here made Inter look broken. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
     scroll-padding-top: 104px; /* nav height + the CA strip above it */
   }
@@ -146,104 +187,145 @@
   }
 }
 
-/* ── wirebot.trade theme ─────────────────────────────────────── */
+/* ── uniswap theme ───────────────────────────────────────────────────────── */
 
 :root {
-  --cyan: #d6fe51;
-  --green: #00ff41;
-  --purple: #bf5fff;
-  --dim: #003333;
+  /* Kept under the old names because BackgroundWave and a handful of inline
+     SVG strokes read `var(--cyan)` directly. Pink now. */
+  --cyan: #fc72ff;
+  --pink: #fc72ff;
+  --pink-strong: #ff9dff;
+  --pink-wash: rgba(252, 114, 255, 0.12);
+  --green: #40b66b;
+  --purple: #b78cff;
+  --dim: #2c2c2c;
+  --surface2: #1b1b1b;
+  --surface3: #242424;
 }
 
+/* The glow family survives as classes because the markup is full of them, but
+   the neon is gone: Uniswap does not draw text in halogen. What is left is a
+   soft pink bloom, closer to the accent-tinted shadow the real app puts under
+   its primary controls than to a CRT. */
 .glow-cyan {
-  text-shadow: 0 0 8px var(--cyan), 0 0 20px var(--cyan), 0 0 40px rgba(214, 254, 81, 0.4);
+  text-shadow: 0 0 26px rgba(252, 114, 255, 0.35);
 }
 .glow-green {
-  text-shadow: 0 0 8px var(--green), 0 0 20px var(--green);
+  text-shadow: 0 0 26px rgba(64, 182, 107, 0.35);
 }
 .glow-purple {
-  text-shadow: 0 0 8px var(--purple), 0 0 20px var(--purple);
+  text-shadow: 0 0 26px rgba(183, 140, 255, 0.35);
 }
 .glow-box-cyan {
-  box-shadow: 0 0 10px rgba(214, 254, 81, 0.35), 0 0 22px rgba(214, 254, 81, 0.18);
+  box-shadow: 0 0 0 1px rgba(252, 114, 255, 0.28), 0 10px 34px rgba(252, 114, 255, 0.16);
 }
 .glow-svg-cyan {
-  filter: drop-shadow(0 0 5px var(--cyan)) drop-shadow(0 0 11px rgba(214, 254, 81, 0.55));
+  filter: drop-shadow(0 0 8px rgba(252, 114, 255, 0.45));
 }
 .hover\:glow-cyan:hover {
-  text-shadow: 0 0 8px var(--cyan), 0 0 20px var(--cyan), 0 0 40px rgba(214, 254, 81, 0.4);
+  text-shadow: 0 0 26px rgba(252, 114, 255, 0.4);
 }
 .group:hover .group-hover\:glow-cyan {
-  text-shadow: 0 0 8px var(--cyan), 0 0 20px var(--cyan), 0 0 40px rgba(214, 254, 81, 0.4);
+  text-shadow: 0 0 26px rgba(252, 114, 255, 0.4);
 }
+
+/* The wordmark. Was a bitmap face at wide tracking; Uniswap sets its brand in
+   the same UI family, tight and heavy. */
 .wire-title {
-  font-family: var(--font-vt323), VT323, monospace;
-  line-height: 1;
-  letter-spacing: 0.05em;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
-/* Squared, technological read-out face for money figures and split numbers. */
+/* Figures. Same family as everything else now, but locked to tabular so a
+   changing balance never re-flows the row it sits in. */
 .font-digits {
-  font-family: var(--font-digits), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.02em;
 }
+
+/* Uniswap surfaces, as classes so a component can opt in without restating the
+   same four declarations. */
+.uni-card {
+  background: var(--surface2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1.25rem;
+}
+.uni-raised {
+  background: var(--surface3);
+  border-radius: 1rem;
+}
+/* The primary action: a pink pill that lifts on hover. */
+.uni-pill {
+  border-radius: 9999px;
+  transition:
+    background-color 0.16s ease,
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    opacity 0.16s ease;
+}
+.uni-pill:hover {
+  transform: translateY(-1px);
+}
+/* The pink-wash secondary, used for chips and quiet buttons. */
+.uni-wash {
+  background: var(--pink-wash);
+  color: var(--pink);
+}
+
+/* ── The block-letter wordmark ────────────────────────────────────────────
+   The one survivor of the terminal era. Drawn as an SVG pixel grid rather than
+   as text — see WordMark.tsx for why — so everything here is colour and light,
+   never geometry.
+
+   drop-shadow rather than text-shadow, because the mark is now shapes: a text
+   shadow would do nothing to an <svg>, and drop-shadow follows the alpha of the
+   rects, which is exactly the outline the neon should trace.
+
+   The bloom starts wide on purpose. A tight inner layer floods the one-cell
+   counters inside the A and the notch of the N, and the mark stops resolving at
+   the sizes it is actually read at. */
+.wordmark {
+  color: var(--pink);
+  filter:
+    drop-shadow(0 0 10px rgba(252, 114, 255, 0.55))
+    drop-shadow(0 0 34px rgba(252, 114, 255, 0.35));
+}
+
 .page-enter {
   animation: pageIn 0.5s ease-out both;
 }
 .cursor::after {
-  content: "█";
-  animation: blink 1s step-start infinite;
-}
-.glitch {
-  position: relative;
-  display: inline-block;
-}
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  /* These two layers are copies of the ASCII logo carrying the same multi-layer
-     glow, and they animate transform + opacity forever. Un-promoted, every
-     frame repaints the glow of all three stacked layers; promoted, the frames
-     are a compositor transform. Two layers is a cheap price for that. */
-  will-change: transform, opacity;
-}
-.glitch::before {
-  color: var(--cyan);
-  clip-path: polygon(0 25%, 100% 25%, 100% 45%, 0 45%);
-  animation: glitch-before 3.5s infinite;
-}
-.glitch::after {
-  color: var(--green);
-  clip-path: polygon(0 65%, 100% 65%, 100% 80%, 0 80%);
-  animation: glitch-after 4.1s infinite;
+  content: "";
 }
 .animate-blink {
   animation: blink 1s step-start infinite;
 }
 .animate-flicker {
   animation: flicker 6s infinite;
-  /* The flickering element is the ASCII logo, which carries a three-layer glow
-     over ~43000 square pixels. Un-promoted, animating its opacity repaints all
-     three shadow layers every frame for as long as the hero is on screen --
-     which is the top of the page, where scrolling starts. Promoted, the same
-     animation is a compositor opacity change and costs nothing to repaint. */
+  /* Opacity only, and promoted: the mark carries a three-layer glow over a
+     large area, and an un-promoted opacity animation repaints all of it every
+     frame for as long as the hero is on screen. */
   will-change: opacity;
+}
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.4; }
+  94% { opacity: 1; }
+  96% { opacity: 0.6; }
+  97% { opacity: 1; }
 }
 .animate-marquee {
   animation: marquee 25s linear infinite;
   will-change: transform;
 }
 
-/* The glitch, flicker, blink and marquee loops had no reduced-motion escape,
-   unlike the wave and grid ones further down. They run forever, so on a machine
-   where this matters they never stop costing anything. */
+/* These loops run forever, so on a machine where this matters they never stop
+   costing anything. */
 @media (prefers-reduced-motion: reduce) {
-  .glitch::before,
-  .glitch::after,
   .cursor::after,
   .animate-blink,
   .animate-flicker,
@@ -261,36 +343,36 @@
   animation: waveDrift 36s linear infinite;
 }
 
-/* Neon grid backdrop: faint graph-paper lines that breathe, with a lime bloom
-   drifting across and screening over them, so the grid glows under the neon. */
+/* The backdrop behind /app. Was a lime graph-paper grid; now the soft pink
+   radial wash Uniswap floats behind its swap card, on the same drift. */
 .bg-neon-grid {
   background-image:
-    linear-gradient(rgba(214, 254, 81, 0.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(214, 254, 81, 0.09) 1px, transparent 1px);
-  background-size: 38px 38px, 38px 38px;
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 56px 56px, 56px 56px;
 }
 .bg-neon-bloom {
-  width: 80vmax;
-  height: 80vmax;
+  width: 78vmax;
+  height: 78vmax;
   background: radial-gradient(
     closest-side,
-    rgba(214, 254, 81, 0.22),
-    rgba(214, 254, 81, 0.07) 45%,
+    rgba(252, 114, 255, 0.2),
+    rgba(252, 114, 255, 0.06) 46%,
     transparent 72%
   );
-  filter: blur(50px);
+  filter: blur(60px);
 }
 .bg-neon-vignette {
-  background: radial-gradient(ellipse at 50% 44%, transparent 48%, rgba(0, 0, 0, 0.55) 100%);
+  background: radial-gradient(ellipse at 50% 42%, transparent 46%, rgba(0, 0, 0, 0.5) 100%);
 }
 .animate-grid-breathe {
-  animation: gridBreathe 8s ease-in-out infinite;
+  animation: gridBreathe 9s ease-in-out infinite;
 }
 .animate-neon-drift {
-  animation: neonDrift 30s ease-in-out infinite;
+  animation: neonDrift 34s ease-in-out infinite;
 }
 @keyframes gridBreathe {
-  0%, 100% { opacity: 0.45; }
+  0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
 @keyframes neonDrift {
@@ -310,14 +392,6 @@
   }
 }
 
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 1; }
-  93% { opacity: 0.4; }
-  94% { opacity: 1; }
-  96% { opacity: 0.6; }
-  97% { opacity: 1; }
-}
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -329,22 +403,6 @@
 @keyframes pageIn {
   0% { opacity: 0; transform: translateY(10px); }
   100% { opacity: 1; transform: none; }
-}
-@keyframes glitch-before {
-  0%, 100% { transform: translate(0); opacity: 0; }
-  8% { transform: translate(-4px, 2px); opacity: 0.9; }
-  10% { transform: translate(4px, -2px); opacity: 0.9; }
-  12% { opacity: 0; }
-  55% { transform: translate(-2px, 1px); opacity: 0.4; }
-  57% { opacity: 0; }
-}
-@keyframes glitch-after {
-  0%, 100% { transform: translate(0); opacity: 0; }
-  25% { transform: translate(4px, 3px); opacity: 0.8; }
-  27% { transform: translate(-4px, -3px); opacity: 0.8; }
-  29% { opacity: 0; }
-  75% { transform: translate(3px); opacity: 0.3; }
-  77% { opacity: 0; }
 }
 @keyframes blink {
   0%, 100% { opacity: 1; }
@@ -366,8 +424,8 @@
   animation: earnPulse 1.8s ease-in-out infinite;
 }
 @keyframes earnPulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--cyan), 0 0 12px rgba(214, 254, 81, 0.5); }
-  50% { opacity: 0.5; box-shadow: 0 0 2px var(--cyan); }
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 4px rgba(252, 114, 255, 0.14); }
+  50% { opacity: 0.55; box-shadow: 0 0 0 0 rgba(252, 114, 255, 0); }
 }
 /* The width of an allocation bar eases in when its value arrives. */
 .bar-fill {
@@ -464,26 +522,11 @@
   from { opacity: 0; }
 }
 
-/* A pixel mark drawing itself in, over about a second.
-
-   Grows outwards from the centre in rings rather than sweeping in from a
-   corner: the mark builds up evenly around its own middle, so nothing about it
-   reads as having a leading edge or a direction.
-
-   Stepped rather than smooth, and that is the whole point. A continuous clip
-   would slice cells in half and look like a wipe; steps() lands the boundary
-   between cells, so the mark arrives one ring of pixels at a time -- which on a
-   16-cell grid is drawing. Sixteen steps is about one cell-ring per step at
-   that grid size, which is what makes the rings countable rather than a smear.
-
-   The radius has to clear the corners, which sit at 50%*sqrt(2) = 70.7% from
-   the centre. With steps(16, end) the last frame rendered is 15/16 of the
-   range, so the range runs to 80% and the final drawn ring is 75% -- past the
-   corners with room to spare.
-
-   `backwards` fill again: the element's own state is fully visible, and the
-   animation only hides it during its stagger delay. A mark whose animation
-   never runs is a mark that is simply there. */
+/* A pixel mark drawing itself in, over about a second. Grows outwards from the
+   centre in rings rather than sweeping in from a corner, stepped so the
+   boundary lands between cells and the mark reads as drawn rather than wiped.
+   `backwards` fill: the element's own state is fully visible, and the animation
+   only hides it during its stagger delay. */
 .pixel-draw {
   animation: pixelDraw 1s steps(16, end) backwards;
 }
@@ -505,11 +548,7 @@
 
    Per-row direction and size come from --drift set inline, so one keyframe set
    serves every row and the rows still move independently. Only transform
-   animates, so the whole thing lives on the compositor.
-
-   Infinite on purpose: AnimationGovernor finds endless animations through
-   document.getAnimations() and pauses them off-screen and in background tabs,
-   so this costs nothing while nobody is looking at it. */
+   animates, so the whole thing lives on the compositor. */
 .weight-drift {
   transform-origin: left center;
   animation: weightDrift 9s infinite;
@@ -525,8 +564,7 @@
   100% { transform: scaleX(1); }
 }
 
-/* The status line under the basket, cross-fading on the same 9s timeline: the
-   resting label for most of the cycle, "rebalancing" across the snap. */
+/* The status line under the basket, cross-fading on the same 9s timeline. */
 .drift-label {
   animation: driftLabel 9s infinite;
 }
@@ -562,27 +600,12 @@
    Section reveal.
 
    A block arrives by fading up out of a slight blur, over a full second on the
-   expo-out curve this file already uses everywhere else. The blur is what makes
-   it read as focusing rather than sliding; without it the same move looks like
-   a list item animating in.
-
-   The duration is deliberate. Half a second reads as a UI transition; a second
-   reads as the page composing itself. Neighbouring blocks are offset with
-   --reveal-delay so a section resolves top-down instead of arriving as a slab.
+   expo-out curve this file already uses everywhere else.
 
    THE HIDDEN STATE IS GATED ON `scripting: enabled`, and that is not a detail.
    Only JavaScript ever removes it, so if scripting is off the rule must not
    apply at all -- otherwise the entire page is invisible to a reader without
-   JS. Both ways this query can fail are safe: scripting disabled does not
-   match, and an engine that does not know the feature does not match either.
-   In both cases the content simply renders, unanimated. */
-/* The blur gets a shorter budget than the other two, and that asymmetry is
-   deliberate. Opacity and transform are composited; filter is not -- it
-   re-rasterises the element every frame on the main thread. Under load the two
-   groups desynchronise, and a block that finishes fading in and only THEN
-   sharpens reads as a rendering fault rather than an effect. Landing the blur
-   at 550ms means that even when it slips it still finishes first, which is also
-   the right order visually: sharp by the time the text is legible. */
+   JS. */
 .reveal {
   transition:
     opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
@@ -603,20 +626,9 @@
   filter: none;
 }
 
-/* A panel breathing in place.
-
-   Vertical only. The first version also unwound a third of a degree, copying
-   the tilt that reads well on a card that is a photograph of rounded plastic.
-   It does not survive here: at this panel's ~950px width, 0.35deg drags one end
-   of a horizontal rule 5.8px below the other, and the whole instrument is built
-   from 1px rules. It stopped looking like a float and started looking like the
-   panel was hung crooked, which is a different message entirely.
-
-   Nine seconds, matching the drift/rebalance loop inside the card, so the panel
-   breathes on the same period as the basket it is showing.
-
-   Infinite, so AnimationGovernor picks it up through document.getAnimations()
-   and parks it whenever the card is off-screen or the tab is hidden. */
+/* A panel breathing in place. Vertical only, nine seconds, matching the
+   drift/rebalance loop inside the card it wraps. Infinite, so
+   AnimationGovernor parks it whenever the card is off-screen. */
 .float-panel {
   animation: floatPanel 9s ease-in-out infinite;
   will-change: transform;
@@ -626,12 +638,9 @@
   50% { transform: translateY(-9px); }
 }
 
-/* An accent element pulsing its own halo.
-
-   Distinct from .animate-earn, which blinks a status dot by dropping its
-   opacity. This one keeps the element at full strength and animates only the
-   glow around it, so it reads as something live rather than something
-   flashing for attention. Shadow only -- nothing reflows. */
+/* An accent element pulsing its own halo. Keeps the element at full strength
+   and animates only the glow around it, so it reads as something live rather
+   than something flashing for attention. Shadow only -- nothing reflows. */
 .pulse-glow {
   animation: pulseGlow 3.2s ease-in-out infinite;
 }
@@ -642,8 +651,8 @@
   animation: none;
 }
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(214, 254, 81, 0); }
-  50% { box-shadow: 0 0 22px 3px rgba(214, 254, 81, 0.22); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(252, 114, 255, 0); }
+  50% { box-shadow: 0 0 34px 4px rgba(252, 114, 255, 0.28); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -660,4 +669,11 @@
   .pulse-glow {
     animation: none;
   }
+}
+
+/* Scrollbars, so the live-feed pane does not punch a bright system chrome hole
+   through a dark card. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
 }

@@ -10,9 +10,9 @@ interface KindMeta {
 }
 
 const KIND_MAP: Record<FeedKind, KindMeta> = {
-  price: { label: "PRICE", cls: "text-wire-cyan glow-cyan", arrow: "◆" },
-  yield: { label: "YIELD", cls: "text-wire-green glow-green", arrow: "⟳" },
-  vault: { label: "VAULT", cls: "text-wire-purple glow-purple", arrow: "▲" },
+  price: { label: "Price", cls: "bg-wire-cyan/12 text-wire-cyan", arrow: "◆" },
+  yield: { label: "Yield", cls: "bg-wire-green/12 text-wire-green", arrow: "⟳" },
+  vault: { label: "Vault", cls: "bg-wire-purple/12 text-wire-purple", arrow: "▲" },
 };
 
 function timeAgo(ts: number): string {
@@ -77,68 +77,63 @@ export function LiveFeed() {
   }, []);
 
   return (
-    <section id="feed" className="border-b border-wire-border">
-      <div className="flex items-center justify-between px-6 py-2 bg-wire-card border-b border-wire-border">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="w-2.5 h-2.5 bg-red-500 rounded-full shrink-0"></span>
-          <span className="w-2.5 h-2.5 bg-yellow-500 rounded-full shrink-0"></span>
-          <span className="w-2.5 h-2.5 bg-wire-green rounded-full shrink-0"></span>
-          <span className="text-wire-muted text-xs font-mono ml-3 tracking-widest truncate">
-            root@blurvault:~$ tail -f /var/log/blur/chain
+    <section id="feed" className="px-4 sm:px-6 md:px-8 pb-20 scroll-mt-16">
+      <div className="max-w-5xl mx-auto uni-card overflow-hidden">
+        <div className="flex items-center justify-between gap-4 px-5 sm:px-7 py-4 border-b border-wire-border">
+          <span className="text-sm font-semibold text-white truncate">
+            Live on-chain activity
           </span>
+          <div className="flex items-center gap-5 shrink-0">
+            <span className="hidden md:inline text-xs text-wire-muted">
+              {stats.blockNumber > 0
+                ? `Block ${stats.blockNumber.toLocaleString()}`
+                : "Connecting"}
+              {stats.tvlUsd === null
+                ? " · no vaults deployed"
+                : ` · $${Math.round(stats.tvlUsd).toLocaleString()} TVL`}
+            </span>
+            <span className="flex items-center gap-1.5 text-xs font-medium text-wire-cyan">
+              <span className="w-1.5 h-1.5 rounded-full bg-wire-cyan animate-blink" />
+              Live
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-5 shrink-0">
-          <span className="hidden md:inline text-wire-muted text-xs font-mono tracking-widest">
-            {stats.blockNumber > 0
-              ? `BLOCK ${stats.blockNumber.toLocaleString()}`
-              : "CONNECTING"}
-            {stats.tvlUsd === null
-              ? " · NO VAULTS DEPLOYED"
-              : ` · $${Math.round(stats.tvlUsd).toLocaleString()} TVL`}
-          </span>
-          <span className="text-wire-cyan text-xs font-mono flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-wire-cyan animate-blink"></span>{" "}
-            LIVE
-          </span>
-        </div>
-      </div>
-      <div className="bg-wire-card">
-        <div className="px-6 py-4 font-mono text-xs md:text-sm max-h-[440px] overflow-y-auto">
+        <div className="px-3 sm:px-5 py-3 text-sm max-h-[440px] overflow-y-auto">
           {!loaded ? (
-            <div className="text-wire-muted py-8 text-center">
-              <span className="cursor">READING ROBINHOOD CHAIN</span>
+            <div className="text-wire-muted py-10 text-center text-sm">
+              Reading Robinhood Chain…
             </div>
           ) : items.length === 0 ? (
             <div className="text-wire-muted py-10 text-center space-y-2">
-              <div className="text-wire-cyan">{"// CHAIN UNREACHABLE"}</div>
-              <div className="text-[11px]">
+              <div className="text-white font-medium">Chain unreachable</div>
+              <div className="text-xs">
                 Nothing is shown here that was not just read from the chain, so
                 nothing is shown.
               </div>
             </div>
           ) : (
-            <div className="space-y-1.5">
+            <div className="space-y-0.5">
               {items.map((item) => {
                 const kind = KIND_MAP[item.kind];
                 return (
                   <div
                     key={item.id}
-                    className={`flex items-center gap-3 py-1.5 border-b border-wire-border/40 last:border-0 transition-colors${
-                      highlight.has(item.id) ? " bg-wire-dim/60" : ""
+                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors${
+                      highlight.has(item.id) ? " bg-wire-cyan/8" : " hover:bg-white/[0.03]"
                     }`}
                   >
-                    <span className="text-wire-border shrink-0 w-9 text-right tabular-nums">
+                    <span className="text-wire-muted/60 shrink-0 w-9 text-right text-xs font-digits">
                       {timeAgo(item.ts)}
                     </span>
-                    <span className={`shrink-0 w-[76px] ${kind.cls}`}>
-                      {kind.arrow} {kind.label}
+                    <span
+                      className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium ${kind.cls}`}
+                    >
+                      {kind.label}
                     </span>
-                    <span className="flex-1 min-w-0 truncate">
-                      <span className="text-wire-cyan glow-cyan">
-                        {item.subject}
-                      </span>
+                    <span className="flex-1 min-w-0 truncate text-sm">
+                      <span className="text-white font-medium">{item.subject}</span>
                       <span className="text-wire-muted"> · </span>
-                      <span className="text-wire-cyan">{item.value}</span>
+                      <span className="text-wire-cyan font-digits">{item.value}</span>
                       {item.detail && (
                         <span className="text-wire-muted"> · {item.detail}</span>
                       )}
@@ -147,7 +142,7 @@ export function LiveFeed() {
                       href={item.linkUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-wire-border hover:text-wire-cyan tracking-wider hidden sm:inline shrink-0"
+                      className="text-xs text-wire-muted/60 hover:text-wire-cyan hidden sm:inline shrink-0"
                       title="View the contract this was read from"
                     >
                       {item.linkShort} ↗

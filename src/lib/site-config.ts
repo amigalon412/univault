@@ -5,7 +5,7 @@ import { getAddress, isAddress, type Address } from "viem";
 /**
  * Settings the operator can change after launch without a rebuild.
  *
- * The $BLUR contract address does not exist until the token is launched, and it
+ * The $UNIVAULT contract address does not exist until the token is launched, and it
  * is needed on the site the minute it does. It used to live in
  * NEXT_PUBLIC_BLUR_TOKEN, which Next inlines into the client bundle at BUILD
  * time -- changing it meant editing .env, rebuilding, redeploying and
@@ -16,7 +16,7 @@ import { getAddress, isAddress, type Address } from "viem";
  * "use client" component -- go through /api/ca instead.
  */
 export type SiteConfig = {
-  /** Checksummed $BLUR address, or null while the token does not exist. */
+  /** Checksummed $UNIVAULT address, or null while the token does not exist. */
   blurToken: Address | null;
   /** ISO timestamp of the last write, for the admin page to show. */
   updatedAt: string | null;

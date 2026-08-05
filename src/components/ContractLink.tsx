@@ -33,10 +33,10 @@ export function ContractLink({
   const short = `${address.slice(0, 6)}…${address.slice(-4)}`;
   const base =
     variant === "chip"
-      ? "inline-block border border-wire-cyan/25 px-3 py-1 text-xs text-wire-muted hover:text-wire-cyan hover:border-wire-cyan transition-colors"
+      ? "inline-block rounded-full border border-wire-border bg-white/[0.03] px-3 py-1 text-xs text-wire-muted hover:text-white hover:bg-white/[0.07] transition-colors"
       : variant === "ticker"
-        ? "inline-block border border-wire-cyan/25 px-2.5 py-1 text-xs tracking-[0.1em] text-wire-cyan/85 hover:text-wire-cyan hover:border-wire-cyan transition-colors"
-        : "text-xs text-wire-muted hover:text-wire-cyan border-b border-dotted border-wire-cyan/30 transition-colors";
+        ? "inline-block rounded-full bg-wire-cyan/12 px-2.5 py-1 text-xs font-medium text-wire-cyan hover:bg-wire-cyan/20 transition-colors"
+        : "text-xs text-wire-muted hover:text-wire-cyan underline decoration-dotted decoration-white/25 underline-offset-4 transition-colors";
 
   return (
     <a
