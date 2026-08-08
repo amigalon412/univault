@@ -1,6 +1,8 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
+import { ArrowRightIcon } from "@/components/icons";
 import { robinhoodChain } from "@/lib/chain";
 import { useMounted } from "@/hooks/useMounted";
 import { cn } from "@/lib/utils";
@@ -13,6 +15,16 @@ interface ConnectButtonProps {
   className?: string;
   /** Shown before a wallet is connected. */
   label?: string;
+  /**
+   * Renders the label inside the nav pill's shell — a `.lbl` span plus the
+   * circular arrow badge — instead of as bare text.
+   *
+   * A boolean rather than a render prop on purpose: <SiteNav /> is a server
+   * component, and a function cannot cross that boundary. Every state this
+   * control cycles through (connect / switch / address / pending) has to wear
+   * the same chrome, so the chrome lives here.
+   */
+  pill?: boolean;
 }
 
 /**
@@ -25,6 +37,7 @@ interface ConnectButtonProps {
 export function ConnectButton({
   className,
   label = "Connect wallet",
+  pill = false,
 }: ConnectButtonProps) {
   const mounted = useMounted();
   const { address, isConnected, chainId } = useAccount();
@@ -35,12 +48,25 @@ export function ConnectButton({
   const injected = connectors[0];
   const wrongChain = isConnected && chainId !== robinhoodChain.id;
 
-  const base = cn("transition-all", className);
+  const base = cn(className);
+  const wrap = (text: string): ReactNode =>
+    pill ? (
+      <>
+        <span className="lbl">{text}</span>
+        <span className="arw">
+          <ArrowRightIcon />
+        </span>
+      </>
+    ) : (
+      text
+    );
 
+  // Until hydration the wallet is unknown, so the first client render has to
+  // match the server's: the resting label, disabled.
   if (!mounted) {
     return (
       <button type="button" className={base} disabled>
-        {label}
+        {wrap(label)}
       </button>
     );
   }
@@ -53,7 +79,7 @@ export function ConnectButton({
         rel="noopener noreferrer"
         className={base}
       >
-        No wallet found
+        {wrap("No wallet found")}
       </a>
     );
   }
@@ -66,7 +92,7 @@ export function ConnectButton({
         disabled={isSwitching}
         className={base}
       >
-        {isSwitching ? "Switching…" : "Switch to Robinhood Chain"}
+        {wrap(isSwitching ? "Switching…" : "Switch network")}
       </button>
     );
   }
@@ -79,7 +105,7 @@ export function ConnectButton({
         title="Disconnect"
         className={base}
       >
-        {shortAddress(address)}
+        {wrap(shortAddress(address))}
       </button>
     );
   }
@@ -92,7 +118,7 @@ export function ConnectButton({
       className={base}
       title={error ? error.message : undefined}
     >
-      {isPending ? "Connecting…" : label}
+      {wrap(isPending ? "Connecting…" : label)}
     </button>
   );
 }

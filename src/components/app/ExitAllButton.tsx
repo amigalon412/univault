@@ -125,20 +125,17 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-xs text-wire-muted">Max slippage</span>
-        <div className="flex gap-1">
+    <div className="exit-all">
+      <div className="exit-all-head">
+        <span className="ui-label">Max slippage</span>
+        <div className="slip-row">
           {SLIPPAGE.map((s) => (
             <button
               key={s.bps}
               type="button"
               onClick={() => setSlippageBps(s.bps)}
               className={
-                "font-digits rounded-full text-[11px] px-3 py-1 transition-colors " +
-                (slippageBps === s.bps
-                  ? "bg-wire-cyan/15 text-wire-cyan"
-                  : "bg-white/[0.05] text-wire-muted hover:text-white")
+                "slip-btn figure" + (slippageBps === s.bps ? " is-on" : "")
               }
             >
               {s.label}
@@ -151,7 +148,7 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
         type="button"
         onClick={needsApproval ? approve : sell}
         disabled={busy}
-        className="uni-pill w-full text-sm font-semibold text-black bg-wire-purple py-3 hover:shadow-[0_10px_30px_rgba(183,140,255,0.28)] disabled:opacity-40 disabled:hover:translate-y-0"
+        className="btn btn-ghost btn-block"
       >
         {busy
           ? quoting
@@ -165,7 +162,7 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
       </button>
 
       {error && (
-        <div className="text-[11px] text-wire-muted leading-relaxed break-words">
+        <div className="form-error">
           {error}
         </div>
       )}
@@ -174,9 +171,9 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
           href={explorerTxUrl(hash)}
           target="_blank"
           rel="noopener noreferrer"
-          className="block text-[11px] font-medium text-wire-cyan hover:underline"
+          className="form-link"
         >
-          {isSuccess ? "✓ Sold — view on explorer" : "View on explorer"}
+          {isSuccess ? "Sold — view on explorer ↗" : "View on explorer ↗"}
         </a>
       )}
     </div>

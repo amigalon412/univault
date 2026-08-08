@@ -1,26 +1,34 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Inter } from "next/font/google";
+import { Inter, Space_Grotesk, Space_Mono } from "next/font/google";
 import { cookieToInitialState } from "wagmi";
 import { Web3Provider } from "@/components/providers/Web3Provider";
-import { LogoFall } from "@/components/LogoFall";
 import { wagmiConfig } from "@/lib/wagmi";
 import "./globals.css";
 
-/**
- * One family for the whole site.
- *
- * Uniswap sets its interface in "Basel", which is not distributable; Inter is
- * what it used before that and what every clone of it uses now. Both --font-sans
- * and --font-mono in globals.css point here, so the ~200 `font-mono` classes
- * this codebase inherited from its terminal era render as UI text without any
- * of them being touched.
- */
-const inter = Inter({
+/* Three faces, each with one job — the split FrogPools uses.
+   Space Grotesk: every heading and every figure.
+   Space Mono:    eyebrows, labels, buttons, tickers. Anything in caps.
+   Inter:         body copy, and nothing else. */
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
-  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
+});
+
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 // Vercel injects the production domain, so social images resolve correctly
@@ -59,6 +67,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#edece8",
+};
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -72,13 +86,11 @@ export default async function RootLayout({
   );
 
   return (
-    <html lang="en" className={`${inter.variable} dark`}>
+    <html
+      lang="en"
+      className={`${spaceGrotesk.variable} ${spaceMono.variable} ${inter.variable}`}
+    >
       <body>
-        {/* Sits behind every route rather than on the homepage alone. The page
-            backgrounds are transparent so it shows through; each <main> carries
-            `relative z-10` to stay above this canvas, which is positioned and
-            would otherwise paint over static content. */}
-        <LogoFall />
         <Web3Provider initialState={initialState}>{children}</Web3Provider>
       </body>
     </html>

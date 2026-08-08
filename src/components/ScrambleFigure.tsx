@@ -28,7 +28,7 @@ import { useEffect, useRef } from "react";
  *   5. Cleanup writes it too.
  *
  * Only digits churn, never the separators, so `$` `,` `/` and spaces hold still
- * and the string keeps its width — with .font-digits' tabular figures that
+ * and the string keeps its width — with .figure's tabular numerals that
  * means no reflow while it runs.
  */
 

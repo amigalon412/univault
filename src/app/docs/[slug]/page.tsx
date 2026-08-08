@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { NavBar } from "@/components/NavBar";
-import { Footer } from "@/components/Footer";
+import { SiteNav } from "@/components/landing/SiteNav";
+import { PageFooter } from "@/components/landing/PageFooter";
 import { DocBody } from "@/components/docs/DocBody";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
 import { DOC_PAGES, getDocNeighbours, getDocPage, resolveDocPage } from "@/lib/docs";
@@ -48,72 +48,62 @@ export default async function DocsPage({
   const { prev, next } = getDocNeighbours(slug);
 
   return (
-    <main className="relative z-10 min-h-screen text-white overflow-x-hidden page-enter">
+    <main className="page-enter">
       <AnimationGovernor />
-      <NavBar />
-      <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-14">
-        <div className="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_210px] gap-10">
-          <aside className="hidden lg:block border-r border-wire-border pr-5">
+      <SiteNav />
+      <div className="wrap docs-shell">
+        <div className="docs-grid">
+          <aside className="docs-aside">
             <DocsSidebar />
           </aside>
 
-          <article className="min-w-0">
-            <div className="text-sm font-semibold text-wire-cyan mb-3">Docs</div>
-            <h1 className="text-4xl md:text-5xl font-semibold tracking-[-0.035em] text-white mb-8 leading-tight">
-              {page.title}
-            </h1>
+          <article className="docs-article">
+            <span className="eyebrow">{"// Docs"}</span>
+            <h1 className="docs-title">{page.title}</h1>
             {page.intro.map((text) => (
-              <p key={text} className="text-base text-wire-muted leading-relaxed mb-5">
+              <p key={text} className="docs-intro">
                 {text}
               </p>
             ))}
 
             {page.sections.map((section) => (
-              <section key={section.id} id={section.id} className="scroll-mt-24 mt-12">
-                <h2 className="text-2xl font-semibold tracking-[-0.02em] text-white mb-5">
-                  {section.title}
-                </h2>
+              <section key={section.id} id={section.id} className="docs-section">
+                <h2>{section.title}</h2>
                 <DocBody blocks={section.blocks} />
               </section>
             ))}
 
-            <div className="flex flex-col sm:flex-row gap-4 mt-16 pt-8 border-t border-wire-border">
+            <div className="docs-nav">
               {prev && (
                 <Link
                   href={`/docs/${prev.slug}`}
-                  className="flex-1 uni-card px-5 py-4 hover:border-wire-cyan/40 transition-colors group"
+                  className="card docs-nav-card"
                 >
-                  <div className="text-xs text-wire-muted mb-1.5">← Previous</div>
-                  <div className="text-base font-medium text-white group-hover:text-wire-cyan transition-colors">
-                    {prev.title}
-                  </div>
+                  <span className="ui-label">← Previous</span>
+                  <b>{prev.title}</b>
                 </Link>
               )}
               {next && (
                 <Link
                   href={`/docs/${next.slug}`}
-                  className="flex-1 uni-card px-5 py-4 hover:border-wire-cyan/40 transition-colors group sm:text-right"
+                  className="card docs-nav-card is-next"
                 >
-                  <div className="text-xs text-wire-muted mb-1.5">Next →</div>
-                  <div className="text-base font-medium text-white group-hover:text-wire-cyan transition-colors">
-                    {next.title}
-                  </div>
+                  <span className="ui-label">Next →</span>
+                  <b>{next.title}</b>
                 </Link>
               )}
             </div>
           </article>
 
-          <aside className="hidden lg:block">
-            <div className="sticky top-24">
-              <div className="text-xs font-semibold uppercase tracking-wider text-wire-muted mb-4">
-                On this page
-              </div>
-              <ul className="space-y-2.5">
+          <aside className="docs-toc">
+            <div className="docs-toc-inner">
+              <div className="ui-label">On this page</div>
+              <ul>
                 {page.sections.map((section) => (
                   <li key={section.id}>
                     <a
                       href={`#${section.id}`}
-                      className="text-sm text-wire-muted hover:text-wire-cyan transition-colors leading-relaxed"
+                      className="docs-toc-link"
                     >
                       {section.title}
                     </a>
@@ -124,7 +114,7 @@ export default async function DocsPage({
           </aside>
         </div>
       </div>
-      <Footer />
+      <PageFooter />
     </main>
   );
 }

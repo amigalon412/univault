@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { NavBar } from "@/components/NavBar";
-import { Footer } from "@/components/Footer";
 import { AnimationGovernor } from "@/components/AnimationGovernor";
-import { BackgroundGrid } from "@/components/app/BackgroundGrid";
+import { PageFooter } from "@/components/landing/PageFooter";
+import { SiteNav } from "@/components/landing/SiteNav";
 import { VaultApp } from "@/components/app/VaultApp";
 
 export const metadata: Metadata = {
@@ -13,14 +12,11 @@ export const metadata: Metadata = {
 
 export default function AppPage() {
   return (
-    <main className="relative z-10 min-h-screen text-white overflow-x-hidden page-enter">
-      <BackgroundGrid />
+    <main className="page-enter">
       <AnimationGovernor />
-      <NavBar />
-      <div className="relative z-10">
-        <VaultApp />
-        <Footer />
-      </div>
+      <SiteNav />
+      <VaultApp />
+      <PageFooter />
     </main>
   );
 }

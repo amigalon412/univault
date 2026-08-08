@@ -6,10 +6,8 @@ type Status = { kind: "idle" | "ok" | "error"; text: string };
 
 const IDLE: Status = { kind: "idle", text: "" };
 
-const field =
-  "w-full rounded-xl bg-white/[0.05] border border-wire-border px-4 py-3 text-sm text-white outline-none focus:border-wire-cyan transition-colors";
-const button =
-  "uni-pill bg-wire-cyan/12 text-wire-cyan text-sm font-semibold px-5 py-2.5 hover:bg-wire-cyan/22 disabled:opacity-30";
+const field = "field";
+const button = "btn btn-ghost btn-compact";
 
 /**
  * The one thing the operator has to do on launch day: paste the $UNIVAULT contract
@@ -109,14 +107,14 @@ export function AdminPanel() {
   };
 
   if (!ready) {
-    return <p className="text-sm text-wire-muted">Loading…</p>;
+    return <p className="form-foot">Loading…</p>;
   }
 
   if (!enabled) {
     return (
-      <div className="uni-card p-5">
-        <p className="text-sm text-wire-muted leading-relaxed">
-          Admin is switched off because <code className="text-wire-cyan">ADMIN_PASSWORD</code>{" "}
+      <div className="notice">
+        <p>
+          Admin is switched off because <code>ADMIN_PASSWORD</code>{" "}
           is not set on the server (it must be at least 12 characters). Set it in
           the service environment and restart.
         </p>
@@ -127,7 +125,7 @@ export function AdminPanel() {
   if (!authed) {
     return (
       <form onSubmit={signIn} className="flex flex-col gap-3">
-        <label className="text-xs font-medium text-wire-muted">Password</label>
+        <label className="ui-label">Password</label>
         <input
           type="password"
           value={password}
@@ -139,7 +137,7 @@ export function AdminPanel() {
           {busy ? "Checking…" : "Sign in"}
         </button>
         {status.kind === "error" && (
-          <p className="text-sm text-wire-purple">{status.text}</p>
+          <p className="form-error">{status.text}</p>
         )}
       </form>
     );
@@ -147,9 +145,7 @@ export function AdminPanel() {
 
   return (
     <form onSubmit={publish} className="flex flex-col gap-3">
-      <label className="text-xs font-medium text-wire-muted">
-        $UNIVAULT contract address
-      </label>
+      <label className="ui-label">$UNIVAULT contract address</label>
       <input
         type="text"
         value={address}
@@ -159,7 +155,7 @@ export function AdminPanel() {
         autoComplete="off"
         className={field}
       />
-      <p className="text-xs text-wire-muted leading-relaxed">
+      <p className="form-foot form-foot-left">
         Leave empty and publish to clear it — the header goes back to warning
         that any address claiming to be $UNIVAULT is fake.
       </p>
@@ -175,15 +171,13 @@ export function AdminPanel() {
 
       {status.kind !== "idle" && (
         <p
-          className={`text-sm ${
-            status.kind === "ok" ? "text-wire-cyan" : "text-wire-purple"
-          }`}
+          className={status.kind === "ok" ? "form-ok" : "form-error"}
         >
           {status.text}
         </p>
       )}
       {savedAt && (
-        <p className="text-xs text-wire-muted">
+        <p className="form-foot form-foot-left">
           Last change: {new Date(savedAt).toUTCString()}
         </p>
       )}

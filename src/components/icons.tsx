@@ -1,17 +1,36 @@
 import type { SVGProps } from "react";
 
+/** X (Twitter) glyph. Sized by `.nav-icon svg` where it appears in the nav. */
+export function XIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" {...props}>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+/** Arrow-right, for the circular `.arw` badge inside a primary pill. */
+export function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 /**
- * The UNIVAULT brand mark.
+ * The UNIVAULT mark: a vault door, drawn flat.
  *
- * Drawn rather than borrowed on purpose: the site it takes its look from puts a
- * trademarked animal in this slot, and that is the one part of a visual language
- * you cannot copy. This is a plain accent-filled squircle with the wordmark's
- * initial knocked out of it, which sits in the same place and carries the same
- * weight without pretending to be someone else's logo.
- *
- * The knockout is painted in the page surface colour rather than left
- * transparent, so the mark reads the same over the falling-logo canvas as it
- * does over a card.
+ * A squircle with a ring and four bolts. Deliberately geometric and monoline
+ * so it reads at 24px in the nav and at 60px in the footer without a second
+ * artwork, and so it inherits `currentColor` — the nav flips the whole bar to
+ * white over a dark band, and the mark has to come with it.
  */
 export function VaultMark({
   width = 28,
@@ -19,39 +38,14 @@ export function VaultMark({
   ...props
 }: SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      width={width}
-      height={height}
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-      {...props}
-    >
-      <rect width="24" height="24" rx="7.5" fill="currentColor" />
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" width={width} height={height} {...props}>
+      <rect x="1.25" y="1.25" width="29.5" height="29.5" rx="9" stroke="currentColor" strokeWidth="2.5" />
+      <circle cx="16" cy="16" r="7" stroke="currentColor" strokeWidth="2.5" />
       <path
-        d="M8.4 6.6v6.2a3.6 3.6 0 0 0 7.2 0V6.6"
-        stroke="#131313"
-        strokeWidth="2.6"
-        strokeLinecap="round"
+        d="M16 6.5v3M16 22.5v3M6.5 16h3M22.5 16h3"
+        stroke="currentColor"
+        strokeWidth="2.5"
       />
-    </svg>
-  );
-}
-
-export function XIcon({
-  width = 15,
-  height = 15,
-  ...props
-}: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      width={width}
-      height={height}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      {...props}
-    >
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
     </svg>
   );
 }

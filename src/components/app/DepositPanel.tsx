@@ -166,13 +166,13 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
   }
 
   function actionLabel(): string {
-    if (busy) return isConfirming ? "CONFIRMING…" : "CHECK YOUR WALLET…";
-    if (!vault.address) return "NOT DEPLOYED";
-    if (vault.isPriceable === false) return "PRICING HALTED";
-    if (parsed === null) return mode === "deposit" ? "ENTER AMOUNT" : "ENTER AMOUNT";
-    if (insufficient) return mode === "deposit" ? "INSUFFICIENT BALANCE" : "MORE THAN IS WITHDRAWABLE";
-    if (mode === "deposit") return needsApproval ? "APPROVE USDG" : "DEPOSIT";
-    return "WITHDRAW";
+    if (busy) return isConfirming ? "Confirming…" : "Check your wallet…";
+    if (!vault.address) return "Not deployed";
+    if (vault.isPriceable === false) return "Pricing halted";
+    if (parsed === null) return "Enter amount";
+    if (insufficient) return mode === "deposit" ? "Insufficient balance" : "More than is withdrawable";
+    if (mode === "deposit") return needsApproval ? "Approve USDG" : "Deposit";
+    return "Withdraw";
   }
 
   const disabled =
@@ -183,19 +183,17 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
     insufficient;
 
   return (
-    <div className="uni-card overflow-hidden">
-      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-wire-border">
-        <span className="text-sm font-semibold text-white capitalize">{mode}</span>
-        <span className="ml-auto flex items-center gap-1.5 text-xs text-wire-muted">
-          <span className="h-1.5 w-1.5 rounded-full bg-wire-cyan animate-blink" />
-          USDG
+    <div className="card panel deposit">
+      <div className="panel-head">
+        <h2 className="capitalize">{mode}</h2>
+        <span className="ui-label deposit-asset">
+          <span className="animate-blink">●</span> USDG
         </span>
       </div>
 
-      <div className="p-5 space-y-5">
-        {/* The deposit/withdraw switch, as the segmented control on a recessed
-            track that the app this borrows from uses for every binary mode. */}
-        <div className="flex gap-1 rounded-2xl bg-white/[0.04] p-1">
+      <div className="panel-body">
+        {/* Two modes, one row, on a recessed track. */}
+        <div className="seg-control seg-control-flush">
           {(["deposit", "withdraw"] as Mode[]).map((m) => (
             <button
               key={m}
@@ -205,55 +203,42 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
                 setError(null);
               }}
               aria-pressed={mode === m}
-              className={
-                "flex-1 rounded-xl py-2.5 text-sm font-semibold capitalize transition-colors " +
-                (mode === m
-                  ? "bg-wire-cyan text-black"
-                  : "text-wire-muted hover:text-white hover:bg-white/5")
-              }
+              className="seg-btn"
             >
               {m}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-3 uni-raised px-5 py-5 border border-transparent focus-within:border-wire-cyan/50 transition-colors">
+        <div className="amount">
           <input
             value={amount}
             onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
             inputMode="decimal"
             placeholder="0"
             aria-label={`Amount to ${mode}`}
-            className="flex-1 min-w-0 bg-transparent font-digits text-3xl font-semibold text-white placeholder:text-white/20 outline-none"
+            className="amount-input figure"
           />
-          <span className="flex items-center gap-2 rounded-full bg-white/[0.07] px-3 py-1.5 text-sm font-medium text-white shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-wire-cyan" />
-            USDG
-          </span>
+          <span className="chip">USDG</span>
         </div>
 
-        <div className="space-y-2.5">
+        <dl className="rows">
           {rows.map((r) => (
-            <div
-              key={r.label}
-              className="flex items-baseline justify-between gap-4 text-sm"
-            >
-              <span className="text-wire-muted">{r.label}</span>
-              <span className={"text-white" + (r.numeric ? " font-digits" : "")}>
-                {r.value}
-              </span>
+            <div key={r.label}>
+              <dt>{r.label}</dt>
+              <dd className={r.numeric ? "figure" : undefined}>{r.value}</dd>
             </div>
           ))}
-        </div>
+        </dl>
 
         {!ready ? (
-          <ConnectButton className="uni-pill w-full bg-wire-cyan text-black font-semibold text-base py-4 hover:shadow-[0_10px_34px_rgba(252,114,255,0.3)]" />
+          <ConnectButton className="btn btn-primary btn-block" />
         ) : (
           <button
             type="button"
             onClick={submit}
             disabled={disabled}
-            className="uni-pill w-full bg-wire-cyan text-black font-semibold text-base py-4 hover:shadow-[0_10px_34px_rgba(252,114,255,0.3)] disabled:opacity-40 disabled:hover:shadow-none disabled:hover:translate-y-0"
+            className="btn btn-primary btn-block"
           >
             {actionLabel()}
           </button>
@@ -264,7 +249,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
             type="button"
             onClick={redeemInKind}
             disabled={busy}
-            className="uni-pill w-full text-sm font-medium text-wire-cyan bg-wire-cyan/10 py-3 hover:bg-wire-cyan/20 disabled:opacity-40"
+            className="btn btn-ghost btn-block"
           >
             Redeem everything in kind
           </button>
@@ -278,7 +263,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
           )}
 
         {vault.isPriceable === false && (
-          <div className="rounded-2xl border border-wire-cyan/35 bg-wire-cyan/[0.06] p-4 text-xs text-white/85 leading-relaxed">
+          <div className="notice notice-warn">
             The vault cannot value its basket right now — a price feed is stale
             or a stock split has not been acknowledged. Deposits and USDG
             withdrawals are halted until it clears. In-kind redemption still
@@ -286,26 +271,20 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
           </div>
         )}
 
-        {error && (
-          <div className="text-xs text-wire-muted leading-relaxed break-words">
-            {error}
-          </div>
-        )}
+        {error && <div className="form-error">{error}</div>}
 
         {hash && (
           <a
             href={explorerTxUrl(hash)}
             target="_blank"
             rel="noopener noreferrer"
-            className="block text-xs font-medium text-wire-cyan hover:underline"
+            className="form-link"
           >
-            {isSuccess ? "✓ Confirmed — view on explorer" : "View on explorer"}
+            {isSuccess ? "Confirmed — view on explorer ↗" : "View on explorer ↗"}
           </a>
         )}
 
-        <div className="text-xs text-wire-muted text-center leading-relaxed">
-          Non-custodial · nobody can move your shares
-        </div>
+        <p className="form-foot">Non-custodial · nobody can move your shares</p>
       </div>
     </div>
   );

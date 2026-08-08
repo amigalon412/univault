@@ -38,7 +38,7 @@ function linkAddresses(cell: string): ReactNode {
         /* nowrap so the ↗ cannot be orphaned onto a second line, which turned
            every row of the contracts table into a two-line row. The table is
            already inside overflow-x-auto, so a narrow viewport scrolls it. */
-        className="whitespace-nowrap text-wire-cyan hover:underline underline-offset-4 transition-colors"
+        className="doc-addr"
       >
         {address} ↗
       </a>,
@@ -55,19 +55,17 @@ function Block({ block }: { block: DocBlock }) {
   switch (block.type) {
     case "p":
       return (
-        <p className="text-base text-wire-muted leading-relaxed mb-5">{block.text}</p>
+        <p className="doc-p">{block.text}</p>
       );
 
     case "list":
       return (
-        <ul className="space-y-3 mb-6">
+        <ul className="doc-list">
           {block.items.map((item) => (
-            <li key={item.text} className="flex gap-3">
-              <span aria-hidden className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-wire-cyan" />
-              <span className="text-base text-wire-muted leading-relaxed">
-                {item.lead && (
-                  <span className="font-medium text-white">{item.lead} </span>
-                )}
+            <li key={item.text}>
+              <span aria-hidden className="doc-bullet" />
+              <span>
+                {item.lead && <b>{item.lead} </b>}
                 {item.text}
               </span>
             </li>
@@ -77,14 +75,14 @@ function Block({ block }: { block: DocBlock }) {
 
     case "table":
       return (
-        <div className="overflow-x-auto mb-6 uni-card">
+        <div className="doc-table card">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-white/[0.03]">
+              <tr>
                 {block.head.map((h) => (
                   <th
                     key={h}
-                    className="text-xs font-semibold uppercase tracking-wider text-wire-muted text-left px-5 py-3.5 border-b border-wire-border whitespace-nowrap"
+                    className="ui-label"
                   >
                     {h}
                   </th>
@@ -93,14 +91,11 @@ function Block({ block }: { block: DocBlock }) {
             </thead>
             <tbody>
               {block.rows.map((row) => (
-                <tr key={row.join("|")} className="hover:bg-white/[0.03] transition-colors">
+                <tr key={row.join("|")}>
                   {row.map((cell, i) => (
                     <td
                       key={i}
-                      className={
-                        "text-[15px] px-5 py-3.5 border-b border-wire-border last:border-b-0 align-top " +
-                        (i === 0 ? "font-medium text-white whitespace-nowrap" : "text-wire-muted")
-                      }
+                      className={i === 0 ? "doc-td-key" : undefined}
                     >
                       {linkAddresses(cell)}
                     </td>
@@ -117,18 +112,16 @@ function Block({ block }: { block: DocBlock }) {
         /* A real monospace stack, not the site face. `font-mono` now resolves
            to Inter like everything else, and these blocks are ASCII flow
            diagrams whose columns have to line up. */
-        <pre className="uni-card px-6 py-5 mb-6 overflow-x-auto font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-sm text-white/85 leading-relaxed">
+        <pre className="doc-code">
           {block.lines.join("\n")}
         </pre>
       );
 
     case "note":
       return (
-        <div className="flex gap-3 rounded-2xl border-l-2 border-wire-cyan bg-wire-cyan/[0.07] px-5 py-4 mb-6">
-          <span aria-hidden className="text-base text-wire-cyan shrink-0 font-semibold">
-            !
-          </span>
-          <p className="text-base text-white/85 leading-relaxed">{block.text}</p>
+        <div className="doc-note">
+          <span aria-hidden>!</span>
+          <p>{block.text}</p>
         </div>
       );
   }

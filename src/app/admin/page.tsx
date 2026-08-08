@@ -13,10 +13,11 @@ export const metadata: Metadata = {
 
 export default function AdminPage() {
   return (
-    <main className="relative z-10 min-h-screen px-6 py-16">
-      <div className="mx-auto w-full max-w-lg">
-        <h1 className="wire-title text-3xl text-white">UNIVAULT · Admin</h1>
-        <p className="mt-2 mb-8 text-sm text-wire-muted">Post-launch settings</p>
+    <main className="admin-shell page-enter">
+      <div className="admin-card card">
+        <span className="eyebrow">{"// Operator"}</span>
+        <h1>UNIVAULT admin</h1>
+        <p>Post-launch settings.</p>
         <AdminPanel />
       </div>
     </main>
