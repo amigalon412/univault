@@ -4,11 +4,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BrandMark } from "@/components/BrandMark";
 import { ArrowRightIcon } from "@/components/icons";
+import { StrategyGlyph } from "@/components/StrategyGlyph";
 import { PIXEL_LOGOS } from "@/lib/pixel-logos";
+import { STRATEGIES, type StrategyId } from "@/lib/strategies";
 import type { FeedItem, FeedResponse } from "@/types/feed";
 
-/** The tickers a feed row can be matched against. */
-const SYMBOLS = PIXEL_LOGOS.map((l) => l.key);
+/**
+ * The tickers a feed row can be matched against.
+ *
+ * USDG is in here beside the four stocks because the lending rows name it —
+ * "steakUSDG" contains it, which is what the substring match below is for.
+ */
+const SYMBOLS = [...PIXEL_LOGOS.map((l) => l.key), "USDG"];
 
 /**
  * Cards shown before the feed answers, and if it never does.
@@ -23,23 +30,33 @@ const RESTING: MiniData[] = [
   { sym: "AAPL", name: "Apple", meta: "Basket holding", note: "10%" },
   { sym: "TSLA", name: "Tesla", meta: "Basket holding", note: "10%" },
   { sym: "AMZN", name: "Amazon", meta: "Basket holding", note: "10%" },
-  { sym: null, name: "Lending leg", meta: "USDG supplied", note: "60%" },
+  { sym: "USDG", name: "Lending leg", meta: "USDG supplied", note: "60%" },
   { sym: null, name: "Rebalance", meta: "On drift", note: "auto" },
 ];
 
 interface MiniData {
   sym: string | null;
+  /** Set instead of `sym` when the row is about a vault rather than a token. */
+  strategy?: StrategyId;
   name: string;
   meta: string;
   note: string;
   direction?: "up" | "down";
 }
 
+/**
+ * The well takes whichever mark the row has: a token gets its brand mask, a
+ * vault gets the same wander line the launchpad and the app's picker draw for
+ * it, and anything else falls back to the dot. Three rows in a column that all
+ * said "●" were three rows you could not tell apart at a glance.
+ */
 function MiniCard({ item }: { item: MiniData }) {
   return (
     <div className="mini">
       <div className="av">
-        {item.sym ? (
+        {item.strategy ? (
+          <StrategyGlyph id={item.strategy} />
+        ) : item.sym ? (
           <BrandMark sym={item.sym} size={19} />
         ) : (
           <span className="av-dot" />
@@ -54,11 +71,19 @@ function MiniCard({ item }: { item: MiniData }) {
   );
 }
 
-/** A feed row rendered as a ticker card. */
+/**
+ * A feed row rendered as a ticker card.
+ *
+ * Strategies are matched before tickers, not after: the vault rows arrive as
+ * "STEADY", "BALANCED", "GROWTH", and a later ticker match on the same string
+ * would be a coincidence rather than a holding.
+ */
 function toMini(item: FeedItem): MiniData {
-  const sym = SYMBOLS.find((k) => item.subject.includes(k)) ?? null;
+  const subject = item.subject.toUpperCase();
+  const strategy = STRATEGIES.find((s) => subject === s.name.toUpperCase());
   return {
-    sym,
+    sym: strategy ? null : (SYMBOLS.find((k) => subject.includes(k)) ?? null),
+    strategy: strategy?.id,
     name: item.subject,
     meta: item.detail ?? item.kind,
     note: item.value,

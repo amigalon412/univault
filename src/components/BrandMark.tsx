@@ -31,6 +31,11 @@ export const BRAND_MASKS: Record<string, BrandMask> = {
   AAPL: { src: "/images/logos/aapl.png", ratio: 0.808, k: 1 },
   TSLA: { src: "/images/logos/tsla-mark.png", ratio: 1.049, k: 1 },
   AMZN: { src: "/images/logos/amzn.png", ratio: 1, k: 0.94 },
+  /* The stablecoin, for rows about the lending leg. Its artwork is a filled
+     disc with the G knocked out, so as a mask it paints a solid coin with the
+     letter showing the surface underneath — which is the logo, not a defect.
+     A disc reads heavier than a silhouette at the same cap, hence the k. */
+  USDG: { src: "/images/logos/usdg.png", ratio: 0.999, k: 0.88 },
 };
 
 interface BrandMarkProps {
