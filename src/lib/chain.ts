@@ -127,16 +127,39 @@ function optionalAddress(value: string | undefined): Address | null {
 }
 
 /**
- * One BlurVault per strategy. These are read from the environment because they
- * do not exist yet -- nothing is deployed to Robinhood Chain mainnet.
+ * The deployed vaults, one per strategy. Live and source-verified on Robinhood
+ * Chain mainnet since 2026-07-23 -- the addresses, their deploy blocks and
+ * their oracles are recorded in contracts/DEPLOYMENTS.md, which is the source
+ * these are copied from.
+ *
+ * They are defaults in the code rather than environment-only values because
+ * NEXT_PUBLIC_* is inlined at build time from .env.local, and .env.local is
+ * gitignored. A fresh clone therefore built with no addresses at all, and the
+ * app said "no contracts deployed" -- correct about its own configuration, and
+ * wrong about the world, which is the worst combination a notice can manage.
+ *
+ * Nothing is lost by committing them: NEXT_PUBLIC_* ships in the client bundle
+ * regardless, so these are public the moment anyone loads the page.
+ */
+const MAINNET_VAULTS: Record<StrategyId, string> = {
+  steady: "0x583bce228448814bc42235d4761290f3ac710a09",
+  balanced: "0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7",
+  growth: "0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c",
+};
+
+/**
+ * An environment value still wins, which is what a fork, a testnet build or a
+ * redeployment sets.
  *
  * Next.js inlines NEXT_PUBLIC_* only at literal property accesses, so each one
  * has to be spelled out here rather than looked up by a computed key.
  */
 export const VAULT_ADDRESSES: Record<StrategyId, Address | null> = {
-  steady: optionalAddress(process.env.NEXT_PUBLIC_VAULT_STEADY),
-  balanced: optionalAddress(process.env.NEXT_PUBLIC_VAULT_BALANCED),
-  growth: optionalAddress(process.env.NEXT_PUBLIC_VAULT_GROWTH),
+  steady: optionalAddress(process.env.NEXT_PUBLIC_VAULT_STEADY || MAINNET_VAULTS.steady),
+  balanced: optionalAddress(
+    process.env.NEXT_PUBLIC_VAULT_BALANCED || MAINNET_VAULTS.balanced,
+  ),
+  growth: optionalAddress(process.env.NEXT_PUBLIC_VAULT_GROWTH || MAINNET_VAULTS.growth),
 };
 
 export const DEPLOYED_VAULTS = Object.entries(VAULT_ADDRESSES).filter(
@@ -151,11 +174,17 @@ export const DEPLOYED_VAULTS = Object.entries(VAULT_ADDRESSES).filter(
 export const BLUR_TOKEN = optionalAddress(process.env.NEXT_PUBLIC_BLUR_TOKEN);
 
 /**
- * The ExitRouter, if deployed. Lets a holder of a basketed vault sell the stock
- * leg to USDG in one transaction instead of receiving stock tokens in kind.
- * Null until deployed, and the "sell all" control simply doesn't render.
+ * The ExitRouter. Lets a holder of a basketed vault sell the stock leg to USDG
+ * in one transaction instead of receiving stock tokens in kind; without it the
+ * "sell everything" control simply doesn't render.
+ *
+ * Deployed 2026-07-24 at block 17686207, ownerless and holding no funds. A
+ * committed default for the same reason the vaults have one -- a clone with no
+ * .env.local was hiding a control that works.
  */
-export const EXIT_ROUTER = optionalAddress(process.env.NEXT_PUBLIC_EXIT_ROUTER);
+export const EXIT_ROUTER = optionalAddress(
+  process.env.NEXT_PUBLIC_EXIT_ROUTER || "0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0",
+);
 
 /** Minimal ExitRouter ABI: the one function the UI calls. */
 export const exitRouterAbi = [

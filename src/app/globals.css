@@ -1293,6 +1293,10 @@
   stroke: var(--line-2);
   stroke-width: 1.5;
 }
+.step-art .sd-logo {
+  filter: brightness(0);
+  opacity: 0.55;
+}
 
 /* rebalance */
 .step-art .sd-band {

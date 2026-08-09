@@ -18,7 +18,15 @@ import type { CSSProperties } from "react";
  * same cap as the Apple silhouette it carries visibly more ink. The factor
  * evens out the weight.
  */
-const MASKS: Record<string, { src: string; ratio: number; k: number }> = {
+export interface BrandMask {
+  src: string;
+  /** Source aspect ratio, width / height. */
+  ratio: number;
+  /** Optical size correction — see above. */
+  k: number;
+}
+
+export const BRAND_MASKS: Record<string, BrandMask> = {
   NVDA: { src: "/images/logos/nvda-mark.png", ratio: 1.506, k: 0.88 },
   AAPL: { src: "/images/logos/aapl.png", ratio: 0.808, k: 1 },
   TSLA: { src: "/images/logos/tsla-mark.png", ratio: 1.049, k: 1 },
@@ -34,7 +42,7 @@ interface BrandMarkProps {
 }
 
 export function BrandMark({ sym, size = 22, className = "" }: BrandMarkProps) {
-  const mask = MASKS[sym];
+  const mask = BRAND_MASKS[sym];
   if (!mask) return <span className={className}>{sym}</span>;
 
   return (

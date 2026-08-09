@@ -1,3 +1,4 @@
+import { BRAND_MASKS } from "@/components/BrandMark";
 import type { StepArt } from "@/lib/landing";
 
 /**
@@ -19,6 +20,23 @@ import type { StepArt } from "@/lib/landing";
  */
 
 const VIEW_BOX = "0 0 320 200";
+
+/**
+ * The four holdings in the split diagram's lower box.
+ *
+ * Four blank chips said "four of something"; the marks say which four, and the
+ * card's claim is that the basket is a named, checkable set rather than a
+ * gesture. Sizes come from the same table <BrandMark /> uses, so a mark that is
+ * retraced or re-cropped moves in both places at once.
+ */
+const CHIP_W = 30;
+const CHIP_CAP = 15;
+const BASKET = [
+  { sym: "NVDA", x: 154 },
+  { sym: "AAPL", x: 190 },
+  { sym: "TSLA", x: 226 },
+  { sym: "AMZN", x: 262 },
+] as const;
 
 /** Value arriving, and the share token minted back for it. */
 function DepositArt() {
@@ -99,9 +117,28 @@ function SplitArt() {
       <text className="sd-label" x="166" y="128">
         4 STOCKS · EQUAL
       </text>
-      {[156, 192, 228, 264].map((x) => (
-        <rect key={x} className="sd-chip" x={x} y="136" width="26" height="38" rx="5" />
-      ))}
+      {BASKET.map(({ sym, x }) => {
+        const mask = BRAND_MASKS[sym];
+        const h = CHIP_CAP * mask.k;
+        const w = h * mask.ratio;
+        return (
+          <g key={sym}>
+            <rect className="sd-chip" x={x} y="134" width={CHIP_W} height="40" rx="6" />
+            {/* The mask PNG is white ink on transparency. brightness(0) drives
+                the ink to black without touching the alpha, and the opacity
+                lands it at the same grey as the labels — one filter instead of
+                a per-mark <mask> and four ids in a diagram rendered once. */}
+            <image
+              className="sd-logo"
+              href={mask.src}
+              x={x + (CHIP_W - w) / 2}
+              y={154 - h / 2}
+              width={w}
+              height={h}
+            />
+          </g>
+        );
+      })}
     </svg>
   );
 }
