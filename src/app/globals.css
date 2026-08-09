@@ -446,7 +446,11 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(237, 236, 232, 0.82);
+  /* The page colour at 82%, so the glass reads as the page thickening rather
+     than as a band laid over it. It was still the warm-paper build's
+     rgb(237,236,232) — at this alpha that is visibly warmer than the near-white
+     underneath, which is exactly where a glass shell is judged. */
+  background: rgba(249, 249, 249, 0.82);
   backdrop-filter: blur(18px) saturate(1.2);
   -webkit-backdrop-filter: blur(18px) saturate(1.2);
   border-bottom: 1px solid var(--line);
