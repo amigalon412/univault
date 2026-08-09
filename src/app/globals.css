@@ -2048,26 +2048,76 @@
   background: rgba(255, 255, 255, 0.72);
   border-color: rgba(19, 19, 19, 0.1);
 }
+/* Liquid glass, and it has something to refract: the band behind these is
+   --tinted, the page's one saturated surface, so a 95%-opaque white card was
+   sitting on a pink gradient and hiding it. Translucent + backdrop blur puts
+   the gradient back through the card, which is the whole reason to use glass
+   here rather than anywhere else on the page.
+
+   Four layers make it read as glass rather than as a faded card:
+     1. a fill that is lighter at the top than the bottom, so the surface has
+        a direction,
+     2. blur AND saturate — blur alone greys the colour it picks up; the
+        saturation boost is what keeps the pink alive through the card,
+     3. an inset hairline along the top edge: the specular line where a real
+        pane catches the light,
+     4. two shadows — one wide and soft for the float, one tight and dark for
+        contact, since a single large shadow reads as a sticker. */
 .mini {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(25, 25, 24, 0.06);
-  border-radius: 10px;
-  padding: 11px 14px;
+  position: relative;
+  width: clamp(280px, 24vw, 344px);
+  padding: 15px 18px;
   display: flex;
   align-items: center;
-  gap: 11px;
-  width: 262px;
+  gap: 14px;
+  border-radius: 18px;
   color: var(--ink);
-  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.66),
+    rgba(255, 255, 255, 0.3) 62%,
+    rgba(255, 255, 255, 0.42)
+  );
+  backdrop-filter: blur(26px) saturate(2);
+  -webkit-backdrop-filter: blur(26px) saturate(2);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.4),
+    0 28px 56px -26px rgba(19, 19, 19, 0.42),
+    0 3px 10px -6px rgba(19, 19, 19, 0.22);
+}
+/* The sheen. A pane this size catches light across one corner, not evenly, so
+   the highlight is a short diagonal that fades out well before the far edge —
+   spread across the whole card it just looks like the fill got lighter. */
+.mini::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    132deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.12) 26%,
+    transparent 46%
+  );
+}
+.mini > * {
+  position: relative;
 }
 .mini .av {
-  width: 40px;
-  height: 40px;
-  border-radius: 9px;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
   display: grid;
   place-items: center;
-  background: var(--surface-soft);
-  border: 1px solid var(--line);
+  /* The well is glass too, one step deeper: less white than the card so it
+     reads as recessed into it rather than as a tile sitting on top. */
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 2px rgba(19, 19, 19, 0.06);
+  color: var(--ink);
   flex: none;
 }
 .mini .av-dot {
@@ -2089,8 +2139,8 @@
 .mini .in b {
   font-family: var(--disp);
   display: block;
-  font-size: 13px;
-  line-height: 1.15;
+  font-size: 15px;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2098,7 +2148,7 @@
 .mini .in small {
   display: block;
   color: var(--ink-2);
-  font-size: 11px;
+  font-size: 12px;
   font-family: var(--mono);
   white-space: nowrap;
   overflow: hidden;
@@ -2106,11 +2156,11 @@
 }
 .mini .chg {
   flex: none;
-  max-width: 92px;
+  max-width: 112px;
   margin-left: auto;
   font-family: var(--mono);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2122,7 +2172,11 @@
 .mini .chg.down {
   color: var(--negative);
 }
-@media (max-width: 1100px) {
+/* 1240, not 1100: the cards are wider now, and below this the outer edge of a
+   column reaches the centre copy. They sit behind it and take no pointer
+   events, so nothing breaks — it just becomes text over glass, which is where
+   the headline stops being readable. */
+@media (max-width: 1240px) {
   .cmy-col {
     display: none;
   }

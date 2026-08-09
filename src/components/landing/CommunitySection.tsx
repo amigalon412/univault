@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { BrandMark } from "@/components/BrandMark";
 import { ArrowRightIcon } from "@/components/icons";
-import { PixelLogo } from "@/components/PixelLogo";
 import { PIXEL_LOGOS } from "@/lib/pixel-logos";
 import type { FeedItem, FeedResponse } from "@/types/feed";
 
-/** Ticker -> pixel mark, for the avatar well on a price row. */
-const MARK_BY_SYM = Object.fromEntries(PIXEL_LOGOS.map((l) => [l.key, l]));
+/** The tickers a feed row can be matched against. */
+const SYMBOLS = PIXEL_LOGOS.map((l) => l.key);
 
 /**
  * Cards shown before the feed answers, and if it never does.
@@ -36,11 +36,14 @@ interface MiniData {
 }
 
 function MiniCard({ item }: { item: MiniData }) {
-  const mark = item.sym ? MARK_BY_SYM[item.sym] : undefined;
   return (
     <div className="mini">
       <div className="av">
-        {mark ? <PixelLogo logo={mark} size={20} /> : <span className="av-dot" />}
+        {item.sym ? (
+          <BrandMark sym={item.sym} size={19} />
+        ) : (
+          <span className="av-dot" />
+        )}
       </div>
       <div className="in">
         <b>{item.name}</b>
@@ -53,7 +56,7 @@ function MiniCard({ item }: { item: MiniData }) {
 
 /** A feed row rendered as a ticker card. */
 function toMini(item: FeedItem): MiniData {
-  const sym = Object.keys(MARK_BY_SYM).find((k) => item.subject.includes(k)) ?? null;
+  const sym = SYMBOLS.find((k) => item.subject.includes(k)) ?? null;
   return {
     sym,
     name: item.subject,

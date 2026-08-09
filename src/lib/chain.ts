@@ -79,13 +79,17 @@ export const EXIT_ROUTER_FALLBACK: Address = getAddress(
  * A feed is not a tradable asset -- SPY has a feed here and no token, which is
  * exactly the trap that put SPY in the basket copy once. These are listed for
  * display only.
+ *
+ * Exactly the four the baskets hold, and no more. AMD's feed was in this list
+ * and it put an AMD price card on the landing page next to four the vault
+ * actually owns, which reads as a fifth holding. Its pool is hooked and empty
+ * so it can never be one -- see BASKET_STOCKS below.
  */
 export const STOCK_FEEDS: { symbol: string; feed: Address }[] = [
   { symbol: "NVDA", feed: getAddress("0x379EC4f7C378F34a1B47E4F3cbeBCbAC3E8E9F15") },
   { symbol: "AAPL", feed: getAddress("0x6B22A786bAa607d76728168703a39Ea9C99f2cD0") },
   { symbol: "TSLA", feed: getAddress("0x4A1166a659A55625345e9515b32adECea5547C38") },
   { symbol: "AMZN", feed: getAddress("0xD5a1508ceD74c084eBf3cBe853e2C968fB2a651C") },
-  { symbol: "AMD", feed: getAddress("0x943A29E7ae51A4798823ca9eEd2ed533B2A22C72") },
 ];
 
 /**
