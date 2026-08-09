@@ -52,6 +52,7 @@ export function VaultApp() {
 
   return (
     <div className="app-shell">
+      <div className="app-glow" aria-hidden />
       <div className="wrap">
         <span className="eyebrow">{"// Vault app"}</span>
         <h1 className="app-title">Put your cash to work.</h1>

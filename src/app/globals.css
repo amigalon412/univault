@@ -255,7 +255,13 @@
   margin: 0 auto;
   padding: 0 26px;
 }
-section {
+/* Direct children of #page only.
+   As a bare `section` selector this also hit the panels on /app and the
+   headings inside a docs article — both are <section> elements — and gave
+   each of them 104px of padding above its own header. The landing page's
+   bands are all direct children of #page and nothing else is, so the child
+   combinator says exactly what was meant. */
+#page > section {
   padding: 104px 0;
 }
 .eyebrow {
@@ -2037,7 +2043,29 @@ a.chip:hover {
 /* ── /app ────────────────────────────────────────────────────────────────── */
 
 .app-shell {
+  position: relative;
   padding: 56px 0 96px;
+  /* The gradient below is a child rather than a background on this element,
+     so it can be masked independently of the content sitting on it. */
+  isolation: isolate;
+}
+/* The same --tinted field the community band at the foot of the landing page
+   runs, brought behind the top of the app.
+   Masked to nothing by 100% of its own height rather than cut off at an edge:
+   the app is a stack of white cards, and a hard boundary between a pink field
+   and the page would draw a line across them. It fades out instead, so the
+   colour reads as light in the room and not as a panel.
+   Height is in vh so it always covers the fold and never more, whatever the
+   wallet state does to the page below it. */
+.app-glow {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 72vh;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--tinted);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 46%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 46%, transparent 100%);
 }
 .app-title {
   margin: 14px 0 34px;
