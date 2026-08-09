@@ -2,6 +2,7 @@ import { CommunitySection } from "@/components/landing/CommunitySection";
 import { EcosystemSection } from "@/components/landing/EcosystemSection";
 import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
+import { LogoMarquee } from "@/components/landing/LogoMarquee";
 import { ScrollEffects } from "@/components/landing/ScrollEffects";
 import { SiteFooter } from "@/components/landing/SiteFooter";
 import { SiteNav } from "@/components/landing/SiteNav";
@@ -30,6 +31,7 @@ export default function Home() {
         <VaultShowcase />
         <HowItWorks />
         <EcosystemSection />
+        <LogoMarquee />
         <VaultsSection />
         <WhySection />
         <CommunitySection />

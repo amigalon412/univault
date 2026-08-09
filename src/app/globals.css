@@ -1305,6 +1305,81 @@
   transform: translateY(-3px) scale(1.04);
 }
 
+/* ── logo marquee ────────────────────────────────────────────────────────── */
+
+/* Sits directly under the ecosystem grid and shares its band, so the two read
+   as one statement: here are the rails, and here is what rides them. */
+.logo-marquee {
+  /* One knob for the whole row: every mark is this tall and as wide as its own
+     aspect ratio makes it. */
+  --cap: 46px;
+  position: relative;
+  overflow: hidden;
+  padding: 34px 0;
+  background: var(--surface-warm);
+  border-bottom: 1px solid var(--line);
+}
+/* The ends fade into the band rather than being cut by it — a hard edge makes
+   the row look clipped, a fade makes it look continuous. */
+.logo-marquee::before,
+.logo-marquee::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(60px, 12vw, 180px);
+  z-index: 1;
+  pointer-events: none;
+}
+.logo-marquee::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--surface-warm), transparent);
+}
+.logo-marquee::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--surface-warm), transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 34s linear infinite;
+  will-change: transform;
+}
+.marquee-run {
+  display: flex;
+  align-items: center;
+  gap: clamp(56px, 8vw, 110px);
+  padding-right: clamp(56px, 8vw, 110px);
+}
+.marquee-logo {
+  display: block;
+  height: var(--cap);
+  width: calc(var(--cap) * var(--ratio, 1));
+  flex: none;
+  background: var(--faint);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: background 0.25s ease;
+}
+.logo-marquee:hover .marquee-logo {
+  background: var(--ink-2);
+}
+@media (max-width: 720px) {
+  .logo-marquee {
+    --cap: 34px;
+    padding: 26px 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
 /* ── vaults launchpad + orbit ────────────────────────────────────────────── */
 
 .launch {
