@@ -15,13 +15,17 @@
      orbit, and the full-viewport footer the page scrolls off to uncover — all
      of that is frog's, ported and recoloured.
 
-     COLOUR AND SURFACE come from The Index. Warm paper page, white cards, ink
-     text, hairline rules, 6/8/10px radii, one soft shadow. Where frog painted
-     lime, this paints ink.
+     COLOUR comes from app.uniswap.org's light theme. Near-white page, white
+     cards, near-black text, and one pink doing every job an accent does:
+     primary buttons, filled meters, active states, the footer.
 
-   The one deliberate exception is the hero, which keeps frog's green over
-   frog's video — it is the only saturated surface above the fold, which is
-   what makes the nav's flip to its light state on scroll read as an event.
+   This is the WHITE-PINK variant. Its sibling at ../meganode is the same
+   build in The Index's warm-paper palette. The two exist to be compared, so
+   nothing here diverges from it except colour and what follows from colour.
+
+   What follows from colour is the hero. The accent is light, so the hero is
+   a light band, and that inverts the nav over it: instead of turning white on
+   a dark surface it drops its glass and keeps its ink.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @theme inline {
@@ -35,21 +39,22 @@
   --font-heading: var(--font-space-grotesk), "Space Grotesk", "Inter", sans-serif;
 
   /* The Index palette, as Tailwind colours. */
-  --color-page: #edece8;
+  --color-page: #f9f9f9;
   --color-surface: #ffffff;
-  --color-surface-soft: #f6f5f1;
-  --color-surface-warm: #fbfaf8;
-  --color-ink: #191918;
-  --color-ink-soft: #33332f;
-  --color-muted: #71716b;
-  --color-subtle: #8b8b85;
-  --color-faint: #a3a39c;
-  --color-line: #ecebe6;
-  --color-line-soft: #f2f1ec;
-  --color-line-strong: #d9d8d1;
-  --color-accent: #bfd3ec;
-  --color-positive: #3a9d0c;
-  --color-negative: #d23b3f;
+  --color-surface-soft: #f5f5f5;
+  --color-surface-warm: #fcfcfc;
+  --color-ink: #131313;
+  --color-ink-soft: #333333;
+  --color-muted: #7d7d7d;
+  --color-subtle: #9b9b9b;
+  --color-faint: #cecece;
+  --color-line: #ececec;
+  --color-line-soft: #f4f4f4;
+  --color-line-strong: #dedede;
+  --color-accent: #fc72ff;
+  --color-accent-wash: #ffefff;
+  --color-positive: #21c95e;
+  --color-negative: #ff5f52;
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -92,57 +97,62 @@
 /* shadcn's token surface, remapped onto the palette above so its primitives
    stay usable. The site itself draws from the tokens in the block below. */
 :root {
-  --background: #edece8;
-  --foreground: #191918;
+  --background: #f9f9f9;
+  --foreground: #131313;
   --card: #ffffff;
-  --card-foreground: #191918;
+  --card-foreground: #131313;
   --popover: #ffffff;
-  --popover-foreground: #191918;
-  --primary: #191918;
+  --popover-foreground: #131313;
+  --primary: #fc72ff;
   --primary-foreground: #ffffff;
-  --secondary: #f6f5f1;
-  --secondary-foreground: #191918;
-  --muted: #f6f5f1;
-  --muted-foreground: #71716b;
-  --accent: #bfd3ec;
-  --accent-foreground: #191918;
-  --destructive: #d23b3f;
-  --border: #ecebe6;
-  --input: #ecebe6;
-  --ring: #bfd3ec;
-  --chart-1: #191918;
-  --chart-2: #5f94d1;
-  --chart-3: #bfd3ec;
-  --chart-4: #8cbe1b;
-  --chart-5: #d1b8af;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #131313;
+  --muted: #f5f5f5;
+  --muted-foreground: #7d7d7d;
+  --accent: #ffefff;
+  --accent-foreground: #131313;
+  --destructive: #ff5f52;
+  --border: #ececec;
+  --input: #ececec;
+  --ring: #fc72ff;
+  --chart-1: #fc72ff;
+  --chart-2: #ff9dff;
+  --chart-3: #ffc7ff;
+  --chart-4: #131313;
+  --chart-5: #cecece;
   --radius: 8px;
-  --sidebar: #fbfaf8;
-  --sidebar-foreground: #191918;
-  --sidebar-primary: #191918;
+  --sidebar: #fcfcfc;
+  --sidebar-foreground: #131313;
+  --sidebar-primary: #fc72ff;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f6f5f1;
-  --sidebar-accent-foreground: #191918;
-  --sidebar-border: #ecebe6;
-  --sidebar-ring: #bfd3ec;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #131313;
+  --sidebar-border: #ececec;
+  --sidebar-ring: #fc72ff;
 }
 
 /* ── tokens ──────────────────────────────────────────────────────────────── */
 
 :root {
-  --page: #edece8;
+  --page: #f9f9f9;
   --surface: #ffffff;
-  --surface-soft: #f6f5f1;
-  --surface-warm: #fbfaf8;
-  --ink: #191918;
-  --ink-soft: #33332f;
-  --ink-2: #71716b;
-  --subtle: #8b8b85;
-  --faint: #a3a39c;
-  --line: #ecebe6;
-  --line-2: #d9d8d1;
-  --accent: #bfd3ec;
-  --positive: #3a9d0c;
-  --negative: #d23b3f;
+  --surface-soft: #f5f5f5;
+  --surface-warm: #fcfcfc;
+  --ink: #131313;
+  --ink-soft: #333333;
+  --ink-2: #7d7d7d;
+  --subtle: #9b9b9b;
+  --faint: #cecece;
+  --line: #ececec;
+  --line-2: #dedede;
+  /* One pink does every accent job: primary action, filled meter, active
+     state, footer. --wash is its 8%-ish tint, used wherever the accent has to
+     sit behind text. */
+  --accent: #fc72ff;
+  --accent-ink: #c800cf;
+  --wash: #ffefff;
+  --positive: #21c95e;
+  --negative: #ff5f52;
 
   --disp: var(--font-space-grotesk), "Space Grotesk", "Inter", sans-serif;
   --mono: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
@@ -154,9 +164,9 @@
   /* The gradient The Index runs behind its hero. Here it is the one tinted
      band mid-page, and the second thing the nav reacts to. */
   --tinted:
-    radial-gradient(780px 500px at 84% 12%, rgba(222, 164, 139, 0.68), rgba(222, 164, 139, 0) 58%),
-    radial-gradient(720px 520px at 12% 92%, rgba(34, 95, 166, 0.46), rgba(34, 95, 166, 0) 62%),
-    linear-gradient(145deg, #2f6fb3 0%, #5f94d1 36%, #97aed6 66%, #d1b8af 100%);
+    radial-gradient(780px 500px at 84% 12%, rgba(252, 114, 255, 0.5), rgba(252, 114, 255, 0) 58%),
+    radial-gradient(720px 520px at 12% 92%, rgba(255, 157, 255, 0.42), rgba(255, 157, 255, 0) 62%),
+    linear-gradient(145deg, #ffdcff 0%, #ffeaff 38%, #fff4ff 68%, #ffffff 100%);
 }
 
 @layer base {
@@ -204,7 +214,7 @@
     stroke-linejoin: round;
   }
   ::selection {
-    background: var(--accent);
+    background: var(--wash);
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -318,16 +328,16 @@ section {
   cursor: not-allowed;
 }
 
-/* Primary is ink, not lime — The Index's dark button is this system's call to
-   action, and it is the strongest thing on any light surface. */
+/* Primary is the pink. On this palette it is the only saturated thing, which
+   makes it unmissable without needing size or weight to do the work. */
 .btn-primary {
-  background: var(--ink);
+  background: var(--accent);
   color: #fff;
 }
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  background: var(--ink-soft);
-  box-shadow: 0 18px 38px -18px rgba(25, 25, 24, 0.55);
+  background: #f558f8;
+  box-shadow: 0 18px 38px -18px rgba(252, 114, 255, 0.85);
 }
 .btn-ghost {
   background: var(--surface);
@@ -335,7 +345,7 @@ section {
   border-color: var(--line-2);
 }
 .btn-ghost .arw {
-  background: rgba(25, 25, 24, 0.08);
+  background: rgba(19, 19, 19, 0.06);
 }
 .btn-ghost:hover:not(:disabled) {
   transform: translateY(-2px);
@@ -363,7 +373,8 @@ section {
   fill: currentColor;
 }
 .nav-icon:hover {
-  border-color: var(--ink);
+  border-color: var(--accent);
+  color: var(--accent-ink);
   transform: translateY(-2px);
 }
 
@@ -404,7 +415,7 @@ section {
   display: block;
   height: 100%;
   width: 0;
-  background: var(--ink);
+  background: var(--accent);
 }
 @media (prefers-reduced-motion: reduce) {
   .reveal {
@@ -501,45 +512,19 @@ section {
   gap: 10px;
 }
 
-/* Over a saturated band: everything goes white and the glass goes away. */
+/* Over a tinted band. In the dark variant this flips the bar to white type;
+   here the bands are pale, so it only drops the glass and lets the pink show
+   through — the ink stays ink, because on this palette it is still the most
+   legible thing on the page. */
 .nav.nav-over {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0));
-  border-bottom-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.42);
+  border-bottom-color: rgba(19, 19, 19, 0.06);
   box-shadow: none;
 }
-.nav.nav-over .brand .nm,
-.nav.nav-over .nav-links a:hover {
-  color: #fff;
-}
-.nav.nav-over .beta {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.45);
-}
-.nav.nav-over .nav-links a {
-  color: rgba(255, 255, 255, 0.84);
-}
-.nav.nav-over .nav-links .sep {
-  color: rgba(255, 255, 255, 0.4);
-}
-.nav.nav-over .nav-icon {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.36);
-  color: #fff;
-}
-.nav.nav-over .nav-icon:hover {
-  border-color: #fff;
-}
+.nav.nav-over .nav-icon,
 .nav.nav-over .btn-ghost {
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.4);
-}
-.nav.nav-over .btn-primary {
-  background: #fff;
-  color: var(--ink);
-}
-.nav.nav-over .btn-primary .arw {
-  background: rgba(25, 25, 24, 0.1);
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(19, 19, 19, 0.1);
 }
 @media (max-width: 920px) {
   .nav-links {
@@ -563,7 +548,7 @@ section {
      stacking context it would composite against the page instead of against
      the footage. */
   isolation: isolate;
-  background: #101a24;
+  background: var(--wash);
 }
 .hero-video {
   position: absolute;
@@ -573,9 +558,10 @@ section {
   object-fit: cover;
   z-index: -2;
   /* Strip the footage's own colour first. Everything after this reads its
-     luminance only, so the grade lands the same whatever was shot. Contrast is
-     nudged up because desaturating flattens the midtones. */
-  filter: grayscale(1) contrast(1.12) brightness(0.9);
+     luminance only, so the grade lands the same whatever was shot.
+     Brightness up and contrast down, unlike the dark variant: the hills have
+     to end up pale enough for near-black type to sit on them. */
+  filter: grayscale(1) brightness(1.5) contrast(0.72);
 }
 
 /* ── hero colour grade ────────────────────────────────────────────────────
@@ -588,9 +574,9 @@ section {
         luminance. That is precisely what a colour grade is, which is why this
         is one blend and not a stack of overlays — the hills stay hills, they
         just stop being green.
-     2. `multiply` under it pulls the shadows toward ink so the white headline
-        has something to sit on. Without it the graded footage sits at a
-        midtone across the whole frame and the type loses its edge.
+     2. A plain white-pink wash over it lifts the whole frame instead of
+        deepening it. The dark variant multiplies here; this one cannot — the
+        headline is near-black, so the footage has to go up, not down.
 
    The gradient is --tinted, the same variable the community band uses. One
    source for the page's only two saturated surfaces: change it once and both
@@ -615,20 +601,19 @@ section {
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(16, 26, 36, 0.32),
-    rgba(16, 26, 36, 0.52) 55%,
-    rgba(16, 26, 36, 0.62)
+    rgba(255, 255, 255, 0.46),
+    rgba(255, 239, 255, 0.62) 55%,
+    rgba(255, 255, 255, 0.72)
   );
-  mix-blend-mode: multiply;
 }
 .hero-scrim {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(8, 16, 4, 0.16), rgba(8, 16, 4, 0.38) 46%, rgba(8, 16, 4, 0.2)),
-    radial-gradient(48% 42% at 50% 46%, rgba(8, 16, 4, 0.44), transparent 72%);
+  /* A light vignette, the inverse of the dark variant's: it lifts the centre
+     so the headline has a clean field, rather than darkening it. */
+  background: radial-gradient(52% 46% at 50% 48%, rgba(255, 255, 255, 0.66), transparent 74%);
 }
 .hero-fade {
   position: absolute;
@@ -638,7 +623,7 @@ section {
   height: 22%;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(237, 236, 232, 0), var(--page) 94%);
+  background: linear-gradient(180deg, rgba(249, 249, 249, 0), var(--page) 94%);
 }
 .hero-inner {
   text-align: center;
@@ -664,8 +649,7 @@ section {
   font-size: clamp(2rem, 4.8vw, 3.9rem);
   letter-spacing: -0.03em;
   line-height: 1.05;
-  color: #fff;
-  text-shadow: 0 6px 44px rgba(0, 0, 0, 0.4);
+  color: var(--ink);
   opacity: 0;
   visibility: hidden;
   transform: translateY(22px) scale(0.98);
@@ -685,6 +669,11 @@ section {
 }
 .hero-slide .g {
   color: var(--accent);
+}
+.hero-slide .ln {
+  /* The band is pale and its luminance moves as the footage plays, so the
+     type carries its own halo rather than trusting the plate under it. */
+  text-shadow: 0 2px 30px rgba(255, 255, 255, 0.9);
 }
 .hero-corners {
   position: absolute;
@@ -708,23 +697,23 @@ section {
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-ink);
   margin-bottom: 8px;
 }
 .ai-note p {
   font-size: 13px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
   font-weight: 500;
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 2px 16px rgba(255, 255, 255, 0.85);
 }
 .scrolldisc {
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+  color: var(--ink-2);
+  text-shadow: 0 2px 16px rgba(255, 255, 255, 0.85);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -845,7 +834,7 @@ section {
   border-right-width: 2px;
 }
 .step:hover .tick {
-  border-color: var(--ink);
+  border-color: var(--accent);
 }
 
 /* ── vault showcase ──────────────────────────────────────────────────────── */
@@ -913,7 +902,7 @@ section {
   color: var(--ink);
 }
 .seg-btn[aria-pressed="true"] {
-  background: var(--ink);
+  background: var(--accent);
   color: #fff;
 }
 .showcase-body {
@@ -989,7 +978,7 @@ section {
   position: absolute;
   inset: 0;
   border-radius: 2px;
-  background: var(--ink);
+  background: var(--accent);
 }
 .meter-scale {
   position: relative;
@@ -1111,7 +1100,7 @@ section {
   position: absolute;
   inset: 0 auto 0 0;
   border-radius: 999px;
-  background: var(--ink);
+  background: var(--accent);
 }
 .holding-value {
   width: 66px;
@@ -1198,7 +1187,7 @@ section {
   position: absolute;
   inset: auto 0 -40% 0;
   height: 70%;
-  background: radial-gradient(60% 100% at 50% 100%, rgba(191, 211, 236, 0.5), transparent 70%);
+  background: radial-gradient(60% 100% at 50% 100%, rgba(252, 114, 255, 0.24), transparent 70%);
   pointer-events: none;
 }
 .step-caption {
@@ -1353,7 +1342,7 @@ section {
   background: conic-gradient(
     from 0deg,
     transparent 0 68%,
-    rgba(191, 211, 236, 0.9) 86%,
+    rgba(252, 114, 255, 0.9) 86%,
     transparent 100%
   );
   -webkit-mask: radial-gradient(circle, transparent 55%, #000 56%);
@@ -1368,11 +1357,11 @@ section {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--accent);
   color: #fff;
   display: grid;
   place-items: center;
-  box-shadow: 0 24px 48px -18px rgba(25, 25, 24, 0.6);
+  box-shadow: 0 24px 48px -18px rgba(252, 114, 255, 0.8);
   z-index: 3;
 }
 .orbit .sat {
@@ -1502,9 +1491,9 @@ section {
   flex: none;
 }
 .pool-bub[aria-pressed="true"] .pav {
-  background: var(--ink);
+  background: var(--accent);
   color: #fff;
-  border-color: var(--ink);
+  border-color: var(--accent);
 }
 .pool-bub .pnm b {
   font-family: var(--disp);
@@ -1541,7 +1530,7 @@ section {
   letter-spacing: 0.05em;
   padding: 12px 19px;
   border-radius: 999px;
-  background: var(--ink);
+  background: var(--accent);
   color: #fff;
   transition:
     transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
@@ -1549,7 +1538,7 @@ section {
 }
 .pool-stake:hover {
   transform: translateY(-2px);
-  background: var(--ink-soft);
+  background: #f558f8;
 }
 @media (max-width: 560px) {
   .pool-bub {
@@ -1620,7 +1609,7 @@ section {
   text-align: center;
 }
 .matrix-cell .yes {
-  color: var(--ink);
+  color: var(--accent);
   font-size: 15px;
 }
 .matrix-cell .no {
@@ -1657,7 +1646,7 @@ section {
   position: relative;
   min-height: 220vh;
   background: var(--tinted);
-  color: #fff;
+  color: var(--ink);
 }
 .cmy-track {
   position: sticky;
@@ -1675,8 +1664,8 @@ section {
   pointer-events: none;
   will-change: transform;
   background:
-    radial-gradient(38% 48% at 20% 32%, rgba(255, 255, 255, 0.16), transparent 60%),
-    radial-gradient(38% 48% at 82% 68%, rgba(255, 255, 255, 0.18), transparent 60%);
+    radial-gradient(38% 48% at 20% 32%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(38% 48% at 82% 68%, rgba(252, 114, 255, 0.16), transparent 60%);
 }
 .cmy-col {
   position: absolute;
@@ -1705,16 +1694,16 @@ section {
   padding: 0 20px;
 }
 .cmy-inner .eyebrow {
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--accent-ink);
 }
 .cmy-inner h2 {
   font-size: clamp(2.2rem, 5.4vw, 4.2rem);
   margin-top: 18px;
-  color: #fff;
+  color: var(--ink);
 }
 .cmy-inner p {
   margin-top: 18px;
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--ink-2);
   font-size: 1.04rem;
 }
 .cmy-cta {
@@ -1724,23 +1713,9 @@ section {
   flex-wrap: wrap;
   margin-top: 30px;
 }
-.community .btn-primary {
-  background: #fff;
-  color: var(--ink);
-}
-.community .btn-primary:hover {
-  background: #fff;
-}
-.community .btn-primary .arw {
-  background: rgba(25, 25, 24, 0.1);
-}
 .community .btn-ghost {
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.4);
-}
-.community .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(19, 19, 19, 0.1);
 }
 .mini {
   background: rgba(255, 255, 255, 0.95);
@@ -1768,7 +1743,7 @@ section {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--accent);
 }
 /* Every string in here comes off the chain, so none of its lengths are known
    in advance: a subject can be a contract name, a meta line can be a formatted
@@ -1833,6 +1808,8 @@ section {
 
 /* ── footer: fixed full-viewport, uncovered by scrolling past ────────────── */
 
+/* Solid accent, not ink. A white footer under a near-white page has no edge
+   to it, and this is where the page ends — it should land. */
 .bigfoot {
   position: fixed;
   left: 0;
@@ -1841,7 +1818,7 @@ section {
   min-height: 100vh;
   z-index: 0;
   display: flex;
-  background: var(--ink);
+  background: var(--accent);
   color: #fff;
   overflow: hidden;
 }
@@ -1911,14 +1888,14 @@ section {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.72);
   text-align: right;
 }
 .bf-disc {
   margin-top: 18px;
   font-size: 10.5px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.68);
   max-width: 80ch;
 }
 .bf-x {
@@ -2034,7 +2011,7 @@ section {
   transition: border-color 0.2s;
 }
 .field:focus {
-  border-color: var(--ink);
+  border-color: var(--accent);
 }
 .chip {
   display: inline-flex;
@@ -2053,8 +2030,8 @@ section {
     color 0.2s;
 }
 a.chip:hover {
-  border-color: var(--ink);
-  color: var(--ink);
+  border-color: var(--accent);
+  color: var(--accent-ink);
 }
 
 /* ── /app ────────────────────────────────────────────────────────────────── */
@@ -2142,7 +2119,7 @@ a.chip:hover {
 }
 .notice {
   border: 1px solid var(--line-2);
-  border-left: 3px solid var(--ink);
+  border-left: 3px solid var(--accent);
   border-radius: 8px;
   padding: 16px 18px;
   background: var(--surface);
@@ -2194,7 +2171,7 @@ a.chip:hover {
 .split-track i {
   display: block;
   height: 100%;
-  background: var(--ink);
+  background: var(--accent);
 }
 
 .deposit-asset {
@@ -2220,7 +2197,7 @@ a.chip:hover {
   transition: border-color 0.2s;
 }
 .amount:focus-within {
-  border-color: var(--ink);
+  border-color: var(--accent);
 }
 .amount-input {
   flex: 1;
@@ -2326,8 +2303,8 @@ a.chip:hover {
     color 0.2s;
 }
 .slip-btn.is-on {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 
@@ -2380,13 +2357,13 @@ a.chip:hover {
   overflow: hidden;
 }
 .alloc-stable {
-  background: var(--ink);
+  background: var(--accent);
   color: #fff;
 }
 .alloc-stocks {
   justify-content: flex-end;
-  background: var(--accent);
-  color: var(--ink);
+  background: var(--wash);
+  color: var(--accent-ink);
 }
 .alloc-legend {
   display: flex;
@@ -2398,7 +2375,7 @@ a.chip:hover {
 }
 .leg-block {
   border: 1px solid var(--line);
-  border-left: 3px solid var(--ink);
+  border-left: 3px solid var(--accent);
   border-radius: 8px;
   padding: 18px;
 }
@@ -2492,8 +2469,8 @@ a.chip:hover {
   background: var(--surface);
 }
 .mech-dot.is-end {
-  border-color: var(--ink);
-  background: var(--ink);
+  border-color: var(--accent);
+  background: var(--accent);
 }
 .mech-stage b {
   display: block;
@@ -2569,9 +2546,9 @@ a.chip:hover {
   color: var(--ink);
 }
 .docs-sidebar-link.is-active {
-  background: var(--ink);
-  color: #fff;
-  font-weight: 500;
+  background: var(--wash);
+  color: var(--accent-ink);
+  font-weight: 600;
 }
 .docs-article {
   min-width: 0;
@@ -2682,7 +2659,7 @@ a.chip:hover {
   height: 6px;
   margin-top: 9px;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--accent);
 }
 .doc-table {
   overflow-x: auto;
@@ -2734,9 +2711,9 @@ a.chip:hover {
   margin-bottom: 22px;
   padding: 16px 18px;
   border: 1px solid var(--line);
-  border-left: 3px solid var(--ink);
+  border-left: 3px solid var(--accent);
   border-radius: 8px;
-  background: var(--surface);
+  background: var(--wash);
 }
 .doc-note > span {
   font-family: var(--disp);
@@ -2758,7 +2735,9 @@ a.chip:hover {
 }
 .chip-ticker {
   font-weight: 700;
-  color: var(--ink);
+  color: var(--accent-ink);
+  background: var(--wash);
+  border-color: transparent;
 }
 
 /* ── /admin ──────────────────────────────────────────────────────────────── */
