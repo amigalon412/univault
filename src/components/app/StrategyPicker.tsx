@@ -1,5 +1,6 @@
 "use client";
 
+import { StrategyGlyph } from "@/components/StrategyGlyph";
 import { formatUsdg } from "@/hooks/useVault";
 import { STRATEGIES, type StrategyId } from "@/lib/strategies";
 
@@ -27,7 +28,9 @@ export function StrategyPicker({ selected, onSelect, tvl }: StrategyPickerProps)
             aria-pressed={s.id === selected}
             className="pool-bub"
           >
-            <span className="pav">{s.name.slice(0, 2).toUpperCase()}</span>
+            <span className="pav">
+              <StrategyGlyph id={s.id} />
+            </span>
             <span className="pnm">
               <b>{s.name}</b>
               <small>{s.short}</small>

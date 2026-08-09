@@ -1,15 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { BrandMark } from "@/components/BrandMark";
 import { ArrowRightIcon, VaultMark } from "@/components/icons";
-import { PixelLogo } from "@/components/PixelLogo";
+import { StrategyGlyph } from "@/components/StrategyGlyph";
 import { ORBIT_SATELLITES } from "@/lib/landing";
-import { PIXEL_LOGOS } from "@/lib/pixel-logos";
 import { STRATEGIES } from "@/lib/strategies";
 import type { CSSProperties } from "react";
-
-/** Ticker -> pixel mark, so a satellite can be named rather than indexed. */
-const MARK_BY_SYM = Object.fromEntries(PIXEL_LOGOS.map((l) => [l.key, l]));
 
 /**
  * The basket, orbiting the vault.
@@ -18,6 +15,10 @@ const MARK_BY_SYM = Object.fromEntries(PIXEL_LOGOS.map((l) => [l.key, l]));
  * and nothing more. Each ring spins at its own period with a negative delay to
  * desynchronise its starting angle, and the badge counter-rotates at the same
  * period so the mark inside stays upright instead of tumbling.
+ *
+ * The marks are <BrandMark />, not the house pixel grid: at badge size the
+ * grid has fewer device pixels than cells and all four collapse into the same
+ * smudge. See BrandMark.tsx.
  */
 function VaultOrbit() {
   return (
@@ -28,23 +29,22 @@ function VaultOrbit() {
       <div className="core">
         <VaultMark width={48} height={48} />
       </div>
-      {ORBIT_SATELLITES.map((sat) => {
-        const mark = MARK_BY_SYM[sat.sym];
-        return (
-          <div
-            className="sat"
-            key={sat.sym}
-            style={
-              {
-                "--t": sat.duration,
-                ...("delay" in sat && sat.delay ? { animationDelay: sat.delay } : {}),
-              } as CSSProperties
-            }
-          >
-            <b>{mark ? <PixelLogo logo={mark} size={22} /> : sat.sym}</b>
-          </div>
-        );
-      })}
+      {ORBIT_SATELLITES.map((sat) => (
+        <div
+          className="sat"
+          key={sat.sym}
+          style={
+            {
+              "--t": sat.duration,
+              ...("delay" in sat && sat.delay ? { animationDelay: sat.delay } : {}),
+            } as CSSProperties
+          }
+        >
+          <b>
+            <BrandMark sym={sat.sym} size={22} />
+          </b>
+        </div>
+      ))}
     </div>
   );
 }
@@ -81,7 +81,9 @@ export function VaultsSection() {
 
             {STRATEGIES.map((s) => (
               <Link className="pool-bub" key={s.id} href="/app">
-                <span className="pav">{s.name.slice(0, 2).toUpperCase()}</span>
+                <span className="pav">
+                  <StrategyGlyph id={s.id} />
+                </span>
                 <span className="pnm">
                   <b>{s.name}</b>
                   <small>{s.short}</small>

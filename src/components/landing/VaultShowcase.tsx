@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { BrandMark } from "@/components/BrandMark";
 import { ArrowRightIcon } from "@/components/icons";
-import { PixelLogo } from "@/components/PixelLogo";
 import { ScrambleFigure } from "@/components/ScrambleFigure";
 import { useReveal } from "@/hooks/useReveal";
 import { PIXEL_LOGOS } from "@/lib/pixel-logos";
@@ -192,7 +192,7 @@ export function VaultShowcase() {
                         style={{ animationDelay: `${120 + i * 80}ms` }}
                       >
                         <span className="holding-mark">
-                          <PixelLogo logo={logo} size={16} />
+                          <BrandMark sym={logo.key} size={15} />
                         </span>
                         <span className="holding-sym">{logo.key}</span>
                         {/* The weight is drawn rather than stated, and it is

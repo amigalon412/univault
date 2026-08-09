@@ -32,6 +32,15 @@ const LOGOS = [
   // the same pipeline as the bitmaps means one grey and one edge treatment
   // across the whole row instead of two.
   { src: "/Users/a1/meganode/assets/logos/zerox.svg", out: "zerox.png", density: 600 },
+
+  /* Badge-sized variants. The marquee runs these marks at a 46px cap where
+     the full lockups are exactly right; <BrandMark /> runs them at 15-22px
+     inside a round badge, where the same two files fail in opposite ways —
+     NVIDIA's wordmark turns to mush under a 7px cap, and Tesla's plate is a
+     filled disc that becomes a grey blob sitting in a white circle. Both are
+     recoverable from the same sources, so neither needs new artwork. */
+  { src: path.join(SRC, "nvda.png"), out: "nvda-mark.png", topBlockOnly: true },
+  { src: path.join(SRC, "tsla.png"), out: "tsla-mark.png", knockout: true },
 ];
 
 /* How far a pixel has to sit from the plate colour to count as fully inked.
@@ -39,8 +48,8 @@ const LOGOS = [
    noise in the plate does not. */
 const FULL_INK_DISTANCE = 90;
 
-/** Trim the transparent margin so every mark fills its box the same way. */
-async function trimToInk(buf, width, height, alpha) {
+/** Bounding box of everything inked, or null if nothing is. */
+function inkBounds(width, height, alpha) {
   let top = height, left = width, right = -1, bottom = -1;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
@@ -52,11 +61,68 @@ async function trimToInk(buf, width, height, alpha) {
       }
     }
   }
-  if (right < 0) return buf; // nothing inked — leave it alone
+  return right < 0 ? null : { left, top, right, bottom };
+}
+
+/** Trim the transparent margin so every mark fills its box the same way. */
+async function trimToInk(buf, width, height, alpha) {
+  const b = inkBounds(width, height, alpha);
+  if (!b) return buf; // nothing inked — leave it alone
   return sharp(buf)
-    .extract({ left, top, width: right - left + 1, height: bottom - top + 1 })
+    .extract({
+      left: b.left,
+      top: b.top,
+      width: b.right - b.left + 1,
+      height: b.bottom - b.top + 1,
+    })
     .png()
     .toBuffer();
+}
+
+/**
+ * Keep only the mark above the wordmark.
+ *
+ * A logo-over-name lockup always has a clear band of empty rows between the
+ * two, so the cut is the first such gap rather than a fraction measured off
+ * this one file — retracing the artwork later cannot silently move it.
+ */
+function keepTopBlock(width, height, alpha) {
+  const b = inkBounds(width, height, alpha);
+  if (!b) return;
+  const inked = (y) => {
+    for (let x = b.left; x <= b.right; x++) if (alpha[y * width + x] > 12) return true;
+    return false;
+  };
+  const GAP = Math.max(3, Math.round((b.bottom - b.top) * 0.03));
+  let run = 0;
+  for (let y = b.top; y <= b.bottom; y++) {
+    run = inked(y) ? 0 : run + 1;
+    if (run < GAP) continue;
+    alpha.fill(0, (y - run + 1) * width); // everything from the gap down
+    return;
+  }
+}
+
+/**
+ * Swap ink and plate inside a round badge.
+ *
+ * Tesla's artwork is a filled disc with the T knocked out of it, which as a
+ * mask paints a solid grey coin. What is wanted at badge size is the bare T,
+ * so the alpha is inverted — clipped to just inside the disc, or the corners
+ * the disc never covered would come back as ink.
+ */
+function knockOut(width, height, alpha) {
+  const b = inkBounds(width, height, alpha);
+  if (!b) return;
+  const cx = (b.left + b.right) / 2;
+  const cy = (b.top + b.bottom) / 2;
+  const r = Math.min(b.right - b.left, b.bottom - b.top) / 2 - 2;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = y * width + x;
+      alpha[i] = (x - cx) ** 2 + (y - cy) ** 2 <= r * r ? 255 - alpha[i] : 0;
+    }
+  }
 }
 
 for (const logo of LOGOS) {
@@ -71,20 +137,25 @@ for (const logo of LOGOS) {
   // these were exported at different times against different backgrounds.
   const bg = [data[0], data[1], data[2]];
 
-  const rgba = Buffer.alloc(width * height * 4);
   const alpha = new Uint8Array(width * height);
   for (let i = 0; i < width * height; i++) {
     const o = i * channels;
     const d = Math.sqrt(
       (data[o] - bg[0]) ** 2 + (data[o + 1] - bg[1]) ** 2 + (data[o + 2] - bg[2]) ** 2,
     );
-    const a = Math.min(255, Math.round((d / FULL_INK_DISTANCE) * 255));
-    alpha[i] = a;
+    alpha[i] = Math.min(255, Math.round((d / FULL_INK_DISTANCE) * 255));
+  }
+
+  if (logo.knockout) knockOut(width, height, alpha);
+  if (logo.topBlockOnly) keepTopBlock(width, height, alpha);
+
+  const rgba = Buffer.alloc(width * height * 4);
+  for (let i = 0; i < width * height; i++) {
     // White ink, so the mask is unambiguous when inspected on its own.
     rgba[i * 4] = 255;
     rgba[i * 4 + 1] = 255;
     rgba[i * 4 + 2] = 255;
-    rgba[i * 4 + 3] = a;
+    rgba[i * 4 + 3] = alpha[i];
   }
 
   const flat = await sharp(rgba, { raw: { width, height, channels: 4 } })

@@ -49,10 +49,14 @@ export const HERO_NOTE = {
   body: "Deposit once. The vault lends the balance out for real interest, grows a slice into tokenized stocks, and a guarded keeper pulls it back on target — on-chain, on Robinhood Chain.",
 } as const;
 
+/** Which diagram <StepDiagram /> draws on a step's plate. */
+export type StepArt = "deposit" | "split" | "rebalance";
+
 /** A step in "how one deposit moves", with the contracts it touches. */
 export interface HowStep {
   num: string;
-  caption: string;
+  /** Doubles as the plate's label and the key for its diagram. */
+  caption: StepArt;
   title: string;
   body: string;
   links: { label: string; address: Address | null }[];

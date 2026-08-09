@@ -1,4 +1,5 @@
 import { ContractLink } from "@/components/ContractLink";
+import { StepDiagram } from "@/components/landing/StepDiagram";
 import { HOW_STEPS } from "@/lib/landing";
 
 /**
@@ -43,6 +44,7 @@ export function HowItWorks() {
               <div className="art">
                 <div className="step-plate">
                   <span className="step-caption">{step.caption}</span>
+                  <StepDiagram kind={step.caption} />
                 </div>
               </div>
 
