@@ -50,9 +50,6 @@
   --color-accent: #bfd3ec;
   --color-positive: #3a9d0c;
   --color-negative: #d23b3f;
-  /* frog's lime. Hero and the nav's over-hero state only. */
-  --color-leaf: #8cbe1b;
-  --color-leaf-bright: #b6e63a;
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -144,9 +141,6 @@
   --line: #ecebe6;
   --line-2: #d9d8d1;
   --accent: #bfd3ec;
-  --leaf: #8cbe1b;
-  --leaf-2: #7baa12;
-  --leaf-bright: #b6e63a;
   --positive: #3a9d0c;
   --negative: #d23b3f;
 
@@ -565,8 +559,11 @@ section {
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
+  /* Required, not cosmetic: the grade below blends, and without an isolated
+     stacking context it would composite against the page instead of against
+     the footage. */
   isolation: isolate;
-  background: #0e1806;
+  background: #101a24;
 }
 .hero-video {
   position: absolute;
@@ -575,15 +572,53 @@ section {
   height: 100%;
   object-fit: cover;
   z-index: -2;
+  /* Strip the footage's own colour first. Everything after this reads its
+     luminance only, so the grade lands the same whatever was shot. Contrast is
+     nudged up because desaturating flattens the midtones. */
+  filter: grayscale(1) contrast(1.12) brightness(0.9);
 }
-/* Green over the footage rather than beside it. Multiply keeps the motion
-   readable through the tint instead of flattening it into a colour field. */
-.hero-tint {
+
+/* ── hero colour grade ────────────────────────────────────────────────────
+   The footage is tinted into the site's own palette rather than left in the
+   green it was shot for.
+
+   Two passes, and the order matters:
+
+     1. `color` takes hue and chroma from the gradient and keeps the video's
+        luminance. That is precisely what a colour grade is, which is why this
+        is one blend and not a stack of overlays — the hills stay hills, they
+        just stop being green.
+     2. `multiply` under it pulls the shadows toward ink so the white headline
+        has something to sit on. Without it the graded footage sits at a
+        midtone across the whole frame and the type loses its edge.
+
+   The gradient is --tinted, the same variable the community band uses. One
+   source for the page's only two saturated surfaces: change it once and both
+   move together.
+
+   Done in CSS rather than baked into the file on purpose. It costs a filter
+   pass per frame — bounded, because ScrollEffects pauses the video the moment
+   it leaves the viewport — and buys a grade that is tunable from one line
+   instead of a re-encode. */
+.hero-grade {
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(140, 190, 27, 0.62), rgba(90, 130, 14, 0.74));
+  background: var(--tinted);
+  mix-blend-mode: color;
+}
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(16, 26, 36, 0.32),
+    rgba(16, 26, 36, 0.52) 55%,
+    rgba(16, 26, 36, 0.62)
+  );
   mix-blend-mode: multiply;
 }
 .hero-scrim {
@@ -649,7 +684,7 @@ section {
   display: block;
 }
 .hero-slide .g {
-  color: var(--leaf-bright);
+  color: var(--accent);
 }
 .hero-corners {
   position: absolute;
@@ -673,7 +708,7 @@ section {
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--leaf-bright);
+  color: var(--accent);
   margin-bottom: 8px;
 }
 .ai-note p {

@@ -22,8 +22,10 @@ function Line({ segments }: { segments: TextSegment[] }) {
 }
 
 /**
- * Full-bleed hero: looping footage under a green wash, with three headlines
- * crossfading over it.
+ * Full-bleed hero: looping footage graded into the site's palette, with three
+ * headlines crossfading over it. The grade is two blend layers — see
+ * .hero-grade in globals.css for why it is done here and not baked into the
+ * file.
  *
  * `data-nav="over"` is what tips the nav into its white state — <ScrollEffects />
  * looks for exactly that attribute. This is the only saturated band above the
@@ -59,7 +61,8 @@ export function Hero() {
       >
         <source src="/videos/hero.mp4" type="video/mp4" />
       </video>
-      <div className="hero-tint" />
+      <div className="hero-grade" />
+      <div className="hero-shade" />
       <div className="hero-scrim" />
       <div className="hero-fade" />
 
