@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { VaultMark, XIcon } from "@/components/icons";
+import { XIcon } from "@/components/icons";
 import { FOOTER_DISCLAIMER, FOOTER_LINKS } from "@/lib/landing";
 
 /**
@@ -30,7 +30,6 @@ export function SiteFooter() {
 
         <div className="bf-bottom">
           <div className="bf-name">
-            <VaultMark width={52} height={52} />
             <span className="wm">UNIVAULT</span>
           </div>
           <div className="bf-legal">

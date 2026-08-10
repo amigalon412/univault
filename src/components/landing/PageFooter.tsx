@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { VaultMark, XIcon } from "@/components/icons";
+import { XIcon } from "@/components/icons";
 import { FOOTER_DISCLAIMER, FOOTER_LINKS } from "@/lib/landing";
 
 /**
@@ -17,7 +17,6 @@ export function PageFooter() {
       <div className="wrap">
         <div className="pagefoot-top">
           <Link className="pagefoot-brand" href="/">
-            <VaultMark width={30} height={30} />
             <span>UNIVAULT</span>
           </Link>
 
