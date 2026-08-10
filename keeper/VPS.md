@@ -1,6 +1,6 @@
 # Running the keeper on someone else's VPS
 
-The keeper is the only part of BLUR that needs a key on an always-on machine.
+The keeper is the only part of Univault that needs a key on an always-on machine.
 This is how to put it there without handing over the one key that matters.
 
 ## Read this first
@@ -47,9 +47,9 @@ RPC=https://rpc.mainnet.chain.robinhood.com
 KEEPER_ADDR=0x...            # from step 1
 
 for GUARD in \
-  0xedc4d302ab6c87f77ed084462dc82530e460da11 \
-  0x35304Ceb350C6ab8d93f99C002d268DbA4Ff0613 \
-  0xFa71F59495e8c5E4d935b0dC76c327f9eCEf123A
+  0x101183e175EA27E059Fd44E6B36e5fBF1f466F26 \
+  0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7 \
+  0x56CAceC02cc8DCb729b209cA1b8EdF5609da091B
 do
   cast send "$GUARD" 'setKeeper(address,bool)' "$KEEPER_ADDR" true \
     --rpc-url "$RPC" --interactive
@@ -63,9 +63,9 @@ Check it took:
 
 ```bash
 for GUARD in \
-  0xedc4d302ab6c87f77ed084462dc82530e460da11 \
-  0x35304Ceb350C6ab8d93f99C002d268DbA4Ff0613 \
-  0xFa71F59495e8c5E4d935b0dC76c327f9eCEf123A
+  0x101183e175EA27E059Fd44E6B36e5fBF1f466F26 \
+  0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7 \
+  0x56CAceC02cc8DCb729b209cA1b8EdF5609da091B
 do
   echo -n "$GUARD "
   cast call "$GUARD" 'isKeeper(address)(bool)' "$KEEPER_ADDR" --rpc-url "$RPC"
@@ -119,8 +119,8 @@ safe with no key present at all. Run it as the service user:
 
 ```bash
 cd /opt/blur-keeper
-sudo -u blurkeeper env VAULT_ADDRESS=0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7 \
-  GUARD_ADDRESS=0x35304Ceb350C6ab8d93f99C002d268DbA4Ff0613 \
+sudo -u blurkeeper env VAULT_ADDRESS=0x3601c09C4F84885454cCbd46B9dF3DaB244c1150 \
+  GUARD_ADDRESS=0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7 \
   npm run once
 ```
 

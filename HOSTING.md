@@ -38,9 +38,9 @@ inventing numbers.
 
 | Variable                     | Required | Purpose                                                        |
 |------------------------------|----------|----------------------------------------------------------------|
-| `NEXT_PUBLIC_VAULT_STEADY`   | yes      | STEADY vault address. Current: `0x583bce228448814bc42235d4761290f3ac710a09` |
-| `NEXT_PUBLIC_VAULT_BALANCED` | yes      | BALANCED vault address. Current: `0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7` |
-| `NEXT_PUBLIC_VAULT_GROWTH`   | yes      | GROWTH vault address. Current: `0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c` |
+| `NEXT_PUBLIC_VAULT_STEADY`   | yes      | STEADY vault address. Current: `0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37` |
+| `NEXT_PUBLIC_VAULT_BALANCED` | yes      | BALANCED vault address. Current: `0x3601c09C4F84885454cCbd46B9dF3DaB244c1150` |
+| `NEXT_PUBLIC_VAULT_GROWTH`   | yes      | GROWTH vault address. Current: `0xa809DC62C6fc723E04B061cbE6271AaA093eC75b` |
 | `NEXT_PUBLIC_EXIT_ROUTER`    | yes*     | ExitRouter for one-tx "sell to USDG". `0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0`. *Without it the "sell everything" button is hidden. |
 | `NEXT_PUBLIC_BLUR_TOKEN`     | no       | $BLUR token address. Normally left blank — publish it from `/admin` instead, which needs no rebuild. Kept only as a build-time fallback. |
 | `NEXT_PUBLIC_SITE_URL`       | no       | Canonical URL for OG/social images. Vercel supplies its own; set only on a custom domain, e.g. `https://blurvault.pro`. |
@@ -93,9 +93,9 @@ git clone <git-repo-url> blurvault && cd blurvault
 **3. Env file (before building):**
 ```bash
 cat > .env.local <<'EOF'
-NEXT_PUBLIC_VAULT_STEADY=0x583bce228448814bc42235d4761290f3ac710a09
-NEXT_PUBLIC_VAULT_BALANCED=0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7
-NEXT_PUBLIC_VAULT_GROWTH=0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c
+NEXT_PUBLIC_VAULT_STEADY=0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37
+NEXT_PUBLIC_VAULT_BALANCED=0x3601c09C4F84885454cCbd46B9dF3DaB244c1150
+NEXT_PUBLIC_VAULT_GROWTH=0xa809DC62C6fc723E04B061cbE6271AaA093eC75b
 NEXT_PUBLIC_EXIT_ROUTER=0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
 NEXT_PUBLIC_SITE_URL=https://blurvault.pro
 EOF

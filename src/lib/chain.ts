@@ -52,13 +52,13 @@ export const STEAK_USDG: Address = getAddress(
  * basket at all. See contracts/DEPLOYMENTS.md.
  */
 export const BASKET_ADAPTER: Address = getAddress(
-  "0x8449202B6525F9632eB25809B91B50c1820fAAE4",
+  "0xA36f535E0035bb068cc27ca59137eF36b193f273",
 );
 export const PRICE_ORACLE: Address = getAddress(
-  "0x932aa45036045540dbfab7252bd3398f35f32e76",
+  "0x6EEd6275c580C43A97825e9870397f96FA181ea8",
 );
 export const KEEPER_GUARD: Address = getAddress(
-  "0x35304Ceb350C6ab8d93f99C002d268DbA4Ff0613",
+  "0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7",
 );
 
 /**
@@ -127,10 +127,16 @@ function optionalAddress(value: string | undefined): Address | null {
 }
 
 /**
- * The deployed vaults, one per strategy. Live and source-verified on Robinhood
- * Chain mainnet since 2026-07-23 -- the addresses, their deploy blocks and
- * their oracles are recorded in contracts/DEPLOYMENTS.md, which is the source
- * these are copied from.
+ * The deployed vaults, one per strategy. Live on Robinhood Chain mainnet since
+ * 2026-08-10 -- addresses, guards, oracles and baskets are recorded in
+ * contracts/DEPLOYMENTS.md, which is the source these are copied from.
+ *
+ * This is the post-rename set. The vaults it replaced were deployed as
+ * `BlurVault` and minted shares called `blurBALANCED`; a share token's name and
+ * symbol are constructor arguments with no setter, so the only way to change
+ * them was to deploy again. These mint `Univault Balanced` / `uvBALANCED`.
+ * The old vaults still answer calls and still hold nothing -- do not point
+ * anything at them.
  *
  * They are defaults in the code rather than environment-only values because
  * NEXT_PUBLIC_* is inlined at build time from .env.local, and .env.local is
@@ -141,15 +147,10 @@ function optionalAddress(value: string | undefined): Address | null {
  * Nothing is lost by committing them: NEXT_PUBLIC_* ships in the client bundle
  * regardless, so these are public the moment anyone loads the page.
  */
-/* PRE-RENAME SET. These three were deployed as `BlurVault` and their share
-   tokens report `BLUR Balanced` / `blurBALANCED`, which cannot be changed on a
-   deployed ERC-20. The source is now `Univault`; when the redeploy happens
-   these addresses and EXIT_ROUTER below both have to move with it, or the site
-   will keep talking to the old-brand contracts. See contracts/DEPLOYMENTS.md. */
 const MAINNET_VAULTS: Record<StrategyId, string> = {
-  steady: "0x583bce228448814bc42235d4761290f3ac710a09",
-  balanced: "0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7",
-  growth: "0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c",
+  steady: "0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37",
+  balanced: "0x3601c09C4F84885454cCbd46B9dF3DaB244c1150",
+  growth: "0xa809DC62C6fc723E04B061cbE6271AaA093eC75b",
 };
 
 /**

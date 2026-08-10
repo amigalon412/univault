@@ -1,42 +1,28 @@
 # Mainnet deployments — Robinhood Chain (chain id 4663)
 
-> **A rename redeploy is pending. Everything below is the pre-rename set.**
->
-> The contracts here were deployed as `BlurVault`, and their share tokens
-> report `name()`/`symbol()` of `BLUR Balanced` / `blurBALANCED`. Both are set
-> at construction and ERC-20 offers no way to change either, so on these
-> addresses the old brand is permanent — it is what a wallet, a DEX and the
-> explorer will show forever.
->
-> The source is now `Univault` and the deploy scripts name shares
-> `Univault Balanced` / `uvBALANCED`, but **nothing has been redeployed yet**.
-> Until it is, the site says Univault and the chain says BLUR.
->
-> This is worth doing now and only now: `totalSupply` is 0 on all three vaults,
-> so there is no holder to migrate. After the first deposit it stops being a
-> redeploy and becomes a migration.
->
-> After deploying, replace every address below, then update `MAINNET_VAULTS`
-> and `EXIT_ROUTER` in `src/lib/chain.ts` — the site reads its defaults from
-> there and will otherwise keep pointing at these.
-
 The live contracts. Addresses live here because `.env.local` and the Foundry
 broadcast logs are both gitignored — without this file the only record of what
 is deployed would be on one machine.
 
-Redeployed 2026-07-25 with the allocate-on-deposit vault (a deposit self-
-allocates in the same transaction, paid by the depositor). For every vault:
-`owner = keeper = feeRecipient = 0x56D89b63192677c72fCf4C9CB64de592F2833A63`.
-Every vault address below was confirmed on mainnet with `cast codesize` and the
-expected `targetStableBps` / `autoAllocate=true`.
+Redeployed 2026-08-10 to carry the rename. The vaults these replace were
+deployed as `BlurVault` and minted shares called `BLUR Balanced` /
+`blurBALANCED`; a share token's name and symbol are constructor arguments with
+no setter, so deploying again was the only way to change them. These mint
+`Univault Balanced` / `uvBALANCED` — confirmed by reading `name()` and
+`symbol()` back off each address. The whole redeploy cost 0.00066793 ETH.
+
+For every vault: `owner = feeRecipient = 0x13fB1e4C02bEC80377d17c2D187f85b27DD90222`.
+Each was read back with `scripts/verify-deployment.mjs`: splits 100 / 60 / 30,
+fee 5%, guards live, both baskets holding NVDA · AAPL · TSLA · AMZN at 25% and
+already sealed against substitution.
 
 ## Vaults (live — allocate-on-deposit)
 
 | Strategy | Split (stable/equity) | Vault | Guard | Basket | Oracle |
 |----------|----------------------|-------|-------|--------|--------|
-| STEADY   | 100 / 0  | `0x583bce228448814bc42235d4761290f3ac710a09` | `0xedc4d302ab6c87f77ed084462dc82530e460da11` | — (none by design) | `0x42fd413f655b9b66cef3fd5a3de469e5800a8fed` |
-| BALANCED | 60 / 40  | `0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7` | `0x35304Ceb350C6ab8d93f99C002d268DbA4Ff0613` | `0x8449202B6525F9632eB25809B91B50c1820fAAE4` | `0x932aa45036045540dbfab7252bd3398f35f32e76` |
-| GROWTH   | 30 / 70  | `0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c` | `0xFa71F59495e8c5E4d935b0dC76c327f9eCEf123A` | `0x15AD8f555e1f9Ac05115f88C25cFF76B8121720A` | `0x73723a588c1f6696b13fd1d0d4b86794f641b4da` |
+| STEADY   | 100 / 0  | `0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37` | `0x101183e175EA27E059Fd44E6B36e5fBF1f466F26` | — (none by design) | `0xc5fF460259034d15AA0a149Bc035f4AF98a47139` |
+| BALANCED | 60 / 40  | `0x3601c09C4F84885454cCbd46B9dF3DaB244c1150` | `0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7` | `0xA36f535E0035bb068cc27ca59137eF36b193f273` | `0x6EEd6275c580C43A97825e9870397f96FA181ea8` |
+| GROWTH   | 30 / 70  | `0xa809DC62C6fc723E04B061cbE6271AaA093eC75b` | `0x56CAceC02cc8DCb729b209cA1b8EdF5609da091B` | `0x76d58d2cF50BdB37e50117c5b7DfB6d579c7c609` | `0x7C3Ff9e01Dcb472D297648AbeDF5c1F595D3Deff` |
 
 The BALANCED and GROWTH baskets each hold NVDA, AAPL, TSLA and AMZN at 25% via
 Uniswap v4 pools (0.30% fee). AMD is deliberately excluded — its pool is hooked
@@ -45,35 +31,39 @@ and holds no liquidity.
 ExitRouter (`0xB31E70…b7F0`, in the Periphery table) takes the vault as a
 parameter and is unaffected by the redeploy — it works against the new vaults.
 
-### Guards predate `423d0b9` — verify them against that commit's parent
+### Source verification — NOT DONE YET for this set
 
-All twelve contracts are source-verified on Blockscout. The three KeeperGuards
-took a second pass, and anyone re-verifying them needs to know why.
-
-`423d0b9 fix(guard): reject rebalance slippage above the vault's hard cap`
-lowered `MAX_SLIPPAGE_BPS` from `10_000` to `1_000`. The deployed guards were
-built before it. Their runtime bytecode differs from a HEAD build in exactly
-one word — `0x2710` where HEAD emits `0x03e8` — and the metadata hash that
-follows. Built from `423d0b9^` the match is byte-for-byte, metadata included:
+**These eleven contracts are live but not yet verified on Blockscout.** Until
+they are, the explorer shows bytecode rather than Solidity, and the docs page
+telling readers to "paste one into the explorer and you get the Solidity" is
+ahead of reality. Run it:
 
 ```
-git show 423d0b9^:contracts/src/KeeperGuard.sol > contracts/src/KeeperGuard.sol
-cd contracts && forge build && bash script/verify-all.sh   # restore the file after
+cd contracts && bash script/verify-all.sh --dry-run   # check the plan first
+cd contracts && bash script/verify-all.sh
 ```
 
-`MAX_SLIPPAGE_BPS` is a ceiling on what the owner may set, not a live setting.
-All three guards run `maxSlippageBps = 100` (1%), an order of magnitude under
-even the lower ceiling, so the deployed guards and HEAD behave identically at
-the values in use. The difference is only in how far the owner could loosen
-them; redeploying to close that gap is optional and was not done.
+It sends no transaction and needs no key.
 
-### Superseded (2026-07-23, pre-allocate-on-deposit, now empty — do not use)
+The retired 07-24 guards needed a special dance — they predated `423d0b9`,
+which lowered `MAX_SLIPPAGE_BPS` from `10_000` to `1_000`, so they only matched
+a build from `423d0b9^`. **That does not apply here.** This set was built from
+HEAD, after the change, so it verifies straight from the current source.
 
-| Strategy | Vault |
-|----------|-------|
-| STEADY   | `0xFd7223d33335c5A7bdFA44C8Fa0B212cA045A996` |
-| BALANCED | `0x066d4661A5419A68b64a0dCF51f5c295185dB175` |
-| GROWTH   | `0xBF2b621E86e762C6f4C78aCAc4F1C41087CaB787` |
+### Superseded — do not use
+
+Both sets are still on chain and still answer calls. Neither holds anything.
+The 07-24 set is the dangerous one to confuse: it worked, it was verified, and
+it is what every link written before 2026-08-10 points at.
+
+| Retired    | Why | Strategy | Vault |
+|------------|-----|----------|-------|
+| 2026-08-10 | minted `blurBALANCED`; replaced by the rename | STEADY   | `0x583Bce228448814BC42235d4761290F3ac710a09` |
+|            |                                              | BALANCED | `0x796c05567cf6E00B3a9C453C3c67a5b2a7cD65e7` |
+|            |                                              | GROWTH   | `0xD9a66EF89FE6B2a129B6B78F953d2a89bb7ce04C` |
+| 2026-07-23 | pre-allocate-on-deposit                      | STEADY   | `0xFd7223d33335c5A7bdFA44C8Fa0B212cA045A996` |
+|            |                                              | BALANCED | `0x066d4661A5419A68b64a0dCF51f5c295185dB175` |
+|            |                                              | GROWTH   | `0xBF2b621E86e762C6f4C78aCAc4F1C41087CaB787` |
 
 ## Periphery
 
@@ -88,15 +78,15 @@ same values in the Vercel project settings to make the public site read the live
 contracts:
 
 ```
-NEXT_PUBLIC_VAULT_STEADY=0x583bce228448814bc42235d4761290f3ac710a09
-NEXT_PUBLIC_VAULT_BALANCED=0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7
-NEXT_PUBLIC_VAULT_GROWTH=0xd9a66ef89fe6b2a129b6b78f953d2a89bb7ce04c
+NEXT_PUBLIC_VAULT_STEADY=0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37
+NEXT_PUBLIC_VAULT_BALANCED=0x3601c09C4F84885454cCbd46B9dF3DaB244c1150
+NEXT_PUBLIC_VAULT_GROWTH=0xa809DC62C6fc723E04B061cbE6271AaA093eC75b
 NEXT_PUBLIC_EXIT_ROUTER=0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
 ```
 
 ## Not deployed yet
 
-- **$BLUR token** — `script/DeployToken.s.sol`, separate track.
+- **$UNIVAULT token** — `script/DeployToken.s.sol`, separate track.
 - **BuybackModule** — nothing to do until fees accrue.
 
 ## Abandoned (ignore)
