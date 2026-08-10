@@ -31,13 +31,22 @@ const inter = Inter({
   display: "swap",
 });
 
-// Vercel injects the production domain, so social images resolve correctly
-// without hardcoding it. Override with NEXT_PUBLIC_SITE_URL on a custom domain.
+/*
+ * The canonical origin, used for the canonical link and for resolving the
+ * OG/social image to an absolute URL. Nothing else depends on it — not the
+ * chain, not the vaults.
+ *
+ * univault.pro is the default rather than an env-only value for the same
+ * reason the vault addresses are: NEXT_PUBLIC_* is inlined from .env.local,
+ * which is gitignored, so a clone built without one used to fall back to
+ * localhost and ship link previews pointing at a machine that is not on the
+ * internet. An env var still wins, which is what a preview deployment sets.
+ */
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000");
+    : "https://univault.pro");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

@@ -43,7 +43,7 @@ inventing numbers.
 | `NEXT_PUBLIC_VAULT_GROWTH`   | yes      | GROWTH vault address. Current: `0xa809DC62C6fc723E04B061cbE6271AaA093eC75b` |
 | `NEXT_PUBLIC_EXIT_ROUTER`    | yes*     | ExitRouter for one-tx "sell to USDG". `0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0`. *Without it the "sell everything" button is hidden. |
 | `NEXT_PUBLIC_BLUR_TOKEN`     | no       | $BLUR token address. Normally left blank — publish it from `/admin` instead, which needs no rebuild. Kept only as a build-time fallback. |
-| `NEXT_PUBLIC_SITE_URL`       | no       | Canonical URL for OG/social images. Vercel supplies its own; set only on a custom domain, e.g. `https://blurvault.pro`. |
+| `NEXT_PUBLIC_SITE_URL`       | no       | Canonical URL for OG/social images. Vercel supplies its own; set only on a custom domain, e.g. `https://univault.pro`. |
 
 > Vercel also injects `VERCEL_PROJECT_PRODUCTION_URL` automatically — no action.
 
@@ -97,7 +97,7 @@ NEXT_PUBLIC_VAULT_STEADY=0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37
 NEXT_PUBLIC_VAULT_BALANCED=0x3601c09C4F84885454cCbd46B9dF3DaB244c1150
 NEXT_PUBLIC_VAULT_GROWTH=0xa809DC62C6fc723E04B061cbE6271AaA093eC75b
 NEXT_PUBLIC_EXIT_ROUTER=0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
-NEXT_PUBLIC_SITE_URL=https://blurvault.pro
+NEXT_PUBLIC_SITE_URL=https://univault.pro
 EOF
 ```
 
@@ -198,7 +198,7 @@ sudo apt install -y nginx
 sudo tee /etc/nginx/sites-available/blurvault > /dev/null <<'EOF'
 server {
     listen 80;
-    server_name blurvault.pro www.blurvault.pro;
+    server_name univault.pro www.univault.pro;
     location / {
         proxy_pass http://127.0.0.1:3000;
         proxy_http_version 1.1;
@@ -226,7 +226,7 @@ A   www   <server-ip>
 **8. HTTPS** (Let's Encrypt, auto-renews):
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d blurvault.pro -d www.blurvault.pro
+sudo certbot --nginx -d univault.pro -d www.univault.pro
 ```
 
 **9. Firewall:**
