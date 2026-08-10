@@ -1,8 +1,10 @@
 import { Fragment } from "react";
 import Link from "next/link";
-import { VaultMark, XIcon } from "@/components/icons";
+import { CaPill } from "@/components/CaPill";
+import { XIcon } from "@/components/icons";
 import { ConnectButton } from "@/components/ConnectButton";
 import { NAV_LINKS } from "@/lib/landing";
+import { readSiteConfig } from "@/lib/site-config";
 
 /**
  * Sticky nav.
@@ -11,15 +13,21 @@ import { NAV_LINKS } from "@/lib/landing";
  * the page has moved at all, the second whenever a `[data-nav="over"]` band is
  * behind the bar. Over the hero and the tinted community section it goes
  * transparent with white type; everywhere else it is paper glass.
+ *
+ * Async because the CA pill needs the published address on the server: read on
+ * the client only, the first paint after launch would say "not live yet" and
+ * call the real contract a fake for a frame — on the one day everybody is
+ * looking. <CaPill /> re-fetches after mount regardless, so publishing from
+ * /admin still lands without a rebuild.
  */
-export function SiteNav() {
+export async function SiteNav() {
+  const { blurToken } = await readSiteConfig();
+
   return (
     <nav className="nav">
       <div className="wrap nav-in">
         <Link className="brand" href="/#top">
-          <VaultMark className="h-7 w-7 shrink-0" />
           <span className="nm">UNIVAULT</span>
-          <span className="beta">Beta</span>
         </Link>
 
         <div className="nav-links">
@@ -32,9 +40,10 @@ export function SiteNav() {
         </div>
 
         <div className="nav-cta">
+          <CaPill initial={blurToken} />
           <a
             className="nav-icon"
-            href="https://x.com/BlurYield"
+            href="https://x.com/univaultpro"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Follow on X"

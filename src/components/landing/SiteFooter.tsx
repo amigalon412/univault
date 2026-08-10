@@ -22,7 +22,7 @@ export function SiteFooter() {
                 {link.label}
               </Link>
             ))}
-            <a href="https://x.com/BlurYield" target="_blank" rel="noopener noreferrer">
+            <a href="https://x.com/univaultpro" target="_blank" rel="noopener noreferrer">
               X
             </a>
           </div>
@@ -44,7 +44,7 @@ export function SiteFooter() {
       </div>
       <a
         className="bf-x"
-        href="https://x.com/BlurYield"
+        href="https://x.com/univaultpro"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="UNIVAULT on X"

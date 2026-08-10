@@ -178,6 +178,16 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 96px;
+    /* The clip has to be here, not only on <body>.
+       <body> already carried this rule, but the element that actually scrolls
+       the document is <html>, so decorative overflow still dragged the page
+       sideways: at 390px the orbit's satellites spin, and a rotated box's
+       axis-aligned bounds stick out past the ring by design. The result was a
+       phone that panned right onto empty page.
+       `clip`, not `hidden` — see the note on <body> for why that distinction
+       matters here. Anything that genuinely needs to scroll across does it in
+       its own container (.matrix-scroll, .logo-marquee). */
+    overflow-x: clip;
   }
   body {
     font-family: var(--font-inter), "Inter", system-ui, sans-serif;
@@ -384,6 +394,67 @@
   transform: translateY(-2px);
 }
 
+/* The $UNIVAULT contract address, click to copy. Mono and tabular because it
+   is an address: the eye compares it against the one in a wallet, and that
+   only works if the glyphs line up. */
+.ca-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s,
+    background 0.2s,
+    color 0.2s;
+}
+.ca-pill .ca-k {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--subtle);
+}
+.ca-pill .ca-v {
+  font-variant-numeric: tabular-nums;
+}
+.ca-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  transform: translateY(-2px);
+}
+.ca-pill.is-copied {
+  border-color: var(--accent);
+  background: var(--wash);
+  color: var(--accent-ink);
+}
+/* Pre-launch it states a fact rather than offering an action, so it is not a
+   button and does not invite a click. */
+.ca-pill.is-pending {
+  cursor: default;
+  color: var(--ink-2);
+}
+.ca-pill.is-pending:hover {
+  border-color: var(--line-2);
+  color: var(--ink-2);
+  transform: none;
+}
+/* An address is the first thing to drop when the bar runs out of room — the
+   footer carries it too, and Connect must never be the control that wraps. */
+@media (max-width: 1180px) {
+  .ca-pill {
+    display: none;
+  }
+}
+
 /* ── motion ──────────────────────────────────────────────────────────────── */
 
 /* frog's arrival: fade up out of a slight blur, on the expo-out curve.
@@ -481,20 +552,6 @@
   letter-spacing: -0.03em;
   color: var(--ink);
   transition: color 0.5s ease;
-}
-.beta {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-  border: 1px solid var(--line-2);
-  border-radius: 6px;
-  padding: 3px 7px;
-  transition:
-    color 0.5s,
-    border-color 0.5s;
 }
 .nav-links {
   display: flex;
