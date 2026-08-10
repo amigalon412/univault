@@ -109,6 +109,19 @@ export const univaultAbi = [
   },
   {
     "type": "function",
+    "name": "autoAllocate",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "balanceOf",
     "inputs": [
       {
@@ -284,6 +297,19 @@ export const univaultAbi = [
       }
     ],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "depositSlippageBps",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -710,6 +736,19 @@ export const univaultAbi = [
   },
   {
     "type": "function",
+    "name": "setAutoAllocate",
+    "inputs": [
+      {
+        "name": "on",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "setBasket",
     "inputs": [
       {
@@ -732,6 +771,19 @@ export const univaultAbi = [
     "inputs": [
       {
         "name": "newBufferBps",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setDepositSlippageBps",
+    "inputs": [
+      {
+        "name": "newSlippageBps",
         "type": "uint16",
         "internalType": "uint16"
       }
@@ -1030,6 +1082,19 @@ export const univaultAbi = [
   },
   {
     "type": "event",
+    "name": "AutoAllocateSet",
+    "inputs": [
+      {
+        "name": "on",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "BasketUpdated",
     "inputs": [
       {
@@ -1100,6 +1165,19 @@ export const univaultAbi = [
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DepositSlippageUpdated",
+    "inputs": [
+      {
+        "name": "bps",
+        "type": "uint16",
+        "indexed": false,
+        "internalType": "uint16"
       }
     ],
     "anonymous": false

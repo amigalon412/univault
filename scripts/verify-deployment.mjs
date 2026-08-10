@@ -13,7 +13,7 @@
  *   [KEEPER=0x...] [BUYBACK=0x...] node scripts/verify-deployment.mjs
  */
 import { createPublicClient, http, formatUnits, getAddress } from "viem";
-import { blurVaultAbi } from "../src/lib/abis.ts";
+import { univaultAbi } from "../src/lib/abis.ts";
 
 const RPC = process.env.RPC ?? "https://rpc.mainnet.chain.robinhood.com";
 
@@ -113,7 +113,7 @@ function check(condition, label, detail = "") {
 }
 
 const readVault = (functionName, args = []) =>
-  client.readContract({ address: VAULT, abi: blurVaultAbi, functionName, args });
+  client.readContract({ address: VAULT, abi: univaultAbi, functionName, args });
 const readGuard = (functionName, args = []) =>
   client.readContract({ address: GUARD, abi: guardAbi, functionName, args });
 // Prefer the basket the vault actually points at; fall back to a BASKET given
@@ -233,7 +233,7 @@ async function main() {
     try {
       await client.simulateContract({
         address: VAULT,
-        abi: blurVaultAbi,
+        abi: univaultAbi,
         functionName: "setBasket",
         args: [basket === "0x0000000000000000000000000000000000000000" ? VAULT : basket, 5000],
         account: vaultOwner,
