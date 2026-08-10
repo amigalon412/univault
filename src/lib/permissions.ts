@@ -39,24 +39,24 @@ export const PERMISSIONS: PermissionRow[] = [
   {
     action: "DEPOSIT",
     can: ["you", "keeper", "owner", "anyone"],
-    source: "BlurVault.deposit / mint — public, no gate",
+    source: "Univault.deposit / mint — public, no gate",
   },
   {
     action: "REDEEM YOUR SHARES",
     can: ["you"],
-    source: "BlurVault.withdraw / redeem — ERC-4626 allowance only",
+    source: "Univault.withdraw / redeem — ERC-4626 allowance only",
   },
   {
     action: "REDEEM WHEN PRICES ARE STALE",
     can: ["you"],
     source:
-      "BlurVault.redeemInKind — share-ledger arithmetic, consults no price, skips the fee when unpriceable",
+      "Univault.redeemInKind — share-ledger arithmetic, consults no price, skips the fee when unpriceable",
   },
   {
     action: "MOVE THE ASSETS ANYWHERE ELSE",
     can: [],
     source:
-      "No such function. grep for rescue|pause|transfer(owner in BlurVault.sol returns nothing; recallAll is onlyOwner but pulls from the venue back into the vault",
+      "No such function. grep for rescue|pause|transfer(owner in the vault source returns nothing; recallAll is onlyOwner but pulls from the venue back into the vault",
   },
   {
     action: "BLOCK YOUR EXIT",
@@ -68,12 +68,12 @@ export const PERMISSIONS: PermissionRow[] = [
     action: "SWAP THE BASKET FOR ANOTHER",
     can: [],
     source:
-      "BlurVault.setBasket — onlyOwner, but reverts BasketAlreadySet once set and VaultInUse once any share exists",
+      "Univault.setBasket — onlyOwner, but reverts BasketAlreadySet once set and VaultInUse once any share exists",
   },
   {
     action: "REBALANCE TO TARGET",
     can: ["keeper", "owner"],
-    source: "BlurVault._requireAutomation — msg.sender must be owner() or guard",
+    source: "Univault._requireAutomation — msg.sender must be owner() or guard",
   },
 ];
 

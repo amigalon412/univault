@@ -928,7 +928,7 @@ export const DOC_GROUPS: DocGroup[] = [
                 type: "table",
                 head: ["Contract", "Responsibility"],
                 rows: [
-                  ["BlurVault", "ERC-4626 core: shares, NAV, deposit, redeem, and the high-water-mark fee accounting"],
+                  ["Univault", "ERC-4626 core: shares, NAV, deposit, redeem, and the high-water-mark fee accounting"],
                   ["BasketAdapter", "Holds the equity basket and executes its trades"],
                   ["PriceOracle", "Prices holdings in USD and reports staleness"],
                   ["KeeperGuard", "Enforces every limit before a keeper action runs"],
@@ -939,18 +939,18 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "code",
                 lines: [
-                  "user --deposit--> BlurVault --+--> lending vault   (stablecoin leg)",
+                  "user --deposit--> Univault --+--> lending vault   (stablecoin leg)",
                   "                              |   external ERC-4626",
                   "                              +--> BasketAdapter   (equity leg)",
                   "                                        ^",
                   "keeper --> KeeperGuard ------------------+",
                   "",
-                  "user --exit--> ExitRouter --> BlurVault.redeemInKind + v4 swaps --> USDG",
+                  "user --exit--> ExitRouter --> Univault.redeemInKind + v4 swaps --> USDG",
                 ],
               },
               {
                 type: "note",
-                text: "There is no separate YieldAdapter or FeeController contract. The lending leg is an external ERC-4626 vault the BlurVault supplies into directly, and fee accounting lives inside BlurVault — fewer moving parts, and fewer contracts you have to read to know what happens to your money.",
+                text: "There is no separate YieldAdapter or FeeController contract. The lending leg is an external ERC-4626 vault the Univault supplies into directly, and fee accounting lives inside Univault — fewer moving parts, and fewer contracts you have to read to know what happens to your money.",
               },
             ],
           },
@@ -983,9 +983,9 @@ export const DOC_GROUPS: DocGroup[] = [
                 type: "table",
                 head: ["Name", "Address"],
                 rows: [
-                  ["BlurVault · STEADY", "0x583Bce228448814BC42235d4761290F3ac710a09"],
-                  ["BlurVault · BALANCED", "0x796c05567cf6E00B3a9C453C3c67a5b2a7cD65e7"],
-                  ["BlurVault · GROWTH", "0xD9a66EF89FE6B2a129B6B78F953d2a89bb7ce04C"],
+                  ["Univault · STEADY", "0x583Bce228448814BC42235d4761290F3ac710a09"],
+                  ["Univault · BALANCED", "0x796c05567cf6E00B3a9C453C3c67a5b2a7cD65e7"],
+                  ["Univault · GROWTH", "0xD9a66EF89FE6B2a129B6B78F953d2a89bb7ce04C"],
                   ["KeeperGuard · STEADY", "0xEdC4D302aB6c87f77ed084462dc82530E460dA11"],
                   ["KeeperGuard · BALANCED", "0x35304Ceb350C6ab8d93f99C002d268DbA4Ff0613"],
                   ["KeeperGuard · GROWTH", "0xFa71F59495e8c5E4d935b0dC76c327f9eCEf123A"],

@@ -51,7 +51,7 @@ export function WhySection() {
         <div className="matrix reveal" ref={ref}>
           <div className="matrix-head">
             <span className="matrix-title">Permission map</span>
-            <span className="showcase-meta">BlurVault · KeeperGuard</span>
+            <span className="showcase-meta">Univault · KeeperGuard</span>
           </div>
 
           <div className="matrix-scroll">
@@ -100,7 +100,7 @@ export function WhySection() {
             <span className="ui-label">Verified source</span>
             <ContractLink
               address={VAULT_ADDRESSES.balanced}
-              label="BlurVault"
+              label="Univault"
               variant="chip"
             />
             <ContractLink address={KEEPER_GUARD} label="KeeperGuard" variant="chip" />
