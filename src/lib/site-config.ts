@@ -17,12 +17,12 @@ import { getAddress, isAddress, type Address } from "viem";
  */
 export type SiteConfig = {
   /** Checksummed $UNIVAULT address, or null while the token does not exist. */
-  blurToken: Address | null;
+  univaultToken: Address | null;
   /** ISO timestamp of the last write, for the admin page to show. */
   updatedAt: string | null;
 };
 
-const EMPTY: SiteConfig = { blurToken: null, updatedAt: null };
+const EMPTY: SiteConfig = { univaultToken: null, updatedAt: null };
 
 /**
  * Where the file lives. On a VPS this must point OUTSIDE the deploy directory
@@ -38,10 +38,10 @@ function configPath(): string {
 function coerce(raw: unknown): SiteConfig {
   if (typeof raw !== "object" || raw === null) return EMPTY;
   const record = raw as Record<string, unknown>;
-  const token = record.blurToken;
+  const token = record.univaultToken;
   const updatedAt = record.updatedAt;
   return {
-    blurToken:
+    univaultToken:
       typeof token === "string" && isAddress(token) ? getAddress(token) : null,
     updatedAt: typeof updatedAt === "string" ? updatedAt : null,
   };
@@ -59,10 +59,10 @@ function fromEnv(): Address | null {
 export async function readSiteConfig(): Promise<SiteConfig> {
   try {
     const parsed = coerce(JSON.parse(await readFile(configPath(), "utf8")));
-    return parsed.blurToken ? parsed : { ...parsed, blurToken: fromEnv() };
+    return parsed.univaultToken ? parsed : { ...parsed, univaultToken: fromEnv() };
   } catch {
     // Missing or unreadable file is the normal state before the first write.
-    return { ...EMPTY, blurToken: fromEnv() };
+    return { ...EMPTY, univaultToken: fromEnv() };
   }
 }
 
@@ -72,12 +72,12 @@ export async function readSiteConfig(): Promise<SiteConfig> {
  *
  * `null` clears it and the site goes back to saying the token is not launched.
  */
-export async function writeBlurToken(address: string | null): Promise<SiteConfig> {
+export async function writeUnivaultToken(address: string | null): Promise<SiteConfig> {
   if (address !== null && !isAddress(address)) {
     throw new Error("not a valid address");
   }
   const next: SiteConfig = {
-    blurToken: address === null ? null : getAddress(address),
+    univaultToken: address === null ? null : getAddress(address),
     updatedAt: new Date().toISOString(),
   };
 

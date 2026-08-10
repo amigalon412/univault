@@ -1181,13 +1181,13 @@ export function getDocPage(slug: string): DocPage | undefined {
  * into whatever copy references it. Pure and synchronous -- the caller does
  * the one filesystem read, so this stays usable from anywhere.
  */
-export function resolveDocPage(page: DocPage, blurToken: string | null): DocPage {
-  const phase: DocPhase = blurToken ? "post-launch" : "pre-launch";
+export function resolveDocPage(page: DocPage, univaultToken: string | null): DocPage {
+  const phase: DocPhase = univaultToken ? "post-launch" : "pre-launch";
   /* Phase-neutral copy (the address table) still has to render something before
      the address is published, so the placeholder falls back rather than leaking
      "%CA%". A bare dash rather than a sentence: the docs state the token's
      status in exactly one place, the site header, and nowhere else. */
-  const fill = (s: string) => s.split(CA_TOKEN).join(blurToken ?? "—");
+  const fill = (s: string) => s.split(CA_TOKEN).join(univaultToken ?? "—");
 
   const block = (b: DocBlock): DocBlock => {
     switch (b.type) {
@@ -1212,7 +1212,7 @@ export function resolveDocPage(page: DocPage, blurToken: string | null): DocPage
 
   return {
     ...page,
-    intro: (page.introWhenLaunched && blurToken
+    intro: (page.introWhenLaunched && univaultToken
       ? page.introWhenLaunched
       : page.intro
     ).map(fill),

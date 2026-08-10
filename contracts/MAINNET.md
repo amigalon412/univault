@@ -37,7 +37,7 @@ export OWNER=0x...                # your wallet
 export KEEPER=0x...               # bot address (may equal OWNER for a test)
 
 OWNER=$OWNER KEEPER=$KEEPER TARGET_STABLE_BPS=10000 \
-VAULT_NAME="BLUR Steady" VAULT_SYMBOL=blurSTEADY \
+VAULT_NAME="Univault Steady" VAULT_SYMBOL=uvSTEADY \
 forge script script/DeployStack.s.sol:DeployStack \
   --rpc-url https://rpc.mainnet.chain.robinhood.com \
   --broadcast --private-key $DEPLOYER_PK
@@ -93,12 +93,12 @@ Same command, different split — these add the stock basket automatically:
 ```bash
 # BALANCED — 60% lending, 40% stocks
 OWNER=$OWNER KEEPER=$KEEPER TARGET_STABLE_BPS=6000 \
-VAULT_NAME="BLUR Balanced" VAULT_SYMBOL=blurBALANCED \
+VAULT_NAME="Univault Balanced" VAULT_SYMBOL=uvBALANCED \
 forge script script/DeployStack.s.sol:DeployStack --rpc-url https://rpc.mainnet.chain.robinhood.com --broadcast --private-key $DEPLOYER_PK
 
 # GROWTH — 30% lending, 70% stocks
 OWNER=$OWNER KEEPER=$KEEPER TARGET_STABLE_BPS=3000 \
-VAULT_NAME="BLUR Growth" VAULT_SYMBOL=blurGROWTH \
+VAULT_NAME="Univault Growth" VAULT_SYMBOL=uvGROWTH \
 forge script script/DeployStack.s.sol:DeployStack --rpc-url https://rpc.mainnet.chain.robinhood.com --broadcast --private-key $DEPLOYER_PK
 ```
 

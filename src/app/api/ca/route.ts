@@ -11,9 +11,9 @@ import { readSiteConfig } from "@/lib/site-config";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const { blurToken } = await readSiteConfig();
+  const { univaultToken } = await readSiteConfig();
   return NextResponse.json(
-    { address: blurToken },
+    { address: univaultToken },
     // The whole point is freshness on launch day. Nothing may cache this.
     { headers: { "cache-control": "no-store" } },
   );

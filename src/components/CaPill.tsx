@@ -1,7 +1,7 @@
 "use client";
 
 import type { Address } from "viem";
-import { useBlurToken } from "@/hooks/useBlurToken";
+import { useUnivaultToken } from "@/hooks/useUnivaultToken";
 
 /**
  * The $UNIVAULT contract address in the nav, click to copy.
@@ -11,12 +11,12 @@ import { useBlurToken } from "@/hooks/useBlurToken";
  * simply omits the CA leaves nothing to contradict the first scam address that
  * circulates, and launch day is exactly when people go looking for one.
  *
- * The address is never rendered from the bundle — <useBlurToken /> re-fetches
+ * The address is never rendered from the bundle — <useUnivaultToken /> re-fetches
  * and re-checksums it, because this is the control that puts a string on
  * somebody's clipboard.
  */
 export function CaPill({ initial }: { initial: Address | null }) {
-  const { token, copied, copy } = useBlurToken(initial);
+  const { token, copied, copy } = useUnivaultToken(initial);
 
   if (!token) {
     return (

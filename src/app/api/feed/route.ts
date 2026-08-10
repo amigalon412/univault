@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createPublicClient, formatUnits, http, type Address } from "viem";
-import { blurVaultAbi } from "@/lib/abis";
+import { univaultAbi } from "@/lib/abis";
 import {
   DEPLOYED_VAULTS,
   robinhoodChain,
@@ -100,7 +100,7 @@ async function readChain(): Promise<FeedResponse> {
       ? client.multicall({
           contracts: vaultAddresses.map((address) => ({
             address,
-            abi: blurVaultAbi,
+            abi: univaultAbi,
             functionName: "totalAssets" as const,
           })),
         })

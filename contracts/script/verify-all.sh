@@ -83,7 +83,7 @@ for row in "${STACKS[@]}"; do
   vname=$(call "$VAULT" 'name()(string)' | unquote)
   vsym=$(call "$VAULT" 'symbol()(string)' | unquote)
   vowner=$(call "$VAULT" 'owner()(address)')
-  verify "$VAULT" src/BlurVault.sol:BlurVault \
+  verify "$VAULT" src/Univault.sol:Univault \
     "$(cast abi-encode 'c(address,address,string,string,address)' "$asset" "$yv" "$vname" "$vsym" "$vowner")"
 
   gowner=$(call "$GUARD" 'owner()(address)')

@@ -10,7 +10,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { blurVaultAbi } from "@/lib/abis";
+import { univaultAbi } from "@/lib/abis";
 import { EXIT_ROUTER, exitRouterAbi, explorerTxUrl, robinhoodChain } from "@/lib/chain";
 
 /** Slippage choices for the market exit, in basis points. */
@@ -59,7 +59,7 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
 
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: vault,
-    abi: blurVaultAbi,
+    abi: univaultAbi,
     functionName: "allowance",
     args: [account ?? "0x0000000000000000000000000000000000000000", EXIT_ROUTER ?? "0x0000000000000000000000000000000000000000"],
     query: { enabled: Boolean(account && EXIT_ROUTER) },
@@ -84,7 +84,7 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
       setHash(
         await writeContractAsync({
           address: vault,
-          abi: blurVaultAbi,
+          abi: univaultAbi,
           functionName: "approve",
           args: [EXIT_ROUTER, shares],
         }),

@@ -8,7 +8,7 @@ import { ConnectButton } from "@/components/ConnectButton";
 import { ExitAllButton } from "@/components/app/ExitAllButton";
 import { useMounted } from "@/hooks/useMounted";
 import { formatUsdg, useUsdg, useVault } from "@/hooks/useVault";
-import { blurVaultAbi } from "@/lib/abis";
+import { univaultAbi } from "@/lib/abis";
 import { explorerTxUrl, robinhoodChain, USDG, USDG_DECIMALS } from "@/lib/chain";
 import type { Strategy } from "@/lib/strategies";
 
@@ -98,7 +98,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
         setHash(
           await writeContractAsync({
             address: vault.address,
-            abi: blurVaultAbi,
+            abi: univaultAbi,
             functionName: "deposit",
             args: [parsed, account],
           }),
@@ -107,7 +107,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
         setHash(
           await writeContractAsync({
             address: vault.address,
-            abi: blurVaultAbi,
+            abi: univaultAbi,
             functionName: "withdraw",
             args: [parsed, account, account],
           }),
@@ -125,7 +125,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
       setHash(
         await writeContractAsync({
           address: vault.address,
-          abi: blurVaultAbi,
+          abi: univaultAbi,
           functionName: "redeemInKind",
           args: [vault.shares, account, account],
         }),

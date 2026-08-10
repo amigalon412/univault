@@ -6,7 +6,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
 
-import {BlurVault} from "../src/BlurVault.sol";
+import {Univault} from "../src/Univault.sol";
 import {BasketAdapter} from "../src/BasketAdapter.sol";
 import {PriceOracle} from "../src/PriceOracle.sol";
 import {MockERC20, MockYieldVault} from "./mocks/Mocks.sol";
@@ -43,7 +43,7 @@ contract AllocateOnDepositTest is Test {
     MockERC20 usdg;
     MockYieldVault venue;
     PriceOracle oracle;
-    BlurVault vault;
+    Univault vault;
     PerfectFillBasket basket;
 
     MockStock nvda;
@@ -64,7 +64,7 @@ contract AllocateOnDepositTest is Test {
         usdg = new MockERC20("Global Dollar", "USDG", 6);
         venue = new MockYieldVault(IERC20(address(usdg)), 700);
         oracle = new PriceOracle(owner);
-        vault = new BlurVault(IERC20(address(usdg)), IERC4626(address(venue)), "BLUR Balanced", "blurBAL", owner);
+        vault = new Univault(IERC20(address(usdg)), IERC4626(address(venue)), "Univault Balanced", "uvBAL", owner);
         basket = new PerfectFillBasket(owner, oracle, address(vault), address(usdg));
 
         nvda = new MockStock("NVIDIA", "NVDA");
@@ -142,7 +142,7 @@ contract AllocateOnDepositTest is Test {
     function test_BestEffortSkipsADeadPoolWithoutRevertingTheDeposit() public {
         // A basket is bound to its vault, so the dead-pool case needs its own
         // vault and its own basket built against it.
-        BlurVault v2 = new BlurVault(IERC20(address(usdg)), IERC4626(address(venue)), "BLUR B2", "b2", owner);
+        Univault v2 = new Univault(IERC20(address(usdg)), IERC4626(address(venue)), "Univault B2", "uvB2", owner);
         OneDeadPoolBasket bad = new OneDeadPoolBasket(owner, oracle, address(v2), address(usdg), address(tsla));
         vm.startPrank(owner);
         bad.addConstituent(address(nvda), 2_500);

@@ -21,7 +21,7 @@ import { readSiteConfig } from "@/lib/site-config";
  * /admin still lands without a rebuild.
  */
 export async function SiteNav() {
-  const { blurToken } = await readSiteConfig();
+  const { univaultToken } = await readSiteConfig();
 
   return (
     <nav className="nav">
@@ -40,7 +40,7 @@ export async function SiteNav() {
         </div>
 
         <div className="nav-cta">
-          <CaPill initial={blurToken} />
+          <CaPill initial={univaultToken} />
           <a
             className="nav-icon"
             href="https://x.com/univaultpro"

@@ -1,5 +1,25 @@
 # Mainnet deployments — Robinhood Chain (chain id 4663)
 
+> **A rename redeploy is pending. Everything below is the pre-rename set.**
+>
+> The contracts here were deployed as `BlurVault`, and their share tokens
+> report `name()`/`symbol()` of `BLUR Balanced` / `blurBALANCED`. Both are set
+> at construction and ERC-20 offers no way to change either, so on these
+> addresses the old brand is permanent — it is what a wallet, a DEX and the
+> explorer will show forever.
+>
+> The source is now `Univault` and the deploy scripts name shares
+> `Univault Balanced` / `uvBALANCED`, but **nothing has been redeployed yet**.
+> Until it is, the site says Univault and the chain says BLUR.
+>
+> This is worth doing now and only now: `totalSupply` is 0 on all three vaults,
+> so there is no holder to migrate. After the first deposit it stops being a
+> redeploy and becomes a migration.
+>
+> After deploying, replace every address below, then update `MAINNET_VAULTS`
+> and `EXIT_ROUTER` in `src/lib/chain.ts` — the site reads its defaults from
+> there and will otherwise keep pointing at these.
+
 The live contracts. Addresses live here because `.env.local` and the Foundry
 broadcast logs are both gitignored — without this file the only record of what
 is deployed would be on one machine.

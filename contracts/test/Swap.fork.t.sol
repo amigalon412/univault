@@ -8,7 +8,7 @@ import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
 import {PoolKey} from "v4-core/src/types/PoolKey.sol";
 import {Currency} from "v4-core/src/types/Currency.sol";
 import {IHooks} from "v4-core/src/interfaces/IHooks.sol";
-import {BlurVault} from "../src/BlurVault.sol";
+import {Univault} from "../src/Univault.sol";
 import {BasketAdapter} from "../src/BasketAdapter.sol";
 import {PriceOracle} from "../src/PriceOracle.sol";
 import {SwapExecutor} from "../src/SwapExecutor.sol";
@@ -25,7 +25,7 @@ contract SwapForkTest is Test {
     IERC20 constant nvda = IERC20(RobinhoodChain.NVDA);
 
     PriceOracle oracle;
-    BlurVault vault;
+    Univault vault;
     BasketAdapter basket;
 
     address owner = makeAddr("owner");
@@ -35,8 +35,8 @@ contract SwapForkTest is Test {
         vm.createSelectFork(vm.envOr("ROBINHOOD_RPC", vm.rpcUrl("robinhood")));
 
         oracle = new PriceOracle(owner);
-        vault = new BlurVault(
-            usdg, IERC4626(RobinhoodChain.STEAK_USDG), "BLUR Balanced", "blurBAL", owner
+        vault = new Univault(
+            usdg, IERC4626(RobinhoodChain.STEAK_USDG), "Univault Balanced", "uvBAL", owner
         );
         basket = new BasketAdapter(owner, oracle, address(vault), address(usdg), POOL_MANAGER);
 

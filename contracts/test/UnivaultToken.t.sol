@@ -9,7 +9,7 @@ import {PoolKey} from "v4-core/src/types/PoolKey.sol";
 import {Currency} from "v4-core/src/types/Currency.sol";
 import {IHooks} from "v4-core/src/interfaces/IHooks.sol";
 
-import {BlurToken} from "../src/BlurToken.sol";
+import {UnivaultToken} from "../src/UnivaultToken.sol";
 import {BuybackModule} from "../src/BuybackModule.sol";
 import {MockERC20} from "./mocks/Mocks.sol";
 
@@ -34,8 +34,8 @@ contract FixedRateBuyer is BuybackModule {
     }
 }
 
-contract BlurTokenTest is Test {
-    BlurToken token;
+contract UnivaultTokenTest is Test {
+    UnivaultToken token;
     MockERC20 usdg;
 
     address deployer = makeAddr("deployer");
@@ -45,7 +45,7 @@ contract BlurTokenTest is Test {
     uint256 constant ONE = 1e6;
 
     function setUp() public {
-        token = new BlurToken(deployer);
+        token = new UnivaultToken(deployer);
         usdg = new MockERC20("Global Dollar", "USDG", 6);
     }
 
@@ -58,7 +58,11 @@ contract BlurTokenTest is Test {
         assertEq(token.TOTAL_SUPPLY(), 1_000_000_000e18);
         assertEq(token.balanceOf(deployer), 1_000_000_000e18, "not all of it went to one place");
         assertEq(token.decimals(), 18);
-        assertEq(token.symbol(), "BLUR");
+        // Pinned deliberately: name and symbol are set in the constructor and
+        // ERC20 gives no way to change them afterwards, so whatever ships here
+        // is what every wallet and explorer shows for the life of the token.
+        assertEq(token.symbol(), "UNIVAULT");
+        assertEq(token.name(), "UNIVAULT");
     }
 
     /// @dev The properties this token is chosen for are the absent ones, so they

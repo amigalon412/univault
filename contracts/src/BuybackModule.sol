@@ -18,7 +18,7 @@ interface IERC20Burnable {
 /// @title BuybackModule
 /// @notice Turns performance-fee revenue into the protocol token and retires it.
 ///
-/// @dev The fee arrives as vault *shares*, not as cash: `BlurVault.accrueFee`
+/// @dev The fee arrives as vault *shares*, not as cash: `Univault.accrueFee`
 ///      mints shares to its fee recipient rather than moving assets, so setting
 ///      this contract as that recipient is all the plumbing there is. From
 ///      there the cycle is redeem shares for USDG, buy the token, retire it.

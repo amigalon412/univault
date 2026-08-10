@@ -1,7 +1,7 @@
 /**
  * Who can move a UNIVAULT vault's assets.
  *
- * Read off contracts/src/BlurVault.sol and contracts/src/KeeperGuard.sol, not
+ * Read off contracts/src/Univault.sol and contracts/src/KeeperGuard.sol, not
  * off the site's own copy -- the existing prose hedges ("designed so a
  * compromised keeper can't touch your principal") and a hedge must not become
  * an unhedged dot in a table.
@@ -56,7 +56,7 @@ export const PERMISSIONS: PermissionRow[] = [
     action: "MOVE THE ASSETS ANYWHERE ELSE",
     can: [],
     source:
-      "No such function. grep for rescue|pause|transfer(owner in the vault source returns nothing; recallAll is onlyOwner but pulls from the venue back into the vault",
+      "No such function. grep for rescue|pause|transfer(owner in Univault.sol returns nothing; recallAll is onlyOwner but pulls from the venue back into the vault",
   },
   {
     action: "BLOCK YOUR EXIT",

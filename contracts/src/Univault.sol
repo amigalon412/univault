@@ -12,7 +12,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {BasketAdapter} from "./BasketAdapter.sol";
 
-/// @title BlurVault
+/// @title Univault
 /// @notice Tokenized vault that puts idle stablecoin to work in an external
 ///         lending vault and hands depositors a proportional share of the result.
 /// @dev Stage 1 of the protocol: the lending leg only. The tokenized-stock leg
@@ -35,7 +35,7 @@ import {BasketAdapter} from "./BasketAdapter.sol";
 ///      target split and make the vault trade, losing spread each time, and it
 ///      can point a constituent at a different pool for the same pair. Both are
 ///      bounded by MAX_SLIPPAGE_BPS. Costly if abused, not a theft.
-contract BlurVault is ERC4626, Ownable, ReentrancyGuard {
+contract Univault is ERC4626, Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     uint16 internal constant BPS = 10_000;

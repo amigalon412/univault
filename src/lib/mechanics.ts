@@ -105,7 +105,7 @@ export const RAIL_NODES: FlowNode[] = [
 /**
  * The same path in words. Each sentence is written against the contract, not
  * against the marketing copy: step 3 says "in the same transaction" because
- * BlurVault._allocateOnDeposit runs inside deposit(), and step 4 says the
+ * Univault._allocateOnDeposit runs inside deposit(), and step 4 says the
  * keeper is capped because KeeperGuard holds per-call size and slippage caps.
  */
 /**

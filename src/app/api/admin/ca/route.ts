@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAuthed } from "@/lib/admin-auth";
-import { readSiteConfig, writeBlurToken } from "@/lib/site-config";
+import { readSiteConfig, writeUnivaultToken } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
   const trimmed = typeof address === "string" ? address.trim() : "";
   try {
-    const config = await writeBlurToken(trimmed === "" ? null : trimmed);
+    const config = await writeUnivaultToken(trimmed === "" ? null : trimmed);
     return NextResponse.json(config);
   } catch {
     return NextResponse.json(

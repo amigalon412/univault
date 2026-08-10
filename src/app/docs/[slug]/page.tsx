@@ -23,8 +23,8 @@ export async function generateMetadata({
   if (!stored) return { title: "UNIVAULT — Docs" };
   // Resolved here too, or the share card for the token page keeps announcing
   // that the token has not launched after it has.
-  const { blurToken } = await readSiteConfig();
-  const page = resolveDocPage(stored, blurToken);
+  const { univaultToken } = await readSiteConfig();
+  const page = resolveDocPage(stored, univaultToken);
   return {
     title: `${page.title} — UNIVAULT docs`,
     description: page.intro[0],
@@ -42,8 +42,8 @@ export default async function DocsPage({
 
   // Read on the server, per request, so publishing the address from /admin
   // rewrites the docs on the next load -- no rebuild and no edit to docs.ts.
-  const { blurToken } = await readSiteConfig();
-  const page = resolveDocPage(stored, blurToken);
+  const { univaultToken } = await readSiteConfig();
+  const page = resolveDocPage(stored, univaultToken);
 
   const { prev, next } = getDocNeighbours(slug);
 

@@ -1,6 +1,6 @@
 # BLUR contracts
 
-`BlurVault` is an ERC-4626 vault that takes USDG, issues shares, routes idle
+`Univault` is an ERC-4626 vault that takes USDG, issues shares, routes idle
 balance into an external ERC-4626 lending vault, holds a basket of tokenized
 stock tokens alongside it, rebalances between the two, charges a performance
 fee above a high-water mark, and can be driven by a bounded keeper. Fee revenue
@@ -39,11 +39,11 @@ forge test
 
 | Suite | Needs network | Purpose |
 |---|---|---|
-| `BlurVault.t.sol` | no | Accounting, attacks, fuzz. The real test of our code. |
+| `Univault.t.sol` | no | Accounting, attacks, fuzz. The real test of our code. |
 | `Fees.t.sol` | no | Reproduces the published fee table row for row. |
 | `KeeperGuard.t.sol` | no | What automation can and, mostly, cannot do. |
-| `BlurVault.invariant.t.sol` | no | Solvency and supply properties over random call sequences. |
-| `BlurVault.fork.t.sol` | yes | Wiring against live Robinhood Chain, plus assertions that pin the current state of the lending venue. |
+| `Univault.invariant.t.sol` | no | Solvency and supply properties over random call sequences. |
+| `Univault.fork.t.sol` | yes | Wiring against live Robinhood Chain, plus assertions that pin the current state of the lending venue. |
 | `Diagnostics.fork.t.sol` | yes | Non-asserting probes. Prints what the venue is actually doing. |
 
 Fork tests use the official RPC (`rpc.mainnet.chain.robinhood.com`), which
@@ -119,8 +119,8 @@ export OWNER=0x...            # holds every contract afterwards
 export KEEPER=0x...           # the bot's address; may be omitted and set later
 export SENTINEL=0x...         # may halt automation but not run it
 export TARGET_STABLE_BPS=6000 # 10000 STEADY, 6000 BALANCED, 3000 GROWTH
-export VAULT_NAME="BLUR Balanced"
-export VAULT_SYMBOL=blurBALANCED
+export VAULT_NAME="Univault Balanced"
+export VAULT_SYMBOL=uvBALANCED
 
 forge script script/DeployStack.s.sol:DeployStack \
   --rpc-url https://rpc.mainnet.chain.robinhood.com \

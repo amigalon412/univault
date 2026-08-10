@@ -141,6 +141,11 @@ function optionalAddress(value: string | undefined): Address | null {
  * Nothing is lost by committing them: NEXT_PUBLIC_* ships in the client bundle
  * regardless, so these are public the moment anyone loads the page.
  */
+/* PRE-RENAME SET. These three were deployed as `BlurVault` and their share
+   tokens report `BLUR Balanced` / `blurBALANCED`, which cannot be changed on a
+   deployed ERC-20. The source is now `Univault`; when the redeploy happens
+   these addresses and EXIT_ROUTER below both have to move with it, or the site
+   will keep talking to the old-brand contracts. See contracts/DEPLOYMENTS.md. */
 const MAINNET_VAULTS: Record<StrategyId, string> = {
   steady: "0x583bce228448814bc42235d4761290f3ac710a09",
   balanced: "0x796c05567cf6e00b3a9c453c3c67a5b2a7cd65e7",

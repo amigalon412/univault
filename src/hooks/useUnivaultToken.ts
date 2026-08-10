@@ -19,7 +19,7 @@ import { BLUR_TOKEN } from "@/lib/chain";
  * BLUR_TOKEN (the build-time env var) is the initial value, so a deploy that
  * still bakes it in renders correctly before the fetch resolves.
  */
-export function useBlurToken(initial?: Address | null) {
+export function useUnivaultToken(initial?: Address | null) {
   // `initial` is the server's own read of the published address. Without it the
   // first paint after launch says NOT LAUNCHED YET -- and that strip also calls
   // any $UNIVAULT address a fake, so the flash would be the site briefly disowning

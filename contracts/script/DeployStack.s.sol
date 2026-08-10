@@ -7,7 +7,7 @@ import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
 
 import {BasketAdapter} from "../src/BasketAdapter.sol";
-import {BlurVault} from "../src/BlurVault.sol";
+import {Univault} from "../src/Univault.sol";
 import {KeeperGuard} from "../src/KeeperGuard.sol";
 import {PriceOracle} from "../src/PriceOracle.sol";
 import {RobinhoodChain} from "../src/RobinhoodChain.sol";
@@ -28,7 +28,7 @@ struct StackConfig {
 struct Stack {
     PriceOracle oracle;
     KeeperGuard guard;
-    BlurVault vault;
+    Univault vault;
     BasketAdapter basket;
 }
 
@@ -51,8 +51,8 @@ contract DeployStack is Script {
             sentinel: vm.envOr("SENTINEL", address(0)),
             maxDeployPerCall: vm.envOr("MAX_DEPLOY_PER_CALL", uint256(50_000e6)),
             cooldown: uint32(vm.envOr("COOLDOWN", uint256(1 hours))),
-            name: vm.envOr("VAULT_NAME", string("BLUR Balanced")),
-            symbol: vm.envOr("VAULT_SYMBOL", string("blurBALANCED")),
+            name: vm.envOr("VAULT_NAME", string("Univault Balanced")),
+            symbol: vm.envOr("VAULT_SYMBOL", string("uvBALANCED")),
             targetStableBps: uint16(vm.envOr("TARGET_STABLE_BPS", uint256(6_000)))
         });
 
@@ -75,7 +75,7 @@ contract DeployStack is Script {
     function deploy(StackConfig memory cfg, address deployer) public returns (Stack memory stack) {
         stack.oracle = new PriceOracle(deployer);
         stack.guard = new KeeperGuard(deployer, cfg.maxDeployPerCall, cfg.cooldown);
-        stack.vault = new BlurVault(
+        stack.vault = new Univault(
             IERC20(RobinhoodChain.USDG), IERC4626(RobinhoodChain.STEAK_USDG), cfg.name, cfg.symbol, deployer
         );
 

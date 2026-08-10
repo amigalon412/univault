@@ -6,7 +6,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
 
-import {BlurVault} from "../src/BlurVault.sol";
+import {Univault} from "../src/Univault.sol";
 import {BasketAdapter} from "../src/BasketAdapter.sol";
 import {PriceOracle} from "../src/PriceOracle.sol";
 import {MockERC20, MockYieldVault} from "./mocks/Mocks.sol";
@@ -76,7 +76,7 @@ contract SecurityTest is Test {
     MockERC20 usdg;
     MockYieldVault venue;
     PriceOracle oracle;
-    BlurVault vault;
+    Univault vault;
     MockStock nvda;
     MockAggregator feed;
 
@@ -92,8 +92,8 @@ contract SecurityTest is Test {
         usdg = new MockERC20("Global Dollar", "USDG", 6);
         venue = new MockYieldVault(IERC20(address(usdg)), 700);
         oracle = new PriceOracle(owner);
-        vault = new BlurVault(
-            IERC20(address(usdg)), IERC4626(address(venue)), "BLUR Balanced", "blurBAL", owner
+        vault = new Univault(
+            IERC20(address(usdg)), IERC4626(address(venue)), "Univault Balanced", "uvBAL", owner
         );
 
         nvda = new MockStock("NVIDIA", "NVDA");
@@ -133,7 +133,7 @@ contract SecurityTest is Test {
 
         vm.startPrank(owner);
         evil.addConstituent(address(nvda), 10_000);
-        vm.expectRevert(BlurVault.VaultInUse.selector);
+        vm.expectRevert(Univault.VaultInUse.selector);
         vault.setBasket(evil, 0);
         vm.stopPrank();
 
@@ -152,7 +152,7 @@ contract SecurityTest is Test {
         vault.setBasket(honest, 6_000);
 
         evil.addConstituent(address(nvda), 10_000);
-        vm.expectRevert(BlurVault.BasketAlreadySet.selector);
+        vm.expectRevert(Univault.BasketAlreadySet.selector);
         vault.setBasket(evil, 0);
         vm.stopPrank();
 
@@ -162,14 +162,14 @@ contract SecurityTest is Test {
     /// @dev The adapter has to already point back at this vault, which catches
     ///      a misdeployment before it can hold anything.
     function test_ABasketBoundToAnotherVaultIsRefused() public {
-        BlurVault other = new BlurVault(
+        Univault other = new Univault(
             IERC20(address(usdg)), IERC4626(address(venue)), "Other", "OTH", owner
         );
         PerfectFillBasket foreign =
             new PerfectFillBasket(owner, oracle, address(other), address(usdg));
 
         vm.prank(owner);
-        vm.expectRevert(BlurVault.BasketNotBound.selector);
+        vm.expectRevert(Univault.BasketNotBound.selector);
         vault.setBasket(foreign, 6_000);
     }
 
@@ -197,7 +197,7 @@ contract SecurityTest is Test {
         // Naming a slippage that would make the oracle price optional is now
         // rejected outright, by the owner as much as by anyone else.
         vm.prank(owner);
-        vm.expectRevert(BlurVault.SlippageOutOfRange.selector);
+        vm.expectRevert(Univault.SlippageOutOfRange.selector);
         vault.rebalance(address(nvda), type(uint256).max, 10_000);
 
         // And at the widest the vault does allow, a fill worth a millionth of

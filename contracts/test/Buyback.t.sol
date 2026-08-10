@@ -11,7 +11,7 @@ import {Currency} from "v4-core/src/types/Currency.sol";
 import {IHooks} from "v4-core/src/interfaces/IHooks.sol";
 
 import {BuybackModule} from "../src/BuybackModule.sol";
-import {BlurVault} from "../src/BlurVault.sol";
+import {Univault} from "../src/Univault.sol";
 import {KeeperGuard} from "../src/KeeperGuard.sol";
 import {MockBurnableERC20, MockERC20, MockYieldVault} from "./mocks/Mocks.sol";
 
@@ -45,7 +45,7 @@ contract BuybackTest is Test {
     MockERC20 usdg;
     MockBurnableERC20 blur;
     MockYieldVault venue;
-    BlurVault vault;
+    Univault vault;
     FixedRateBuyback module;
     KeeperGuard guard;
 
@@ -63,8 +63,8 @@ contract BuybackTest is Test {
         usdg = new MockERC20("Global Dollar", "USDG", 6);
         blur = new MockBurnableERC20("BLUR", "BLUR", 18);
         venue = new MockYieldVault(IERC20(address(usdg)), 700);
-        vault = new BlurVault(
-            IERC20(address(usdg)), IERC4626(address(venue)), "BLUR Steady", "blurSTEADY", owner
+        vault = new Univault(
+            IERC20(address(usdg)), IERC4626(address(venue)), "Univault Steady", "uvSTEADY", owner
         );
         module = new FixedRateBuyback(owner, address(usdg), address(blur), false);
         guard = new KeeperGuard(owner, 1_000_000 * ONE, 1 hours);
@@ -321,7 +321,7 @@ contract BuybackTest is Test {
     function test_SetVaultRejectsAnotherAsset() public {
         MockERC20 other = new MockERC20("Other", "OTH", 6);
         MockYieldVault otherVenue = new MockYieldVault(IERC20(address(other)), 500);
-        BlurVault otherVault = new BlurVault(
+        Univault otherVault = new Univault(
             IERC20(address(other)), IERC4626(address(otherVenue)), "Other", "OTH", owner
         );
 

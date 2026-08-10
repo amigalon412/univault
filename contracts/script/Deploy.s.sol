@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 import {Script, console2} from "forge-std/Script.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import {BlurVault} from "../src/BlurVault.sol";
+import {Univault} from "../src/Univault.sol";
 import {KeeperGuard} from "../src/KeeperGuard.sol";
 
 struct DeployConfig {
@@ -25,7 +25,7 @@ struct DeployConfig {
 ///      inert. `DeployTest` asserts the finished state rather than trusting the
 ///      script was run correctly.
 contract Deploy is Script {
-    function run() external returns (BlurVault vault, KeeperGuard guard) {
+    function run() external returns (Univault vault, KeeperGuard guard) {
         DeployConfig memory cfg = DeployConfig({
             asset: vm.envAddress("ASSET"),
             yieldVault: vm.envAddress("YIELD_VAULT"),
@@ -34,8 +34,8 @@ contract Deploy is Script {
             sentinel: vm.envOr("SENTINEL", address(0)),
             maxDeployPerCall: vm.envOr("MAX_DEPLOY_PER_CALL", uint256(50_000e6)),
             cooldown: uint32(vm.envOr("COOLDOWN", uint256(1 hours))),
-            name: vm.envOr("VAULT_NAME", string("BLUR Steady")),
-            symbol: vm.envOr("VAULT_SYMBOL", string("blurSTEADY"))
+            name: vm.envOr("VAULT_NAME", string("Univault Steady")),
+            symbol: vm.envOr("VAULT_SYMBOL", string("uvSTEADY"))
         });
 
         vm.startBroadcast();
@@ -60,9 +60,9 @@ contract Deploy is Script {
     ///      `deployer` is explicit rather than read from `msg.sender`, which
     ///      differs between a broadcast and a plain call and would silently
     ///      leave the wiring calls coming from an address that owns nothing.
-    function deploy(DeployConfig memory cfg, address deployer) public returns (BlurVault vault, KeeperGuard guard) {
+    function deploy(DeployConfig memory cfg, address deployer) public returns (Univault vault, KeeperGuard guard) {
         guard = new KeeperGuard(deployer, cfg.maxDeployPerCall, cfg.cooldown);
-        vault = new BlurVault(IERC20(cfg.asset), IERC4626(cfg.yieldVault), cfg.name, cfg.symbol, deployer);
+        vault = new Univault(IERC20(cfg.asset), IERC4626(cfg.yieldVault), cfg.name, cfg.symbol, deployer);
 
         vault.setGuard(address(guard));
         guard.setVault(address(vault), true);

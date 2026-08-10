@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import {BlurVault} from "../src/BlurVault.sol";
+import {Univault} from "../src/Univault.sol";
 import {KeeperGuard} from "../src/KeeperGuard.sol";
 import {Deploy, DeployConfig} from "../script/Deploy.s.sol";
 import {MockERC20, MockYieldVault} from "./mocks/Mocks.sol";
@@ -37,13 +37,13 @@ contract DeployTest is Test, Deploy {
             sentinel: sentinel,
             maxDeployPerCall: 50_000 * ONE,
             cooldown: 1 hours,
-            name: "BLUR Steady",
-            symbol: "blurSTEADY"
+            name: "Univault Steady",
+            symbol: "uvSTEADY"
         });
     }
 
     function test_EverythingIsWiredAndOwnedCorrectly() public {
-        (BlurVault vault, KeeperGuard guard) = _runDeploy(_config());
+        (Univault vault, KeeperGuard guard) = _runDeploy(_config());
 
         assertEq(vault.guard(), address(guard), "vault does not trust the guard");
         assertTrue(guard.isVault(address(vault)), "guard does not know the vault");
@@ -64,7 +64,7 @@ contract DeployTest is Test, Deploy {
 
     function test_DeployerRetainsNothing() public {
         address deployer = deployerEOA;
-        (BlurVault vault, KeeperGuard guard) = _runDeploy(_config());
+        (Univault vault, KeeperGuard guard) = _runDeploy(_config());
 
         assertFalse(guard.isKeeper(deployer), "deployer left itself a keeper");
         assertFalse(guard.isSentinel(deployer), "deployer left itself a sentinel");
@@ -80,7 +80,7 @@ contract DeployTest is Test, Deploy {
 
     /// @notice The deployment is usable end to end without further setup.
     function test_FreshDeploymentWorksImmediately() public {
-        (BlurVault vault, KeeperGuard guard) = _runDeploy(_config());
+        (Univault vault, KeeperGuard guard) = _runDeploy(_config());
 
         // This test drives allocation through the keeper, so turn off the
         // deposit-time self-allocation a fresh deployment ships with.
@@ -113,7 +113,7 @@ contract DeployTest is Test, Deploy {
         DeployConfig memory cfg = _config();
         cfg.owner = deployerEOA;
 
-        (BlurVault vault, KeeperGuard guard) = _runDeploy(cfg);
+        (Univault vault, KeeperGuard guard) = _runDeploy(cfg);
         assertEq(vault.owner(), deployerEOA);
         assertEq(guard.owner(), deployerEOA);
     }
@@ -123,9 +123,9 @@ contract DeployTest is Test, Deploy {
     ///      itself in `msg.sender`, and the wiring calls would come from an
     ///      address that owns nothing — a failure mode of the test, not the
     ///      deployment. Hence inheriting the script rather than instantiating it.
-    function _runDeploy(DeployConfig memory cfg) internal returns (BlurVault, KeeperGuard) {
+    function _runDeploy(DeployConfig memory cfg) internal returns (Univault, KeeperGuard) {
         vm.startPrank(deployerEOA);
-        (BlurVault v, KeeperGuard g) = deploy(cfg, deployerEOA);
+        (Univault v, KeeperGuard g) = deploy(cfg, deployerEOA);
         vm.stopPrank();
         return (v, g);
     }

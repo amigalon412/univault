@@ -29,7 +29,7 @@ export function AdminPanel() {
     const res = await fetch("/api/admin/ca", { cache: "no-store" });
     if (!res.ok) return;
     const data = await res.json();
-    setAddress(data.blurToken ?? "");
+    setAddress(data.univaultToken ?? "");
     setSavedAt(data.updatedAt ?? null);
   }, []);
 
@@ -93,11 +93,11 @@ export function AdminPanel() {
         setStatus({ kind: "error", text: data.error ?? "Failed." });
         return;
       }
-      setAddress(data.blurToken ?? "");
+      setAddress(data.univaultToken ?? "");
       setSavedAt(data.updatedAt ?? null);
       setStatus({
         kind: "ok",
-        text: data.blurToken
+        text: data.univaultToken
           ? "Published. The CA bar shows it on every page from the next load."
           : "Cleared. The site is back to saying the token is not launched.",
       });
