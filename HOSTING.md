@@ -72,8 +72,8 @@ browser, and drive the `/admin` page:
 Same app, no Vercel. Full walkthrough for a fresh VPS.
 
 > **Order matters:** `NEXT_PUBLIC_*` values are inlined into the bundle at
-> `npm run build`, not read at start. So always write `.env.local` **before**
-> building, and rebuild after changing any address.
+> `npm run build`, not read at start. Anything you set has to be set **before**
+> building, and changing an address means rebuilding.
 
 **1. Node 24 + git** (NodeSource):
 ```bash
@@ -90,15 +90,21 @@ sudo mkdir -p blurvault && sudo chown $USER:$USER blurvault
 git clone <git-repo-url> blurvault && cd blurvault
 ```
 
-**3. Env file (before building):**
+**3. Env file — skip it.** The vault addresses, the ExitRouter and the site URL
+are committed defaults in `src/lib/chain.ts` and `src/app/layout.tsx`, sourced
+from `contracts/DEPLOYMENTS.md`. A clean checkout builds against the live
+contracts with no `.env.local` at all, and that is the production build.
+
+Do **not** write the addresses into a local `.env.local` "to be explicit."
+`process.env.X || DEFAULT` means the file wins silently, so a stale copy points
+the site at retired vaults while every page and doc still prints the current
+ones — which is exactly how a bundle shipped offering deposits into
+`blurGROWTH` on 2026-08-11.
+
+Override only to point a build somewhere else, and only for that one build:
+
 ```bash
-cat > .env.local <<'EOF'
-NEXT_PUBLIC_VAULT_STEADY=0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37
-NEXT_PUBLIC_VAULT_BALANCED=0x3601c09C4F84885454cCbd46B9dF3DaB244c1150
-NEXT_PUBLIC_VAULT_GROWTH=0xa809DC62C6fc723E04B061cbE6271AaA093eC75b
-NEXT_PUBLIC_EXIT_ROUTER=0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
-NEXT_PUBLIC_SITE_URL=https://univault.pro
-EOF
+NEXT_PUBLIC_VAULT_GROWTH=0x...FORK npm run build
 ```
 
 **4. Install + build:**
