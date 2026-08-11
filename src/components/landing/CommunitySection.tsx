@@ -12,7 +12,7 @@ import type { FeedItem, FeedResponse } from "@/types/feed";
 /**
  * The tickers a feed row can be matched against.
  *
- * USDG is in here beside the four stocks because the lending rows name it —
+ * USDG is in here beside the holdings because the lending rows name it —
  * "steakUSDG" contains it, which is what the substring match below is for.
  */
 const SYMBOLS = [...BASKET_STOCKS.map((s) => s.symbol), "USDG"];
