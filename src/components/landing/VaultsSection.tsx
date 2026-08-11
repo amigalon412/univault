@@ -11,14 +11,15 @@ import type { CSSProperties } from "react";
 /**
  * The basket, orbiting the vault.
  *
- * Decorative, and honest about it: the four satellites are the four holdings
- * and nothing more. Each ring spins at its own period with a negative delay to
- * desynchronise its starting angle, and the badge counter-rotates at the same
- * period so the mark inside stays upright instead of tumbling.
+ * Decorative, and honest about it: the satellites are the holdings and nothing
+ * more, all of them, straight from ORBIT_SATELLITES. Each ring spins at its own
+ * period with a negative delay to desynchronise its starting angle, and the
+ * badge counter-rotates at the same period so the mark inside stays upright
+ * instead of tumbling.
  *
  * The marks are <BrandMark />, not the house pixel grid: at badge size the
- * grid has fewer device pixels than cells and all four collapse into the same
- * smudge. See BrandMark.tsx.
+ * grid has fewer device pixels than cells and every one collapses into the
+ * same smudge. See BrandMark.tsx.
  */
 function VaultOrbit() {
   return (
@@ -29,13 +30,17 @@ function VaultOrbit() {
       <div className="core">
         <VaultMark width={48} height={48} />
       </div>
-      {ORBIT_SATELLITES.map((sat) => (
+      {ORBIT_SATELLITES.map((sat, i) => (
         <div
           className="sat"
           key={sat.sym}
           style={
             {
               "--t": sat.duration,
+              /* Alternate the two drawn rings. The inner one is set to the
+                 ring's own inset so a badge sits on the line rather than
+                 floating near it — see `--orbit` in globals.css. */
+              ...(i % 2 ? { "--orbit": "24%" } : {}),
               ...("delay" in sat && sat.delay ? { animationDelay: sat.delay } : {}),
             } as CSSProperties
           }

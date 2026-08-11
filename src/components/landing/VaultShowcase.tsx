@@ -6,7 +6,7 @@ import { BrandMark } from "@/components/BrandMark";
 import { ArrowRightIcon } from "@/components/icons";
 import { ScrambleFigure } from "@/components/ScrambleFigure";
 import { useReveal } from "@/hooks/useReveal";
-import { PIXEL_LOGOS } from "@/lib/pixel-logos";
+import { BASKET_STOCKS } from "@/lib/chain";
 import { STRATEGIES, type StrategyId } from "@/lib/strategies";
 
 /* An illustrative deposit, not a real position — every figure below is this
@@ -53,8 +53,12 @@ export function VaultShowcase() {
   const lending = (EXAMPLE * strategy.stablePct) / 100;
   const basket = (EXAMPLE * strategy.stockPct) / 100;
   const litSegments = seen ? Math.round((strategy.stablePct / 100) * SEGMENTS) : 0;
-  const perStock = basket / PIXEL_LOGOS.length;
-  const weight = strategy.stockPct / PIXEL_LOGOS.length;
+  /* Divided by the basket, not by the logo table. Those were the same number
+     while every holding happened to have artwork, and PIXEL_LOGOS is a list of
+     pictures — adding a name whose mark has not been drawn yet would have
+     quietly kept splitting the money four ways. */
+  const perStock = basket / BASKET_STOCKS.length;
+  const weight = strategy.stockPct / BASKET_STOCKS.length;
 
   return (
     <section id="preview">
@@ -185,16 +189,16 @@ export function VaultShowcase() {
                   <p>Steady holds no stocks. All of it stays in the yield leg.</p>
                 ) : (
                   <div className="holdings">
-                    {PIXEL_LOGOS.map((logo, i) => (
+                    {BASKET_STOCKS.map((logo, i) => (
                       <div
-                        key={logo.key}
+                        key={logo.symbol}
                         className="holding figure-in"
                         style={{ animationDelay: `${120 + i * 80}ms` }}
                       >
                         <span className="holding-mark">
-                          <BrandMark sym={logo.key} size={15} />
+                          <BrandMark sym={logo.symbol} size={15} />
                         </span>
-                        <span className="holding-sym">{logo.key}</span>
+                        <span className="holding-sym">{logo.symbol}</span>
                         {/* The weight is drawn rather than stated, and it is
                             live: the bar wanders off target and snaps back,
                             which is exactly what the line underneath claims

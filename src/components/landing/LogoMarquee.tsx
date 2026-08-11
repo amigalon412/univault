@@ -21,6 +21,13 @@ const LOGOS = [
   { name: "Amazon", src: "/images/logos/amzn.png", ratio: 1 },
   { name: "Tesla", src: "/images/logos/tsla.png", ratio: 1 },
   { name: "Apple", src: "/images/logos/aapl.png", ratio: 0.808 },
+  { name: "Google", src: "/images/logos/googl.png", ratio: 0.98 },
+  { name: "Microsoft", src: "/images/logos/msft.png", ratio: 1 },
+  { name: "Palantir", src: "/images/logos/pltr.png", ratio: 0.8 },
+  /* The full SpaceX mark, swoosh included — this row has the width for it and
+     0x already sits at 1.63. The badges use spcx-mark.png instead, which is
+     the X on its own; see BRAND_MASKS. */
+  { name: "SpaceX", src: "/images/logos/spcx.png", ratio: 2.564 },
 ] as const;
 
 /**

@@ -1,4 +1,5 @@
 import { BRAND_MASKS } from "@/components/BrandMark";
+import { BASKET_STOCKS } from "@/lib/chain";
 import type { StepArt } from "@/lib/landing";
 
 /**
@@ -30,13 +31,21 @@ const VIEW_BOX = "0 0 320 200";
  * retraced or re-cropped moves in both places at once.
  */
 const CHIP_W = 30;
-const CHIP_CAP = 15;
-const BASKET = [
-  { sym: "NVDA", x: 154 },
-  { sym: "AAPL", x: 190 },
-  { sym: "TSLA", x: 226 },
-  { sym: "AMZN", x: 262 },
-] as const;
+const CHIP_H = 24;
+const CHIP_CAP = 11;
+const COLS = 4;
+const ROW_Y = [134, 160];
+
+/* Positions are computed from BASKET_STOCKS rather than written out, so the
+   diagram cannot keep drawing four chips after a fifth name is added. Four to
+   a row: the box is 142 wide and eight chips side by side would each be under
+   16px, at which point the marks are back to being blobs — which is the exact
+   problem <BrandMark /> exists to solve. */
+const BASKET = BASKET_STOCKS.map(({ symbol }, i) => ({
+  sym: symbol,
+  x: 154 + (i % COLS) * 36,
+  y: ROW_Y[Math.floor(i / COLS)] ?? ROW_Y[ROW_Y.length - 1],
+}));
 
 /** Value arriving, and the share token minted back for it. */
 function DepositArt() {
@@ -112,30 +121,44 @@ function SplitArt() {
         d="M166 84 H188 V76 H210 V68 H232 V62 H254 V56 H276"
       />
 
-      {/* four holdings, identical because they are equally weighted */}
+      {/* the holdings, identical chips because they are equally weighted */}
       <rect className="sd-face" x="152" y="110" width="142" height="76" rx="10" />
       <text className="sd-label" x="166" y="128">
-        4 STOCKS · EQUAL
+        {BASKET.length} STOCKS · EQUAL
       </text>
-      {BASKET.map(({ sym, x }) => {
+      {BASKET.map(({ sym, x, y }) => {
         const mask = BRAND_MASKS[sym];
-        const h = CHIP_CAP * mask.k;
-        const w = h * mask.ratio;
+        const h = CHIP_CAP * (mask?.k ?? 1);
+        const w = h * (mask?.ratio ?? 1);
         return (
           <g key={sym}>
-            <rect className="sd-chip" x={x} y="134" width={CHIP_W} height="40" rx="6" />
+            <rect className="sd-chip" x={x} y={y} width={CHIP_W} height={CHIP_H} rx="6" />
             {/* The mask PNG is white ink on transparency. brightness(0) drives
                 the ink to black without touching the alpha, and the opacity
                 lands it at the same grey as the labels — one filter instead of
-                a per-mark <mask> and four ids in a diagram rendered once. */}
-            <image
-              className="sd-logo"
-              href={mask.src}
-              x={x + (CHIP_W - w) / 2}
-              y={154 - h / 2}
-              width={w}
-              height={h}
-            />
+                a per-mark <mask> and an id per mark in a diagram rendered once. */}
+            {mask ? (
+              <image
+                className="sd-logo"
+                href={mask.src}
+                x={x + (CHIP_W - w) / 2}
+                y={y + CHIP_H / 2 - h / 2}
+                width={w}
+                height={h}
+              />
+            ) : (
+              /* No mask on file — a wordmark that is illegible at this size, so
+                 the chip carries the ticker instead of five pixels of lettering. */
+              <text
+                className="sd-label"
+                x={x + CHIP_W / 2}
+                y={y + CHIP_H / 2 + 2.5}
+                textAnchor="middle"
+                style={{ fontSize: 7 }}
+              >
+                {sym}
+              </text>
+            )}
           </g>
         );
       })}

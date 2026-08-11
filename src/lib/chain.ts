@@ -90,6 +90,15 @@ export const STOCK_FEEDS: { symbol: string; feed: Address }[] = [
   { symbol: "AAPL", feed: getAddress("0x6B22A786bAa607d76728168703a39Ea9C99f2cD0") },
   { symbol: "TSLA", feed: getAddress("0x4A1166a659A55625345e9515b32adECea5547C38") },
   { symbol: "AMZN", feed: getAddress("0xD5a1508ceD74c084eBf3cBe853e2C968fB2a651C") },
+  /* Added 2026-08-11 with the basket expansion. Each was found by reading
+     description() off every EACAggregatorProxy on the chain — the explorer
+     indexes them by contract name, and the ticker only exists inside the
+     contract. Note the naming is not consistent: most read "Robinhood X / USD"
+     and Microsoft's reads "RHMSFT / USD". */
+  { symbol: "GOOGL", feed: getAddress("0xA04EE5c4c8827F17e82f93bE9e19DeA221A749a8") },
+  { symbol: "MSFT", feed: getAddress("0x45C3C877C15E6BA2EBB19eA114Ea508d14C1Af2E") },
+  { symbol: "SPCX", feed: getAddress("0x42a95341ff361e81fd934F39943c5C98F6991844") },
+  { symbol: "PLTR", feed: getAddress("0x820ABedFF239034956B7A9d2F0a331f9F075eB4c") },
 ];
 
 /**
@@ -106,7 +115,41 @@ export const BASKET_STOCKS: { symbol: string; token: Address }[] = [
   { symbol: "AAPL", token: getAddress("0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9") },
   { symbol: "TSLA", token: getAddress("0x322F0929c4625eD5bAd873c95208D54E1c003b2d") },
   { symbol: "AMZN", token: getAddress("0x12f190a9F9d7D37a250758b26824B97CE941bF54") },
+  { symbol: "GOOGL", token: getAddress("0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3") },
+  { symbol: "MSFT", token: getAddress("0xe93237C50D904957Cf27E7B1133b510C669c2e74") },
+  { symbol: "SPCX", token: getAddress("0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa") },
+  { symbol: "PLTR", token: getAddress("0x894E1EC2D74FFE5AEF8Dc8A9e84686acCB964F2A") },
 ];
+
+/**
+ * ────────────────────────────────────────────────────────────────────────
+ * NOT YET TRUE ON CHAIN. DO NOT DEPLOY THIS BUILD.
+ *
+ * The four names above NVDA/AAPL/TSLA/AMZN were added on 2026-08-11 as
+ * preparation. Both live BasketAdapters still report tokensLength() == 4 and
+ * hold only the original four, so a build shipped from here tells visitors the
+ * vault owns things it does not.
+ *
+ * What has to happen on chain first, per adapter (BALANCED 0xA36f…, GROWTH
+ * 0x76d5…) and per oracle (0x6EEd…, 0x7C3F…):
+ *
+ *   PriceOracle.setFeed(token, aggregator, maxAge)
+ *   BasketAdapter.setPool(token, poolKey)
+ *   BasketAdapter.addConstituent(token, weightBps)
+ *   BasketAdapter.setWeight(...) on the rest, so the total stays <= 10000
+ *
+ * The pool keys are NOT uniform. The original four and GOOGL and MSFT trade in
+ * the 0.30% pool (fee 3000, tickSpacing 60, no hook). SPCX and PLTR have no
+ * liquidity there at all — their pools are the 1% tier (fee 10000, tickSpacing
+ * 200). Copying the 0.30% key onto them points the adapter at an uninitialised
+ * pool and every swap through it reverts.
+ *
+ * Verified 2026-08-11 by reading PoolManager state directly; NFLX and CRCL were
+ * requested too and are absent from this list because NFLX has no Chainlink
+ * feed anywhere on the chain and neither has liquidity at any standard tier.
+ * ────────────────────────────────────────────────────────────────────────
+ */
+export const BASKET_LIVE_ON_CHAIN = 4;
 
 /**
  * Reads an address out of the environment, returning null rather than throwing

@@ -134,7 +134,7 @@ export const TRACE_STEPS: TraceStep[] = [
     num: "03",
     title: "It splits itself in the same transaction",
     body:
-      "Part is supplied to the lending venue and the rest buys the four stock tokens, evenly weighted. Your strategy sets the ratio; nobody has to come along later and apply it.",
+      "Part is supplied to the lending venue and the rest buys the stock tokens, evenly weighted. Your strategy sets the ratio; nobody has to come along later and apply it.",
     links: [
       { label: "Lending", address: STEAK_USDG },
       { label: "Basket", address: BASKET_ADAPTER },

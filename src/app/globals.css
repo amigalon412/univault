@@ -1741,9 +1741,14 @@
   animation: spin linear infinite;
   animation-duration: var(--t, 20s);
 }
+/* `--orbit` is which of the two drawn rings this badge rides, as the same
+   percentage the ring uses for its own inset. Eight marks on one radius spend
+   too much of the loop overlapping each other; split across the rings they
+   read as a basket rather than a pile. Falls back to the outer ring, which is
+   where all four sat before there were eight. */
 .orbit .sat b {
   position: absolute;
-  top: 1.5%;
+  top: var(--orbit, 1.5%);
   left: 50%;
   width: 48px;
   height: 48px;
@@ -2871,6 +2876,18 @@ a.chip:hover {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+/* Fixed width, and centred inside it: the marks have different aspect ratios,
+   so laying them out on their own widths would leave the tickers beside them
+   on a ragged left edge. */
+.stock-mark {
+  width: 20px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+  font-size: 0.6rem;
+  font-family: var(--mono);
 }
 .stock-sym {
   width: 62px;

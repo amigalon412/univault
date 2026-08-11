@@ -1,6 +1,7 @@
 "use client";
 
 import { useAccount } from "wagmi";
+import { BrandMark } from "@/components/BrandMark";
 import { useMounted } from "@/hooks/useMounted";
 import { formatUsdg, usePositionBreakdown, useVault } from "@/hooks/useVault";
 import type { Strategy } from "@/lib/strategies";
@@ -171,6 +172,13 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
                 const pct = pctOf(v, userStocks);
                 return (
                   <div className="stock-row" key={s.symbol}>
+                    {/* The mark beside the ticker, as everywhere else holdings
+                        are listed. At four rows the tickers alone were enough
+                        to scan; at eight the column reads as a wall of
+                        four-letter words without them. */}
+                    <span className="stock-mark">
+                      <BrandMark sym={s.symbol} size={15} />
+                    </span>
                     <span className="chip stock-sym">{s.symbol}</span>
                     <span className="stock-bar">
                       <i style={{ width: `${pct}%` }} />
@@ -182,8 +190,12 @@ export function PositionPanel({ strategy }: PositionPanelProps) {
               })}
             </div>
             <p className="leg-note">
-              The equity leg targets an even split across these four. It shows what the
-              vault holds right now, live from the chain.
+              {/* Counted from what the chain returned, not written down. The
+                  rows themselves already come from the adapter's holdings, so
+                  a hardcoded "these four" was the one part of this block that
+                  could disagree with the list directly above it. */}
+              The equity leg targets an even split across these {bd.stocks.length}. It
+              shows what the vault holds right now, live from the chain.
             </p>
           </div>
         )}

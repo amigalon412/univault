@@ -36,6 +36,23 @@ export const BRAND_MASKS: Record<string, BrandMask> = {
      letter showing the surface underneath — which is the logo, not a defect.
      A disc reads heavier than a silhouette at the same cap, hence the k. */
   USDG: { src: "/images/logos/usdg.png", ratio: 0.999, k: 0.88 },
+
+  /* Added with the basket expansion. Ratios are the generated files' own
+     dimensions, so they follow the artwork rather than being eyeballed.
+     Google's G and Microsoft's grid both fill their box solidly, hence the
+     lighter k; Palantir's is a thin outline and carries less ink, so it keeps
+     the full cap. */
+  GOOGL: { src: "/images/logos/googl.png", ratio: 0.98, k: 0.92 },
+  MSFT: { src: "/images/logos/msft.png", ratio: 1, k: 0.9 },
+  PLTR: { src: "/images/logos/pltr.png", ratio: 0.8, k: 1 },
+
+  /* Its own file, not the one the marquee uses. The full SpaceX mark is the X
+     with a swoosh trailing about twice as far again; at a badge cap the swoosh
+     is a vanishing hairline that only pushes the X off-centre. spcx-mark.png
+     is the X alone. Before it existed this key was absent and the component
+     fell back to printing the ticker, which collided with the row label
+     beside it. */
+  SPCX: { src: "/images/logos/spcx-mark.png", ratio: 1.529, k: 0.86 },
 };
 
 interface BrandMarkProps {

@@ -77,7 +77,7 @@ export const HOW_STEPS: HowStep[] = [
     num: "[ 02 ]",
     caption: "split",
     title: "It splits in the same transaction",
-    body: "Part is supplied to the lending venue for real interest; the rest buys the four stock tokens, evenly weighted. Your strategy sets the ratio — nobody has to come along later and apply it.",
+    body: "Part is supplied to the lending venue for real interest; the rest buys the stock tokens, evenly weighted. Your strategy sets the ratio — nobody has to come along later and apply it.",
     links: [{ label: "Lending", address: STEAK_USDG }],
   },
   {
@@ -110,11 +110,27 @@ export const ECOSYSTEM_LOGOS: EcosystemLogo[] = [
 ];
 
 /** The satellites orbiting the launchpad core — the basket, literally. */
+/**
+ * The holdings orbiting the vault mark.
+ *
+ * All eight, not a sample: the ring is the one place on the page that says
+ * "this is what the basket is", and showing half of it read as the whole of
+ * it while the picker below listed more.
+ *
+ * Durations are all different and none is a multiple of another, so the marks
+ * never bunch into a line and then repeat the same arrangement. The delays are
+ * spread across each orbit's own period rather than a shared step — with one
+ * step the fast ones lap the slow ones into a cluster within a minute.
+ */
 export const ORBIT_SATELLITES = [
   { sym: "NVDA", duration: "22s" },
   { sym: "AAPL", duration: "28s", delay: "-7s" },
   { sym: "TSLA", duration: "34s", delay: "-14s" },
   { sym: "AMZN", duration: "40s", delay: "-21s" },
+  { sym: "GOOGL", duration: "26s", delay: "-13s" },
+  { sym: "MSFT", duration: "31s", delay: "-24s" },
+  { sym: "SPCX", duration: "37s", delay: "-5s" },
+  { sym: "PLTR", duration: "43s", delay: "-32s" },
 ] as const;
 
 /** The three closing claims, after the evidence rather than before it. */

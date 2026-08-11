@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { BrandMark } from "@/components/BrandMark";
 import { ArrowRightIcon } from "@/components/icons";
 import { StrategyGlyph } from "@/components/StrategyGlyph";
-import { PIXEL_LOGOS } from "@/lib/pixel-logos";
+import { BASKET_STOCKS } from "@/lib/chain";
 import { STRATEGIES, type StrategyId } from "@/lib/strategies";
 import type { FeedItem, FeedResponse } from "@/types/feed";
 
@@ -15,7 +15,7 @@ import type { FeedItem, FeedResponse } from "@/types/feed";
  * USDG is in here beside the four stocks because the lending rows name it —
  * "steakUSDG" contains it, which is what the substring match below is for.
  */
-const SYMBOLS = [...PIXEL_LOGOS.map((l) => l.key), "USDG"];
+const SYMBOLS = [...BASKET_STOCKS.map((s) => s.symbol), "USDG"];
 
 /**
  * Cards shown before the feed answers, and if it never does.
@@ -25,12 +25,35 @@ const SYMBOLS = [...PIXEL_LOGOS.map((l) => l.key), "USDG"];
  * inventing prices, and a column of invented prices on a page arguing that
  * everything here is checkable would be the worst possible thing to ship.
  */
+const BALANCED = STRATEGIES.find((s) => s.id === "balanced")!;
+
+/* Company names for the tickers, so a card can say "NVIDIA" rather than
+   "NVDA". Anything missing here falls back to its ticker, which is correct
+   rather than blank. */
+const COMPANY: Record<string, string> = {
+  NVDA: "NVIDIA",
+  AAPL: "Apple",
+  TSLA: "Tesla",
+  AMZN: "Amazon",
+  GOOGL: "Alphabet",
+  MSFT: "Microsoft",
+  SPCX: "SpaceX",
+  PLTR: "Palantir",
+};
+
+/* Weights are computed, not typed. These rows read "10%" each while the basket
+   held four names; the same four literals beside eight holdings would have
+   been a set of numbers that no longer add up to the leg they belong to. */
+const PER_STOCK = `${Math.round((BALANCED.stockPct / BASKET_STOCKS.length) * 10) / 10}%`;
+
 const RESTING: MiniData[] = [
-  { sym: "NVDA", name: "NVIDIA", meta: "Basket holding", note: "10%" },
-  { sym: "AAPL", name: "Apple", meta: "Basket holding", note: "10%" },
-  { sym: "TSLA", name: "Tesla", meta: "Basket holding", note: "10%" },
-  { sym: "AMZN", name: "Amazon", meta: "Basket holding", note: "10%" },
-  { sym: "USDG", name: "Lending leg", meta: "USDG supplied", note: "60%" },
+  ...BASKET_STOCKS.map(({ symbol }) => ({
+    sym: symbol,
+    name: COMPANY[symbol] ?? symbol,
+    meta: "Basket holding",
+    note: PER_STOCK,
+  })),
+  { sym: "USDG", name: "Lending leg", meta: "USDG supplied", note: `${BALANCED.stablePct}%` },
   { sym: null, name: "Rebalance", meta: "On drift", note: "auto" },
 ];
 
@@ -111,7 +134,11 @@ export function CommunitySection() {
         if (!res.ok) return;
         const data: FeedResponse = await res.json();
         if (!alive || !data.items.length) return;
-        setItems(data.items.slice(0, 10).map(toMini));
+        /* Take the whole read, not a fixed ten. The feed is steakUSDG, one
+           row per deployed vault and one per priced holding, so the count
+           moves with the basket — at ten the last two holdings fell off the
+           end and the columns showed six of the eight. */
+        setItems(data.items.map(toMini));
       } catch {
         /* offline, or the chain is unreachable — the resting cards stand. */
       }
