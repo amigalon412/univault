@@ -69,7 +69,19 @@ it is what every link written before 2026-08-10 points at.
 
 | Contract | Address | Notes |
 |----------|---------|-------|
-| ExitRouter | `0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0` | Deployed 2026-07-24, block 17686207. Ownerless, holds no funds. Market-sells a whole position (stocks included) to USDG in one tx via `redeemInKind` + v4 swaps. Powers the "SELL EVERYTHING → USDG" button on BALANCED/GROWTH. |
+| ExitRouter | `0x2304d57bA6E5EecD3d4d8Cc657740D9aa5824035` | Deployed 2026-08-11, block 33782241. Ownerless, holds no funds. Market-sells a whole position (stocks included) to USDG in one tx via `redeemInKind` + v4 swaps. Powers the "SELL EVERYTHING → USDG" button on BALANCED/GROWTH. |
+
+The router it replaced (`0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0`, deployed
+2026-07-24) built each swap's PoolKey from `RobinhoodChain.basketPool()`, which
+hard-codes the 0.30% tier. True of all four holdings the day it shipped; false
+the moment the basket grew, because SPCX and PLTR trade at 1% and their 0.30%
+pools are empty or absent. The swap reverted and took the whole exit with it —
+unlike a deposit, that loop has no per-leg fallback, so the button simply
+stopped working for anyone in BALANCED or GROWTH.
+
+The replacement reads `poolKeys(token)` off the vault's own adapter instead, so
+it cannot fall behind the basket again. Nothing points at the old one; it is
+ownerless and holds nothing, so it was left where it is rather than touched.
 
 ## Wiring the site
 
@@ -81,7 +93,7 @@ contracts:
 NEXT_PUBLIC_VAULT_STEADY=0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37
 NEXT_PUBLIC_VAULT_BALANCED=0x3601c09C4F84885454cCbd46B9dF3DaB244c1150
 NEXT_PUBLIC_VAULT_GROWTH=0xa809DC62C6fc723E04B061cbE6271AaA093eC75b
-NEXT_PUBLIC_EXIT_ROUTER=0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0
+NEXT_PUBLIC_EXIT_ROUTER=0x2304d57bA6E5EecD3d4d8Cc657740D9aa5824035
 ```
 
 ## Not deployed yet

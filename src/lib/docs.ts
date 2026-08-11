@@ -994,7 +994,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   ["PriceOracle · GROWTH", "0x7C3Ff9e01Dcb472D297648AbeDF5c1F595D3Deff"],
                   ["BasketAdapter · BALANCED", "0xA36f535E0035bb068cc27ca59137eF36b193f273"],
                   ["BasketAdapter · GROWTH", "0x76d58d2cF50BdB37e50117c5b7DfB6d579c7c609"],
-                  ["ExitRouter", "0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0"],
+                  ["ExitRouter", "0x2304d57bA6E5EecD3d4d8Cc657740D9aa5824035"],
                   ["$UNIVAULT", "%CA%"],
                   ["BuybackModule", "not deployed"],
                 ],

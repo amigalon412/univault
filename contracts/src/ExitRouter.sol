@@ -5,6 +5,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
+import {IHooks} from "v4-core/src/interfaces/IHooks.sol";
 import {PoolKey} from "v4-core/src/types/PoolKey.sol";
 import {Currency} from "v4-core/src/types/Currency.sol";
 import {SwapExecutor} from "./SwapExecutor.sol";
@@ -12,9 +13,19 @@ import {RobinhoodChain} from "./RobinhoodChain.sol";
 
 interface IExitVault {
     function asset() external view returns (address);
+    function basket() external view returns (address);
     function redeemInKind(uint256 shares, address receiver, address owner)
         external
         returns (uint256 stableOut, address[] memory tokens, uint256[] memory amounts);
+}
+
+interface IExitBasket {
+    /// @dev The adapter's public `poolKeys` mapping, whose auto-getter returns
+    ///      the PoolKey struct flattened into its five members.
+    function poolKeys(address token)
+        external
+        view
+        returns (Currency currency0, Currency currency1, uint24 fee, int24 tickSpacing, IHooks hooks);
 }
 
 /// @title ExitRouter
@@ -70,10 +81,27 @@ contract ExitRouter is SwapExecutor, ReentrancyGuard {
         // Market-sell each stock token into USDG through its basket pool. The
         // per-swap floor is zero on purpose: the only bound that matters is the
         // total below, which cannot be gamed by splitting it across legs.
+        address basket = IExitVault(vault).basket();
+
         for (uint256 i = 0; i < tokens.length; i++) {
             uint256 amt = amounts[i];
             if (amt == 0) continue;
-            PoolKey memory key = RobinhoodChain.basketPool(tokens[i]);
+            /* Ask the adapter which pool this token trades in rather than
+               deriving it from a constant.
+
+               The first version called RobinhoodChain.basketPool(), which
+               hard-codes 0.30% for every name. That was true of all four
+               holdings the day this shipped and stopped being true the moment
+               the basket grew: SPCX and PLTR trade at 1%, their 0.30% pools are
+               empty or absent, and the swap reverted — taking the whole exit
+               with it, because unlike a deposit this loop has no per-leg
+               fallback. A router that keeps its own copy of the basket's
+               plumbing goes stale every time the basket changes; one that reads
+               it cannot. */
+            (Currency c0, Currency c1, uint24 fee, int24 tickSpacing, IHooks hooks) =
+                IExitBasket(basket).poolKeys(tokens[i]);
+            PoolKey memory key =
+                PoolKey({currency0: c0, currency1: c1, fee: fee, tickSpacing: tickSpacing, hooks: hooks});
             bool zeroForOne = Currency.unwrap(key.currency0) == tokens[i];
             totalStable += _executeSwap(
                 SwapRequest({key: key, zeroForOne: zeroForOne, amountIn: amt, minAmountOut: 0})

@@ -70,7 +70,7 @@ export const KEEPER_GUARD: Address = getAddress(
  * uses this constant and always has something to link to.
  */
 export const EXIT_ROUTER_FALLBACK: Address = getAddress(
-  "0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0",
+  "0x2304d57bA6E5EecD3d4d8Cc657740D9aa5824035",
 );
 
 /**
@@ -232,7 +232,7 @@ export const BLUR_TOKEN = optionalAddress(process.env.NEXT_PUBLIC_BLUR_TOKEN);
  * .env.local was hiding a control that works.
  */
 export const EXIT_ROUTER = optionalAddress(
-  process.env.NEXT_PUBLIC_EXIT_ROUTER || "0xB31E70a57e5d59A39Ff6670845FA2308F993b7F0",
+  process.env.NEXT_PUBLIC_EXIT_ROUTER || "0x2304d57bA6E5EecD3d4d8Cc657740D9aa5824035",
 );
 
 /** Minimal ExitRouter ABI: the one function the UI calls. */
