@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   UNIVAULT — design system
+   SAFEX — design system
 
    Two sources, split along a clean seam:
 
@@ -38,21 +38,22 @@
   --font-mono: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
   --font-heading: var(--font-space-grotesk), "Space Grotesk", "Inter", sans-serif;
 
-  /* The Index palette, as Tailwind colours. */
-  --color-page: #f9f9f9;
-  --color-surface: #ffffff;
-  --color-surface-soft: #f5f5f5;
-  --color-surface-warm: #fcfcfc;
-  --color-ink: #131313;
-  --color-ink-soft: #333333;
-  --color-muted: #7d7d7d;
-  --color-subtle: #9b9b9b;
-  --color-faint: #cecece;
-  --color-line: #ececec;
-  --color-line-soft: #f4f4f4;
-  --color-line-strong: #dedede;
-  --color-accent: #fc72ff;
-  --color-accent-wash: #ffefff;
+  /* The maomao8 palette, as Tailwind colours. Kept in step with :root below --
+     these are the same values, exposed to utility classes. */
+  --color-page: #050505;
+  --color-surface: #10100e;
+  --color-surface-soft: #15140f;
+  --color-surface-warm: #15140f;
+  --color-ink: #f5efd9;
+  --color-ink-soft: #d8d2be;
+  --color-muted: #aaa58f;
+  --color-subtle: #8a866f;
+  --color-faint: #4a4740;
+  --color-line: rgba(245, 239, 217, 0.17);
+  --color-line-soft: rgba(245, 239, 217, 0.09);
+  --color-line-strong: rgba(245, 239, 217, 0.32);
+  --color-accent: #f0b90b;
+  --color-accent-wash: rgba(240, 185, 11, 0.13);
   --color-positive: #21c95e;
   --color-negative: #ff5f52;
 
@@ -97,60 +98,68 @@
 /* shadcn's token surface, remapped onto the palette above so its primitives
    stay usable. The site itself draws from the tokens in the block below. */
 :root {
-  --background: #f9f9f9;
-  --foreground: #131313;
-  --card: #ffffff;
-  --card-foreground: #131313;
-  --popover: #ffffff;
-  --popover-foreground: #131313;
-  --primary: #fc72ff;
-  --primary-foreground: #ffffff;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #131313;
-  --muted: #f5f5f5;
-  --muted-foreground: #7d7d7d;
-  --accent: #ffefff;
-  --accent-foreground: #131313;
+  --background: #050505;
+  --foreground: #f5efd9;
+  --card: #10100e;
+  --card-foreground: #f5efd9;
+  --popover: #15140f;
+  --popover-foreground: #f5efd9;
+  --primary: #f0b90b;
+  --primary-foreground: #050505;
+  --secondary: #15140f;
+  --secondary-foreground: #f5efd9;
+  --muted: #15140f;
+  --muted-foreground: #aaa58f;
+  --accent: #1d1806;
+  --accent-foreground: #ffd53d;
   --destructive: #ff5f52;
-  --border: #ececec;
-  --input: #ececec;
-  --ring: #fc72ff;
-  --chart-1: #fc72ff;
-  --chart-2: #ff9dff;
-  --chart-3: #ffc7ff;
-  --chart-4: #131313;
-  --chart-5: #cecece;
+  --border: rgba(245, 239, 217, 0.17);
+  --input: rgba(245, 239, 217, 0.17);
+  --ring: #f0b90b;
+  --chart-1: #f0b90b;
+  --chart-2: #ffd53d;
+  --chart-3: #9f7600;
+  --chart-4: #f5efd9;
+  --chart-5: #aaa58f;
   --radius: 8px;
-  --sidebar: #fcfcfc;
-  --sidebar-foreground: #131313;
-  --sidebar-primary: #fc72ff;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f5f5f5;
-  --sidebar-accent-foreground: #131313;
-  --sidebar-border: #ececec;
-  --sidebar-ring: #fc72ff;
+  --sidebar: #10100e;
+  --sidebar-foreground: #f5efd9;
+  --sidebar-primary: #f0b90b;
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: #15140f;
+  --sidebar-accent-foreground: #ffd53d;
+  --sidebar-border: rgba(245, 239, 217, 0.17);
+  --sidebar-ring: #f0b90b;
 }
 
 /* ── tokens ──────────────────────────────────────────────────────────────── */
 
 :root {
-  --page: #f9f9f9;
-  --surface: #ffffff;
-  --surface-soft: #f5f5f5;
-  --surface-warm: #fcfcfc;
-  --ink: #131313;
-  --ink-soft: #333333;
-  --ink-2: #7d7d7d;
-  --subtle: #9b9b9b;
-  --faint: #cecece;
-  --line: #ececec;
-  --line-2: #dedede;
-  /* One pink does every accent job: primary action, filled meter, active
-     state, footer. --wash is its 8%-ish tint, used wherever the accent has to
-     sit behind text. */
-  --accent: #fc72ff;
-  --accent-ink: #c800cf;
-  --wash: #ffefff;
+  /* Palette lifted from maomao8.xyz, whose accent is Binance's own #f0b90b.
+     The build flipped here from light to dark: --ink used to be near-black on
+     a white --page and is now cream on near-black. Every rule downstream reads
+     these names rather than literals, which is why the flip is a token edit
+     and not a rewrite -- but it also means anything that hard-codes #fff or
+     #131313 now fights the theme, so those are worth hunting. */
+  --page: #050505;
+  --surface: #10100e;
+  --surface-soft: #15140f;
+  --surface-warm: #15140f;
+  --ink: #f5efd9;
+  --ink-soft: #d8d2be;
+  --ink-2: #aaa58f;
+  --subtle: #8a866f;
+  --faint: #4a4740;
+  --line: rgba(245, 239, 217, 0.17);
+  --line-2: rgba(245, 239, 217, 0.32);
+  /* One gold does every accent job: primary action, filled meter, active
+     state, footer. --accent-ink is the LIGHTER variant now, not the darker
+     one: on a near-black ground legibility runs the other way. --wash is the
+     13% tint, used wherever the accent sits behind text. */
+  --accent: #f0b90b;
+  --accent-ink: #ffd53d;
+  --accent-dim: #9f7600;
+  --wash: rgba(240, 185, 11, 0.13);
   --positive: #21c95e;
   --negative: #ff5f52;
 
@@ -158,15 +167,22 @@
   --mono: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
 
   --maxw: 1240px;
-  --shadow: 0 16px 48px rgba(43, 52, 61, 0.1);
-  --shadow-lg: 0 34px 78px rgba(43, 52, 61, 0.2);
+  /* Shadows on a near-black ground do almost nothing, so depth comes from the
+     panel being lighter than the page rather than from a drop shadow. These
+     stay only to keep edges off the background. */
+  --shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 34px 78px rgba(0, 0, 0, 0.7);
 
   /* The gradient The Index runs behind its hero. Here it is the one tinted
      band mid-page, and the second thing the nav reacts to. */
+  /* Saturated on purpose. .hero-grade blends this with `color`, which takes
+     hue and chroma from here and luminance from the footage -- a near-neutral
+     dark gradient would read as "no grade at all". As a band background the
+     same value is simply dark gold. */
   --tinted:
-    radial-gradient(780px 500px at 84% 12%, rgba(252, 114, 255, 0.5), rgba(252, 114, 255, 0) 58%),
-    radial-gradient(720px 520px at 12% 92%, rgba(255, 157, 255, 0.42), rgba(255, 157, 255, 0) 62%),
-    linear-gradient(145deg, #ffdcff 0%, #ffeaff 38%, #fff4ff 68%, #ffffff 100%);
+    radial-gradient(780px 500px at 84% 12%, rgba(240, 185, 11, 0.62), rgba(240, 185, 11, 0) 58%),
+    radial-gradient(720px 520px at 12% 92%, rgba(255, 213, 61, 0.46), rgba(255, 213, 61, 0) 62%),
+    linear-gradient(145deg, #6b5207 0%, #4a3905 38%, #241c02 68%, #0a0a08 100%);
 }
 
 @layer base {
@@ -348,12 +364,14 @@
    makes it unmissable without needing size or weight to do the work. */
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--page);
 }
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  background: #f558f8;
-  box-shadow: 0 18px 38px -18px rgba(252, 114, 255, 0.85);
+  /* The lighter gold, not a darker one: on a near-black page the accent has to
+     travel toward the light to read as "lit up" on hover. */
+  background: var(--accent-ink);
+  box-shadow: 0 18px 38px -18px rgba(240, 185, 11, 0.7);
 }
 .btn-ghost {
   background: var(--surface);
@@ -394,7 +412,7 @@
   transform: translateY(-2px);
 }
 
-/* The $UNIVAULT contract address, click to copy. Mono and tabular because it
+/* The $SAFEX contract address, click to copy. Mono and tabular because it
    is an address: the eye compares it against the one in a wallet, and that
    only works if the glyphs line up. */
 .ca-pill {
@@ -518,10 +536,9 @@
   top: 0;
   z-index: 50;
   /* The page colour at 82%, so the glass reads as the page thickening rather
-     than as a band laid over it. It was still the warm-paper build's
-     rgb(237,236,232) — at this alpha that is visibly warmer than the near-white
-     underneath, which is exactly where a glass shell is judged. */
-  background: rgba(249, 249, 249, 0.82);
+     than as a band laid over it. Follows --page: on the black build a glass
+     shell is judged the same way, just from the other end. */
+  background: rgba(5, 5, 5, 0.82);
   backdrop-filter: blur(18px) saturate(1.2);
   -webkit-backdrop-filter: blur(18px) saturate(1.2);
   border-bottom: 1px solid var(--line);
@@ -601,19 +618,17 @@
   gap: 10px;
 }
 
-/* Over a tinted band. In the dark variant this flips the bar to white type;
-   here the bands are pale, so it only drops the glass and lets the pink show
-   through — the ink stays ink, because on this palette it is still the most
-   legible thing on the page. */
+/* Over the hero and the tinted band. The bar thins to almost nothing and lets
+   the footage through; the type is already cream, so nothing has to flip. */
 .nav.nav-over {
-  background: rgba(255, 255, 255, 0.42);
-  border-bottom-color: rgba(19, 19, 19, 0.06);
+  background: rgba(5, 5, 5, 0.28);
+  border-bottom-color: rgba(245, 239, 217, 0.1);
   box-shadow: none;
 }
 .nav.nav-over .nav-icon,
 .nav.nav-over .btn-ghost {
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(19, 19, 19, 0.1);
+  background: rgba(5, 5, 5, 0.5);
+  border-color: rgba(245, 239, 217, 0.18);
 }
 @media (max-width: 920px) {
   .nav-links {
@@ -648,9 +663,14 @@
   z-index: -2;
   /* Strip the footage's own colour first. Everything after this reads its
      luminance only, so the grade lands the same whatever was shot.
-     Brightness up and contrast down, unlike the dark variant: the hills have
-     to end up pale enough for near-black type to sit on them. */
-  filter: grayscale(1) brightness(1.5) contrast(0.72);
+
+     `invert` is the whole trick of the black-gold build. The footage was shot
+     as a white sky over green hills; inverted, the sky becomes the dark half
+     of the frame and the hills become the lit half. Grading the frame without
+     inverting would put the brightest gold across the top, and a near-black
+     page cannot carry a glowing sky -- the fold would read as a light theme
+     with a yellow filter. Cream type then sits on the dark upper half. */
+  filter: grayscale(1) invert(1) brightness(0.86) contrast(1.16);
 }
 
 /* ── hero colour grade ────────────────────────────────────────────────────
@@ -663,9 +683,9 @@
         luminance. That is precisely what a colour grade is, which is why this
         is one blend and not a stack of overlays — the hills stay hills, they
         just stop being green.
-     2. A plain white-pink wash over it lifts the whole frame instead of
-        deepening it. The dark variant multiplies here; this one cannot — the
-        headline is near-black, so the footage has to go up, not down.
+     2. A near-black wash over it deepens the frame. The white build lifted
+        here because its headline was near-black; this one is the other way
+        round -- the headline is cream, so the footage has to go down.
 
    The gradient is --tinted, the same variable the community band uses. One
    source for the page's only two saturated surfaces: change it once and both
@@ -690,9 +710,9 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.46),
-    rgba(255, 239, 255, 0.62) 55%,
-    rgba(255, 255, 255, 0.72)
+    rgba(5, 5, 5, 0.34),
+    rgba(10, 9, 4, 0.52) 55%,
+    rgba(5, 5, 5, 0.72)
   );
 }
 .hero-scrim {
@@ -700,9 +720,10 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  /* A light vignette, the inverse of the dark variant's: it lifts the centre
-     so the headline has a clean field, rather than darkening it. */
-  background: radial-gradient(52% 46% at 50% 48%, rgba(255, 255, 255, 0.66), transparent 74%);
+  /* A dark vignette: it settles the centre so the cream headline has a clean
+     field. The white build lifted here instead, for the same reason in
+     reverse. */
+  background: radial-gradient(52% 46% at 50% 48%, rgba(5, 5, 5, 0.62), transparent 74%);
 }
 .hero-fade {
   position: absolute;
@@ -712,7 +733,7 @@
   height: 22%;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(249, 249, 249, 0), var(--page) 94%);
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0), var(--page) 94%);
 }
 .hero-inner {
   text-align: center;
@@ -762,7 +783,7 @@
 .hero-slide .ln {
   /* The band is pale and its luminance moves as the footage plays, so the
      type carries its own halo rather than trusting the plate under it. */
-  text-shadow: 0 2px 30px rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.85);
 }
 .hero-corners {
   position: absolute;
@@ -794,7 +815,7 @@
   line-height: 1.5;
   color: var(--ink);
   font-weight: 500;
-  text-shadow: 0 2px 16px rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
 }
 .scrolldisc {
   font-family: var(--mono);
@@ -802,7 +823,7 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-2);
-  text-shadow: 0 2px 16px rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -992,7 +1013,7 @@
 }
 .seg-btn[aria-pressed="true"] {
   background: var(--accent);
-  color: #fff;
+  color: var(--page);
 }
 .showcase-body {
   padding: 26px 22px 4px;
@@ -1276,7 +1297,7 @@
   position: absolute;
   inset: auto 0 -40% 0;
   height: 70%;
-  background: radial-gradient(60% 100% at 50% 100%, rgba(252, 114, 255, 0.24), transparent 70%);
+  background: radial-gradient(60% 100% at 50% 100%, rgba(240, 185, 11, 0.22), transparent 70%);
   pointer-events: none;
 }
 .step-caption {
@@ -1735,7 +1756,7 @@
   background: conic-gradient(
     from 0deg,
     transparent 0 68%,
-    rgba(252, 114, 255, 0.9) 86%,
+    rgba(240, 185, 11, 0.9) 86%,
     transparent 100%
   );
   -webkit-mask: radial-gradient(circle, transparent 55%, #000 56%);
@@ -1751,10 +1772,10 @@
   height: 96px;
   border-radius: 50%;
   background: var(--accent);
-  color: #fff;
+  color: var(--page);
   display: grid;
   place-items: center;
-  box-shadow: 0 24px 48px -18px rgba(252, 114, 255, 0.8);
+  box-shadow: 0 24px 48px -18px rgba(240, 185, 11, 0.6);
   z-index: 3;
 }
 .orbit .sat {
@@ -1889,7 +1910,7 @@
 }
 .pool-bub[aria-pressed="true"] .pav {
   background: var(--accent);
-  color: #fff;
+  color: var(--page);
   border-color: var(--accent);
 }
 /* Each vault as how far it wanders, not as its split — the split is already
@@ -1950,14 +1971,14 @@
   padding: 12px 19px;
   border-radius: 999px;
   background: var(--accent);
-  color: #fff;
+  color: var(--page);
   transition:
     transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
     background 0.2s;
 }
 .pool-stake:hover {
   transform: translateY(-2px);
-  background: #f558f8;
+  background: var(--accent-ink);
 }
 @media (max-width: 560px) {
   .pool-bub {
@@ -2084,7 +2105,7 @@
   will-change: transform;
   background:
     radial-gradient(38% 48% at 20% 32%, rgba(255, 255, 255, 0.55), transparent 60%),
-    radial-gradient(38% 48% at 82% 68%, rgba(252, 114, 255, 0.16), transparent 60%);
+    radial-gradient(38% 48% at 82% 68%, rgba(240, 185, 11, 0.16), transparent 60%);
 }
 .cmy-col {
   position: absolute;
@@ -2292,7 +2313,7 @@
   z-index: 0;
   display: flex;
   background: var(--accent);
-  color: #fff;
+  color: var(--page);
   overflow: hidden;
 }
 .bigfoot > .wrap {
@@ -2800,7 +2821,7 @@ a.chip:hover {
 .slip-btn.is-on {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--page);
 }
 
 .status {
@@ -2853,7 +2874,7 @@ a.chip:hover {
 }
 .alloc-stable {
   background: var(--accent);
-  color: #fff;
+  color: var(--page);
 }
 .alloc-stocks {
   justify-content: flex-end;

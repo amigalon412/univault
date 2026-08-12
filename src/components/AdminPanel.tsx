@@ -10,7 +10,7 @@ const field = "field";
 const button = "btn btn-ghost btn-compact";
 
 /**
- * The one thing the operator has to do on launch day: paste the $UNIVAULT contract
+ * The one thing the operator has to do on launch day: paste the $SAFEX contract
  * address and press publish. It lands in a file the server reads on every
  * request, so the header strip shows it site-wide without a rebuild.
  */
@@ -29,7 +29,7 @@ export function AdminPanel() {
     const res = await fetch("/api/admin/ca", { cache: "no-store" });
     if (!res.ok) return;
     const data = await res.json();
-    setAddress(data.univaultToken ?? "");
+    setAddress(data.safexToken ?? "");
     setSavedAt(data.updatedAt ?? null);
   }, []);
 
@@ -93,11 +93,11 @@ export function AdminPanel() {
         setStatus({ kind: "error", text: data.error ?? "Failed." });
         return;
       }
-      setAddress(data.univaultToken ?? "");
+      setAddress(data.safexToken ?? "");
       setSavedAt(data.updatedAt ?? null);
       setStatus({
         kind: "ok",
-        text: data.univaultToken
+        text: data.safexToken
           ? "Published. The CA bar shows it on every page from the next load."
           : "Cleared. The site is back to saying the token is not launched.",
       });
@@ -145,7 +145,7 @@ export function AdminPanel() {
 
   return (
     <form onSubmit={publish} className="flex flex-col gap-3">
-      <label className="ui-label">$UNIVAULT contract address</label>
+      <label className="ui-label">$SAFEX contract address</label>
       <input
         type="text"
         value={address}
@@ -157,7 +157,7 @@ export function AdminPanel() {
       />
       <p className="form-foot form-foot-left">
         Leave empty and publish to clear it — the header goes back to warning
-        that any address claiming to be $UNIVAULT is fake.
+        that any address claiming to be $SAFEX is fake.
       </p>
 
       <div className="flex items-center gap-3">

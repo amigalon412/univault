@@ -24,7 +24,7 @@ import {
   http,
   parseUnits,
 } from "viem";
-import { univaultAbi } from "../src/lib/abis.ts";
+import { safexAbi } from "../src/lib/abis.ts";
 
 const RPC = process.env.RPC ?? "http://127.0.0.1:8545";
 const VAULT = process.env.VAULT;
@@ -35,7 +35,7 @@ const DEPOSITOR =
   process.env.DEPOSITOR ?? "0x2d4d2A025b10C09BDbd794B4FCe4F7ea8C7d7bB4";
 
 if (!VAULT) {
-  console.error("VAULT=0x... is required (a deployed Univault on the fork)");
+  console.error("VAULT=0x... is required (a deployed Safex on the fork)");
   process.exit(1);
 }
 
@@ -65,7 +65,7 @@ const usd = (value) =>
   })} USDG`;
 
 const read = (functionName, args = []) =>
-  pub.readContract({ address: VAULT, abi: univaultAbi, functionName, args });
+  pub.readContract({ address: VAULT, abi: safexAbi, functionName, args });
 
 for (const account of [DEPOSITOR, OWNER]) {
   await rpc("anvil_impersonateAccount", [account]);
@@ -112,7 +112,7 @@ await send(depositor, {
 });
 await send(depositor, {
   address: VAULT,
-  abi: univaultAbi,
+  abi: safexAbi,
   functionName: "deposit",
   args: [amount, DEPOSITOR],
 });
@@ -124,7 +124,7 @@ console.log("totalAssets   ", usd(await read("totalAssets")));
 console.log("\n--- put idle cash into the lending venue ---");
 await send(owner, {
   address: VAULT,
-  abi: univaultAbi,
+  abi: safexAbi,
   functionName: "deployIdle",
   args: [],
 });
@@ -136,7 +136,7 @@ console.log("maxWithdraw   ", usd(await read("maxWithdraw", [DEPOSITOR])));
 console.log("\n--- withdraw half in USDG ---");
 await send(depositor, {
   address: VAULT,
-  abi: univaultAbi,
+  abi: safexAbi,
   functionName: "withdraw",
   args: [parseUnits("12500", 6), DEPOSITOR, DEPOSITOR],
 });
@@ -145,7 +145,7 @@ console.log("wallet USDG   ", usd(await usdgOf(DEPOSITOR)));
 console.log("\n--- redeem the rest in kind ---");
 await send(depositor, {
   address: VAULT,
-  abi: univaultAbi,
+  abi: safexAbi,
   functionName: "redeemInKind",
   args: [await read("balanceOf", [DEPOSITOR]), DEPOSITOR, DEPOSITOR],
 });

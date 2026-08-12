@@ -10,8 +10,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { univaultAbi } from "@/lib/abis";
-import { EXIT_ROUTER, exitRouterAbi, explorerTxUrl, robinhoodChain } from "@/lib/chain";
+import { safexAbi } from "@/lib/abis";
+import { EXIT_ROUTER, exitRouterAbi, explorerTxUrl, bnbChain } from "@/lib/chain";
 
 /** Slippage choices for the market exit, in basis points. */
 const SLIPPAGE = [
@@ -59,7 +59,7 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
 
   const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: vault,
-    abi: univaultAbi,
+    abi: safexAbi,
     functionName: "allowance",
     args: [account ?? "0x0000000000000000000000000000000000000000", EXIT_ROUTER ?? "0x0000000000000000000000000000000000000000"],
     query: { enabled: Boolean(account && EXIT_ROUTER) },
@@ -72,7 +72,7 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
     }
   }, [isSuccess, refetchAllowance, queryClient]);
 
-  if (!EXIT_ROUTER || !account || chainId !== robinhoodChain.id || !shares) return null;
+  if (!EXIT_ROUTER || !account || chainId !== bnbChain.id || !shares) return null;
 
   const needsApproval = allowance === undefined || allowance < shares;
   const busy = isPending || isConfirming || quoting;
@@ -84,7 +84,7 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
       setHash(
         await writeContractAsync({
           address: vault,
-          abi: univaultAbi,
+          abi: safexAbi,
           functionName: "approve",
           args: [EXIT_ROUTER, shares],
         }),

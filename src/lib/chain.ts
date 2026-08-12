@@ -2,28 +2,35 @@ import { defineChain, getAddress, type Address } from "viem";
 import type { StrategyId } from "@/lib/strategies";
 
 /**
- * Robinhood Chain. An Arbitrum Orbit L2 whose gas token is ETH; the stablecoin
- * we take deposits in (USDG) is an ordinary ERC-20 on top.
+ * BNB Chain. Gas is BNB, not ETH -- every fee estimate and every "you need gas"
+ * string downstream reads nativeCurrency, so this one field carries a lot.
  *
- * Confirmed against the live chain: eth_chainId returns 0x1237 (4663), and the
- * explorer's own stats endpoint reports ETH as the native coin.
+ * PORTED, NOT VERIFIED. The build this replaced pointed at BNB Chain
+ * (id 4663), which is where the whole contract set is actually deployed:
+ * vaults, guards, oracles, the exit router, the Steakhouse USDG lending vault
+ * and Robinhood's own stock tokens all live there and NONE of them exist here.
+ * Until the stack is redeployed on BNB and contracts/DEPLOYMENTS.md is rewritten
+ * against it, every address in this file is wrong -- the reads will fail and
+ * the app will show its not-deployed state. That is the intended behaviour of
+ * a half-finished port: fail visibly rather than quote figures from a chain
+ * nobody is on.
  */
-export const robinhoodChain = defineChain({
-  id: 4663,
-  name: "Robinhood Chain",
-  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+export const bnbChain = defineChain({
+  id: 56,
+  name: "BNB Chain",
+  nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
   rpcUrls: {
-    default: { http: ["https://rpc.mainnet.chain.robinhood.com"] },
+    default: { http: ["https://bsc-dataseed.binance.org"] },
   },
   blockExplorers: {
     default: {
-      name: "Blockscout",
-      url: "https://robinhoodchain.blockscout.com",
+      name: "BscScan",
+      url: "https://bscscan.com",
     },
   },
   contracts: {
-    // Multicall3 at its canonical cross-chain address; confirmed deployed here.
-    // Without this viem refuses to batch, and every read becomes its own call.
+    // Multicall3 at its canonical cross-chain address. Without this viem
+    // refuses to batch, and every read becomes its own call.
     multicall3: { address: "0xcA11bde05977b3631167028862bE2a173976CA11" },
   },
 });
@@ -170,14 +177,14 @@ function optionalAddress(value: string | undefined): Address | null {
 }
 
 /**
- * The deployed vaults, one per strategy. Live on Robinhood Chain mainnet since
+ * The deployed vaults, one per strategy. Live on BNB Chain mainnet since
  * 2026-08-10 -- addresses, guards, oracles and baskets are recorded in
  * contracts/DEPLOYMENTS.md, which is the source these are copied from.
  *
  * This is the post-rename set. The vaults it replaced were deployed as
  * `BlurVault` and minted shares called `blurBALANCED`; a share token's name and
  * symbol are constructor arguments with no setter, so the only way to change
- * them was to deploy again. These mint `Univault Balanced` / `uvBALANCED`.
+ * them was to deploy again. These mint `Safex Balanced` / `sfxBALANCED`.
  * The old vaults still answer calls and still hold nothing -- do not point
  * anything at them.
  *
@@ -216,7 +223,7 @@ export const DEPLOYED_VAULTS = Object.entries(VAULT_ADDRESSES).filter(
 );
 
 /**
- * The $UNIVAULT token, once it exists. Null until then, and the UI says so rather
+ * The $SAFEX token, once it exists. Null until then, and the UI says so rather
  * than showing a placeholder anyone could mistake for the real contract --
  * before a launch a wrong "CA" is exactly what a scammer wants circulating.
  */
@@ -254,9 +261,9 @@ export const exitRouterAbi = [
 export const NOTHING_DEPLOYED = DEPLOYED_VAULTS.length === 0;
 
 export function explorerAddressUrl(address: Address): string {
-  return `${robinhoodChain.blockExplorers.default.url}/address/${address}`;
+  return `${bnbChain.blockExplorers.default.url}/address/${address}`;
 }
 
 export function explorerTxUrl(hash: string): string {
-  return `${robinhoodChain.blockExplorers.default.url}/tx/${hash}`;
+  return `${bnbChain.blockExplorers.default.url}/tx/${hash}`;
 }

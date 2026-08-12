@@ -1,5 +1,5 @@
 /**
- * Whether a block belongs to the world before $UNIVAULT exists or after it does.
+ * Whether a block belongs to the world before $SAFEX exists or after it does.
  *
  * Blocks without a phase are shown in both. The phase is decided per request
  * from the address published in /admin, so launch day is one paste in the
@@ -10,7 +10,7 @@
  */
 export type DocPhase = "pre-launch" | "post-launch";
 
-/** Replaced with the published $UNIVAULT address wherever it appears in copy. */
+/** Replaced with the published $SAFEX address wherever it appears in copy. */
 export const CA_TOKEN = "%CA%";
 
 export type DocBlock = (
@@ -50,7 +50,7 @@ export const DOC_GROUPS: DocGroup[] = [
         slug: "overview",
         title: "Overview",
         intro: [
-          "UNIVAULT is an auto-yield vault that runs on Robinhood Chain. You put a stablecoin in once; from that moment the vault does the work — it lends the balance out for real interest, moves a slice of it into a curated basket of tokenized stock tokens, and keeps pulling itself back to whatever split you picked.",
+          "SAFEX is an auto-yield vault that runs on BNB Chain. You put a stablecoin in once; from that moment the vault does the work — it lends the balance out for real interest, moves a slice of it into a curated basket of tokenized stock tokens, and keeps pulling itself back to whatever split you picked.",
           "Nothing about that requires you to hand over control. Your position is a token balance at your own address, and the exit path is open to you at any block.",
         ],
         sections: [
@@ -60,7 +60,7 @@ export const DOC_GROUPS: DocGroup[] = [
             blocks: [
               {
                 type: "p",
-                text: "Most stablecoin balances sit still and earn nothing. UNIVAULT turns that dead weight into a portfolio that maintains itself.",
+                text: "Most stablecoin balances sit still and earn nothing. SAFEX turns that dead weight into a portfolio that maintains itself.",
               },
               {
                 type: "list",
@@ -174,7 +174,7 @@ export const DOC_GROUPS: DocGroup[] = [
                 items: [
                   {
                     lead: "Connect.",
-                    text: "Open the terminal and connect a wallet holding USDG on Robinhood Chain.",
+                    text: "Open the terminal and connect a wallet holding USDG on BNB Chain.",
                   },
                   {
                     lead: "Pick a split.",
@@ -271,7 +271,7 @@ export const DOC_GROUPS: DocGroup[] = [
         slug: "deposits",
         title: "Deposits",
         intro: [
-          "Deposits are permissionless. Anyone holding USDG on Robinhood Chain can mint shares at the current price.",
+          "Deposits are permissionless. Anyone holding USDG on BNB Chain can mint shares at the current price.",
         ],
         sections: [
           {
@@ -491,12 +491,12 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "p",
                 only: "pre-launch",
-                text: "Collected fees are the intended funding for the buyback: revenue buys $UNIVAULT on the open market and what is bought is burned, so usage feeds the token instead of the other way round. Until the buyback module is wired in, fees accrue to the fee recipient.",
+                text: "Collected fees are the intended funding for the buyback: revenue buys $SAFEX on the open market and what is bought is burned, so usage feeds the token instead of the other way round. Until the buyback module is wired in, fees accrue to the fee recipient.",
               },
               {
                 type: "p",
                 only: "post-launch",
-                text: "Collected fees fund the buyback: revenue is used to purchase $UNIVAULT on the open market, and what is bought is burned. Usage feeds the token instead of the other way round. The buyback module is not deployed yet, so until it is, fees accrue to the fee recipient rather than being spent.",
+                text: "Collected fees fund the buyback: revenue is used to purchase $SAFEX on the open market, and what is bought is burned. Usage feeds the token instead of the other way round. The buyback module is not deployed yet, so until it is, fees accrue to the fee recipient rather than being spent.",
               },
             ],
           },
@@ -586,16 +586,16 @@ export const DOC_GROUPS: DocGroup[] = [
     ],
   },
   {
-    label: "$UNIVAULT",
+    label: "$SAFEX",
     pages: [
       {
-        slug: "univault-token",
-        title: "$UNIVAULT overview",
+        slug: "safex-token",
+        title: "$SAFEX overview",
         intro: [
-          "$UNIVAULT is the protocol token. It is tied to the vaults by the buyback: fee revenue is spent buying it on the open market, and what is bought is burned.",
+          "$SAFEX is the protocol token. It is tied to the vaults by the buyback: fee revenue is spent buying it on the open market, and what is bought is burned.",
         ],
         introWhenLaunched: [
-          "$UNIVAULT is the protocol token, live on Robinhood Chain at %CA%. It is tied to the vaults by the buyback: fee revenue is spent buying it on the open market, and what is bought is burned.",
+          "$SAFEX is the protocol token, live on BNB Chain at %CA%. It is tied to the vaults by the buyback: fee revenue is spent buying it on the open market, and what is bought is burned.",
         ],
         sections: [
           {
@@ -604,7 +604,7 @@ export const DOC_GROUPS: DocGroup[] = [
             blocks: [
               {
                 type: "p",
-                text: "The link between the token and the protocol is the buyback. Fee revenue is spent buying $UNIVAULT on the open market, and the contract burns what it buys. More assets under management means more fees, which means more buying pressure that did not come from a narrative.",
+                text: "The link between the token and the protocol is the buyback. Fee revenue is spent buying $SAFEX on the open market, and the contract burns what it buys. More assets under management means more fees, which means more buying pressure that did not come from a narrative.",
               },
               {
                 type: "note",
@@ -639,7 +639,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   "deposits --> TVL --> yield --> 5% performance fee",
                   "                                      |",
                   "                                      v",
-                  "                           buy $UNIVAULT on the market",
+                  "                           buy $SAFEX on the market",
                   "                                      |",
                   "                           +----------+----------+",
                   "                           |                     |",
@@ -675,10 +675,10 @@ export const DOC_GROUPS: DocGroup[] = [
         slug: "launch",
         title: "Launch",
         intro: [
-          "The vaults are live on Robinhood Chain, all twelve contracts source-verified on the explorer. This page is the order of events.",
+          "The vaults are live on BNB Chain, all twelve contracts source-verified on the explorer. This page is the order of events.",
         ],
         introWhenLaunched: [
-          "The vaults and $UNIVAULT are both live on Robinhood Chain. The token is at %CA% — that address, published here and in the site header, is the only one that is ours.",
+          "The vaults and $SAFEX are both live on BNB Chain. The token is at %CA% — that address, published here and in the site header, is the only one that is ours.",
         ],
         sections: [
           {
@@ -704,7 +704,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   ["Vault contracts on mainnet", "Done — all twelve source-verified"],
                   ["Vault terminal", "Live"],
                   ["Mainnet deposits", "Open"],
-                  ["$UNIVAULT on Robinhood Chain", "Live"],
+                  ["$SAFEX on BNB Chain", "Live"],
                   ["Audit", "Not started"],
                 ],
               },
@@ -715,7 +715,7 @@ export const DOC_GROUPS: DocGroup[] = [
               {
                 type: "note",
                 only: "post-launch",
-                text: "$UNIVAULT is at %CA%. Check any address you are given against this page and the site header before you buy — an address posted in a reply, a DM or a lookalike account is the oldest trick there is, and nobody here will ever send you one privately.",
+                text: "$SAFEX is at %CA%. Check any address you are given against this page and the site header before you buy — an address posted in a reply, a DM or a lookalike account is the oldest trick there is, and nobody here will ever send you one privately.",
               },
             ],
           },
@@ -822,7 +822,7 @@ export const DOC_GROUPS: DocGroup[] = [
               },
               {
                 type: "note",
-                text: "Treat any claim that UNIVAULT is audited as false until a report is linked from this page. This page is the only place we will publish one.",
+                text: "Treat any claim that SAFEX is audited as false until a report is linked from this page. This page is the only place we will publish one.",
               },
               {
                 type: "p",
@@ -878,7 +878,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   },
                   {
                     lead: "Stock tokens are debt, not equity.",
-                    text: "Robinhood's stock tokens are tokenized debt securities. Holding one gives no voting rights, no shareholder rights and no claim on the underlying share — only exposure to its price, backed by the issuer.",
+                    text: "The stock tokens are tokenized debt securities. Holding one gives no voting rights, no shareholder rights and no claim on the underlying share — only exposure to its price, backed by the issuer.",
                   },
                   {
                     lead: "The issuer can freeze or destroy the position.",
@@ -928,29 +928,29 @@ export const DOC_GROUPS: DocGroup[] = [
                 type: "table",
                 head: ["Contract", "Responsibility"],
                 rows: [
-                  ["Univault", "ERC-4626 core: shares, NAV, deposit, redeem, and the high-water-mark fee accounting"],
+                  ["Safex", "ERC-4626 core: shares, NAV, deposit, redeem, and the high-water-mark fee accounting"],
                   ["BasketAdapter", "Holds the equity basket and executes its trades"],
                   ["PriceOracle", "Prices holdings in USD and reports staleness"],
                   ["KeeperGuard", "Enforces every limit before a keeper action runs"],
                   ["ExitRouter", "Sells a whole position, equities included, to USDG in one transaction"],
-                  ["BuybackModule", "Converts fee revenue into $UNIVAULT and burns what it buys"],
+                  ["BuybackModule", "Converts fee revenue into $SAFEX and burns what it buys"],
                 ],
               },
               {
                 type: "code",
                 lines: [
-                  "user --deposit--> Univault --+--> lending vault   (stablecoin leg)",
+                  "user --deposit--> Safex --+--> lending vault   (stablecoin leg)",
                   "                              |   external ERC-4626",
                   "                              +--> BasketAdapter   (equity leg)",
                   "                                        ^",
                   "keeper --> KeeperGuard ------------------+",
                   "",
-                  "user --exit--> ExitRouter --> Univault.redeemInKind + v4 swaps --> USDG",
+                  "user --exit--> ExitRouter --> Safex.redeemInKind + v4 swaps --> USDG",
                 ],
               },
               {
                 type: "note",
-                text: "There is no separate YieldAdapter or FeeController contract. The lending leg is an external ERC-4626 vault the Univault supplies into directly, and fee accounting lives inside Univault — fewer moving parts, and fewer contracts you have to read to know what happens to your money.",
+                text: "There is no separate YieldAdapter or FeeController contract. The lending leg is an external ERC-4626 vault the Safex supplies into directly, and fee accounting lives inside Safex — fewer moving parts, and fewer contracts you have to read to know what happens to your money.",
               },
             ],
           },
@@ -977,15 +977,15 @@ export const DOC_GROUPS: DocGroup[] = [
             blocks: [
               {
                 type: "p",
-                text: "Every address below is live on Robinhood Chain and source-verified on Blockscout — paste one into the explorer and you get the Solidity, not bytecode. These are the only UNIVAULT contracts that exist.",
+                text: "Every address below is live on BNB Chain and source-verified on Blockscout — paste one into the explorer and you get the Solidity, not bytecode. These are the only SAFEX contracts that exist.",
               },
               {
                 type: "table",
                 head: ["Name", "Address"],
                 rows: [
-                  ["Univault · STEADY", "0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37"],
-                  ["Univault · BALANCED", "0x3601c09C4F84885454cCbd46B9dF3DaB244c1150"],
-                  ["Univault · GROWTH", "0xa809DC62C6fc723E04B061cbE6271AaA093eC75b"],
+                  ["Safex · STEADY", "0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37"],
+                  ["Safex · BALANCED", "0x3601c09C4F84885454cCbd46B9dF3DaB244c1150"],
+                  ["Safex · GROWTH", "0xa809DC62C6fc723E04B061cbE6271AaA093eC75b"],
                   ["KeeperGuard · STEADY", "0x101183e175EA27E059Fd44E6B36e5fBF1f466F26"],
                   ["KeeperGuard · BALANCED", "0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7"],
                   ["KeeperGuard · GROWTH", "0x56CAceC02cc8DCb729b209cA1b8EdF5609da091B"],
@@ -995,7 +995,7 @@ export const DOC_GROUPS: DocGroup[] = [
                   ["BasketAdapter · BALANCED", "0xA36f535E0035bb068cc27ca59137eF36b193f273"],
                   ["BasketAdapter · GROWTH", "0x76d58d2cF50BdB37e50117c5b7DfB6d579c7c609"],
                   ["ExitRouter", "0x2304d57bA6E5EecD3d4d8Cc657740D9aa5824035"],
-                  ["$UNIVAULT", "%CA%"],
+                  ["$SAFEX", "%CA%"],
                   ["BuybackModule", "not deployed"],
                 ],
               },
@@ -1005,7 +1005,7 @@ export const DOC_GROUPS: DocGroup[] = [
               },
               {
                 type: "note",
-                text: "The $UNIVAULT address is published in this site's header. Check any address you are given against it, whoever is posting it, and never approve a contract you found in a direct message.",
+                text: "The $SAFEX address is published in this site's header. Check any address you are given against it, whoever is posting it, and never approve a contract you found in a direct message.",
               },
             ],
           },
@@ -1017,10 +1017,10 @@ export const DOC_GROUPS: DocGroup[] = [
                 type: "table",
                 head: ["Field", "Value"],
                 rows: [
-                  ["Chain", "Robinhood Chain"],
+                  ["Chain", "BNB Chain"],
                   ["Chain ID", "4663"],
-                  ["RPC", "https://rpc.mainnet.chain.robinhood.com"],
-                  ["Explorer", "https://robinhoodchain.blockscout.com"],
+                  ["RPC", "https://bsc-dataseed.binance.org"],
+                  ["Explorer", "https://bscscan.com"],
                   ["Vault asset", "USDG"],
                 ],
               },
@@ -1043,7 +1043,7 @@ export const DOC_GROUPS: DocGroup[] = [
                 type: "list",
                 items: [
                   { text: "Vault terminal, strategy picker and wallet layer — live." },
-                  { text: "All three vaults deployed on Robinhood Chain mainnet, with every contract source-verified." },
+                  { text: "All three vaults deployed on BNB Chain mainnet, with every contract source-verified." },
                   { text: "Deposits open, against real lending and real equity venues rather than mocks." },
                   { text: "Sell-everything exit through the router, in one transaction." },
                 ],
@@ -1058,7 +1058,7 @@ export const DOC_GROUPS: DocGroup[] = [
                 type: "list",
                 items: [
                   { text: "External audit, published in full including findings we did not fix." },
-                  { text: "$UNIVAULT launch — the address will be published in the site header." },
+                  { text: "$SAFEX launch — the address will be published in the site header." },
                   { text: "Public keeper log, so rebalances can be read without an explorer." },
                   { text: "Auto-save scheduling." },
                 ],
@@ -1102,7 +1102,7 @@ export const DOC_GROUPS: DocGroup[] = [
                     text: "No. Redemption is open every block and cannot be paused.",
                   },
                   {
-                    lead: "Do I need $UNIVAULT to use the vaults?",
+                    lead: "Do I need $SAFEX to use the vaults?",
                     text: "No. It is entirely optional.",
                   },
                   {
@@ -1118,7 +1118,7 @@ export const DOC_GROUPS: DocGroup[] = [
                     text: "You. There is no admin path: the keeper cannot choose a destination, no holder can touch another's shares, and the basket adapter is fixed before the vault issues its first share. The owner can still cause pointless trading, which costs spread.",
                   },
                   {
-                    lead: "What happens if UNIVAULT disappears?",
+                    lead: "What happens if SAFEX disappears?",
                     text: "The contracts keep running and redemption keeps working. It does not depend on the front end or on us being around.",
                   },
                   {
@@ -1135,7 +1135,7 @@ export const DOC_GROUPS: DocGroup[] = [
         slug: "terms",
         title: "Terms & eligibility",
         intro: [
-          "UNIVAULT is software. Using it is your decision and your responsibility.",
+          "SAFEX is software. Using it is your decision and your responsibility.",
         ],
         sections: [
           {
@@ -1175,19 +1175,19 @@ export function getDocPage(slug: string): DocPage | undefined {
 }
 
 /**
- * Resolve a page against the published $UNIVAULT address.
+ * Resolve a page against the published $SAFEX address.
  *
  * Drops the blocks belonging to the other phase and substitutes the address
  * into whatever copy references it. Pure and synchronous -- the caller does
  * the one filesystem read, so this stays usable from anywhere.
  */
-export function resolveDocPage(page: DocPage, univaultToken: string | null): DocPage {
-  const phase: DocPhase = univaultToken ? "post-launch" : "pre-launch";
+export function resolveDocPage(page: DocPage, safexToken: string | null): DocPage {
+  const phase: DocPhase = safexToken ? "post-launch" : "pre-launch";
   /* Phase-neutral copy (the address table) still has to render something before
      the address is published, so the placeholder falls back rather than leaking
      "%CA%". A bare dash rather than a sentence: the docs state the token's
      status in exactly one place, the site header, and nowhere else. */
-  const fill = (s: string) => s.split(CA_TOKEN).join(univaultToken ?? "—");
+  const fill = (s: string) => s.split(CA_TOKEN).join(safexToken ?? "—");
 
   const block = (b: DocBlock): DocBlock => {
     switch (b.type) {
@@ -1212,7 +1212,7 @@ export function resolveDocPage(page: DocPage, univaultToken: string | null): Doc
 
   return {
     ...page,
-    intro: (page.introWhenLaunched && univaultToken
+    intro: (page.introWhenLaunched && safexToken
       ? page.introWhenLaunched
       : page.intro
     ).map(fill),

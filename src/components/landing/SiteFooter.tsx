@@ -22,7 +22,7 @@ export function SiteFooter() {
                 {link.label}
               </Link>
             ))}
-            <a href="https://x.com/univaultpro" target="_blank" rel="noopener noreferrer">
+            <a href="https://x.com/safexpro" target="_blank" rel="noopener noreferrer">
               X
             </a>
           </div>
@@ -30,12 +30,12 @@ export function SiteFooter() {
 
         <div className="bf-bottom">
           <div className="bf-name">
-            <span className="wm">UNIVAULT</span>
+            <span className="wm">SAFEX</span>
           </div>
           <div className="bf-legal">
-            © UNIVAULT 2026
+            © SAFEX 2026
             <br />
-            Non-custodial · Robinhood Chain
+            Non-custodial · BNB Chain
           </div>
         </div>
 
@@ -43,10 +43,10 @@ export function SiteFooter() {
       </div>
       <a
         className="bf-x"
-        href="https://x.com/univaultpro"
+        href="https://x.com/safexpro"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="UNIVAULT on X"
+        aria-label="SAFEX on X"
       >
         <XIcon width={16} height={16} />
       </a>

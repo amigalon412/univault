@@ -1,7 +1,7 @@
 /**
- * Who can move a UNIVAULT vault's assets.
+ * Who can move a SAFEX vault's assets.
  *
- * Read off contracts/src/Univault.sol and contracts/src/KeeperGuard.sol, not
+ * Read off contracts/src/Safex.sol and contracts/src/KeeperGuard.sol, not
  * off the site's own copy -- the existing prose hedges ("designed so a
  * compromised keeper can't touch your principal") and a hedge must not become
  * an unhedged dot in a table.
@@ -39,24 +39,24 @@ export const PERMISSIONS: PermissionRow[] = [
   {
     action: "DEPOSIT",
     can: ["you", "keeper", "owner", "anyone"],
-    source: "Univault.deposit / mint — public, no gate",
+    source: "Safex.deposit / mint — public, no gate",
   },
   {
     action: "REDEEM YOUR SHARES",
     can: ["you"],
-    source: "Univault.withdraw / redeem — ERC-4626 allowance only",
+    source: "Safex.withdraw / redeem — ERC-4626 allowance only",
   },
   {
     action: "REDEEM WHEN PRICES ARE STALE",
     can: ["you"],
     source:
-      "Univault.redeemInKind — share-ledger arithmetic, consults no price, skips the fee when unpriceable",
+      "Safex.redeemInKind — share-ledger arithmetic, consults no price, skips the fee when unpriceable",
   },
   {
     action: "MOVE THE ASSETS ANYWHERE ELSE",
     can: [],
     source:
-      "No such function. grep for rescue|pause|transfer(owner in Univault.sol returns nothing; recallAll is onlyOwner but pulls from the venue back into the vault",
+      "No such function. grep for rescue|pause|transfer(owner in Safex.sol returns nothing; recallAll is onlyOwner but pulls from the venue back into the vault",
   },
   {
     action: "BLOCK YOUR EXIT",
@@ -68,12 +68,12 @@ export const PERMISSIONS: PermissionRow[] = [
     action: "SWAP THE BASKET FOR ANOTHER",
     can: [],
     source:
-      "Univault.setBasket — onlyOwner, but reverts BasketAlreadySet once set and VaultInUse once any share exists",
+      "Safex.setBasket — onlyOwner, but reverts BasketAlreadySet once set and VaultInUse once any share exists",
   },
   {
     action: "REBALANCE TO TARGET",
     can: ["keeper", "owner"],
-    source: "Univault._requireAutomation — msg.sender must be owner() or guard",
+    source: "Safex._requireAutomation — msg.sender must be owner() or guard",
   },
 ];
 

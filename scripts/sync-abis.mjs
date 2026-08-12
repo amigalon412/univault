@@ -14,7 +14,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 // Only what the browser actually calls. Every entry here ships to the client,
 // so add a contract when a component needs it, not before.
-const CONTRACTS = [{ name: "Univault", export: "univaultAbi" }];
+const CONTRACTS = [{ name: "Safex", export: "safexAbi" }];
 
 const parts = CONTRACTS.map(({ name, export: exportName }) => {
   const artifact = resolve(root, `contracts/out/${name}.sol/${name}.json`);

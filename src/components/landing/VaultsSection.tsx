@@ -80,7 +80,7 @@ export function VaultsSection() {
             <div className="launch-head">
               <span className="lh-t">Deployed vaults</span>
               <span className="launch-live">
-                <span className="d" /> Live on Robinhood Chain
+                <span className="d" /> Live on BNB Chain
               </span>
             </div>
 

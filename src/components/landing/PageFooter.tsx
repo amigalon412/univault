@@ -17,7 +17,7 @@ export function PageFooter() {
       <div className="wrap">
         <div className="pagefoot-top">
           <Link className="pagefoot-brand" href="/">
-            <span>UNIVAULT</span>
+            <span>SAFEX</span>
           </Link>
 
           <nav className="pagefoot-links">
@@ -26,7 +26,7 @@ export function PageFooter() {
                 {link.label}
               </Link>
             ))}
-            <a href="https://x.com/univaultpro" target="_blank" rel="noopener noreferrer">
+            <a href="https://x.com/safexpro" target="_blank" rel="noopener noreferrer">
               <XIcon width={12} height={12} />
             </a>
           </nav>

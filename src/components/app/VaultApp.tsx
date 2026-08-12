@@ -61,7 +61,7 @@ export function VaultApp() {
           <div className="notice">
             <strong>No contracts deployed</strong>
             <p>
-              The vaults are written and tested but not yet live on Robinhood Chain.
+              The vaults are written and tested but not yet live on BNB Chain.
               Nothing on this page can take a deposit, and every figure reads blank
               rather than pretending otherwise.
             </p>

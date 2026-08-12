@@ -2,7 +2,7 @@
 
 import { erc20Abi, formatUnits, type Address } from "viem";
 import { useAccount, useReadContracts } from "wagmi";
-import { univaultAbi } from "@/lib/abis";
+import { safexAbi } from "@/lib/abis";
 import {
   BASKET_STOCKS,
   DEPLOYED_VAULTS,
@@ -61,7 +61,7 @@ export function useVault(strategy: StrategyId): VaultView {
   const vault = VAULT_ADDRESSES[strategy];
   const { address: account } = useAccount();
 
-  const vaultContract = { address: vault ?? undefined, abi: univaultAbi } as const;
+  const vaultContract = { address: vault ?? undefined, abi: safexAbi } as const;
 
   const { data, isLoading } = useReadContracts({
     allowFailure: true,
@@ -112,7 +112,7 @@ export function useTotalValueLocked(): {
     allowFailure: true,
     contracts: DEPLOYED_VAULTS.map(([, address]) => ({
       address,
-      abi: univaultAbi,
+      abi: safexAbi,
       functionName: "totalAssets" as const,
     })),
     query: { enabled: DEPLOYED_VAULTS.length > 0 },
@@ -207,7 +207,7 @@ export interface PositionBreakdown {
  */
 export function usePositionBreakdown(strategy: StrategyId): PositionBreakdown {
   const vault = VAULT_ADDRESSES[strategy];
-  const vaultContract = { address: vault ?? undefined, abi: univaultAbi } as const;
+  const vaultContract = { address: vault ?? undefined, abi: safexAbi } as const;
 
   const { data } = useReadContracts({
     allowFailure: true,

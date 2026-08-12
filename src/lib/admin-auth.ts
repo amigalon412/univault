@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
  * Auth for the one admin page. Deliberately small: a single operator, a single
  * password, one thing to change.
  *
- * The threat here is not someone reading the $UNIVAULT address -- that is public
+ * The threat here is not someone reading the $SAFEX address -- that is public
  * the moment it exists. It is someone WRITING it, because the site would then
  * vouch for a scam contract to everyone who copies the CA off the header. So
  * the password is never allowed to have a default, failures are throttled, and

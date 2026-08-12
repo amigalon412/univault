@@ -8,8 +8,8 @@ import { ConnectButton } from "@/components/ConnectButton";
 import { ExitAllButton } from "@/components/app/ExitAllButton";
 import { useMounted } from "@/hooks/useMounted";
 import { formatUsdg, useUsdg, useVault } from "@/hooks/useVault";
-import { univaultAbi } from "@/lib/abis";
-import { explorerTxUrl, robinhoodChain, USDG, USDG_DECIMALS } from "@/lib/chain";
+import { safexAbi } from "@/lib/abis";
+import { explorerTxUrl, bnbChain, USDG, USDG_DECIMALS } from "@/lib/chain";
 import type { Strategy } from "@/lib/strategies";
 
 type Mode = "deposit" | "withdraw";
@@ -63,7 +63,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
     parsed = null;
   }
 
-  const ready = mounted && isConnected && chainId === robinhoodChain.id;
+  const ready = mounted && isConnected && chainId === bnbChain.id;
   const needsApproval =
     parsed !== null && allowance !== undefined && allowance < parsed;
   const busy = isSigning || isConfirming;
@@ -98,7 +98,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
         setHash(
           await writeContractAsync({
             address: vault.address,
-            abi: univaultAbi,
+            abi: safexAbi,
             functionName: "deposit",
             args: [parsed, account],
           }),
@@ -107,7 +107,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
         setHash(
           await writeContractAsync({
             address: vault.address,
-            abi: univaultAbi,
+            abi: safexAbi,
             functionName: "withdraw",
             args: [parsed, account, account],
           }),
@@ -125,7 +125,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
       setHash(
         await writeContractAsync({
           address: vault.address,
-          abi: univaultAbi,
+          abi: safexAbi,
           functionName: "redeemInKind",
           args: [vault.shares, account, account],
         }),
@@ -153,7 +153,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
     { label: "Strategy", value: strategy.name },
     {
       label: mode === "deposit" ? "You receive" : "You redeem",
-      value: mode === "deposit" ? "UNIVAULT shares" : "USDG",
+      value: mode === "deposit" ? "SAFEX shares" : "USDG",
     },
   ];
 

@@ -1,6 +1,6 @@
 import { createConfig, http, cookieStorage, createStorage } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { robinhoodChain } from "@/lib/chain";
+import { bnbChain } from "@/lib/chain";
 
 /**
  * Injected wallets only. WalletConnect would mean shipping a project id and
@@ -8,10 +8,10 @@ import { robinhoodChain } from "@/lib/chain";
  * need to make for a chain whose users already have a browser wallet.
  */
 export const wagmiConfig = createConfig({
-  chains: [robinhoodChain],
+  chains: [bnbChain],
   connectors: [injected()],
   transports: {
-    [robinhoodChain.id]: http(),
+    [bnbChain.id]: http(),
   },
   // The app is server-rendered, so connection state has to survive hydration.
   ssr: true,

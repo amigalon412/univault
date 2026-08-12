@@ -75,7 +75,7 @@ export function VaultShowcase() {
         <div className="showcase reveal" ref={root}>
           <div className="showcase-head">
             <span className="showcase-title">{strategy.name} vault</span>
-            <span className="showcase-meta">ERC-4626 · Robinhood Chain · non-custodial</span>
+            <span className="showcase-meta">ERC-4626 · BNB Chain · non-custodial</span>
             <span className="launch-live">
               <span className="d" /> Live contract
             </span>

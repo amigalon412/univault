@@ -1,6 +1,6 @@
 # Running the keeper on someone else's VPS
 
-The keeper is the only part of Univault that needs a key on an always-on machine.
+The keeper is the only part of Safex that needs a key on an always-on machine.
 This is how to put it there without handing over the one key that matters.
 
 ## Read this first

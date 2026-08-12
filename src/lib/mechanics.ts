@@ -56,7 +56,7 @@ export const SOURCE_NODE: FlowNode = {
 /** The hub everything passes through. */
 export const VAULT_NODE: FlowNode = {
   glyph: VAULT,
-  name: "UNIVAULT Vault",
+  name: "SAFEX Vault",
   role: "Mints your shares",
   address: VAULT_ADDRESSES.balanced,
 };
@@ -89,7 +89,7 @@ export const LEG_NODES: FlowNode[] = [
      * until someone deposits it shows an empty contract -- decorated, in
      * practice, with airdropped spam tokens impersonating USDG. Somebody
      * checking whether this is really NVIDIA needs the token contract itself,
-     * which is Robinhood's, not ours.
+     * which is the issuer's, not ours.
      */
     holdings: BASKET_STOCKS,
   },
@@ -105,7 +105,7 @@ export const RAIL_NODES: FlowNode[] = [
 /**
  * The same path in words. Each sentence is written against the contract, not
  * against the marketing copy: step 3 says "in the same transaction" because
- * Univault._allocateOnDeposit runs inside deposit(), and step 4 says the
+ * Safex._allocateOnDeposit runs inside deposit(), and step 4 says the
  * keeper is capped because KeeperGuard holds per-call size and slippage caps.
  */
 /**

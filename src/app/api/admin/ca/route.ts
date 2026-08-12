@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { isAuthed } from "@/lib/admin-auth";
-import { readSiteConfig, writeUnivaultToken } from "@/lib/site-config";
+import {
+  readSiteConfig,
+  writeStakingContract,
+  writeSafexToken,
+} from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +19,7 @@ export async function GET() {
 }
 
 /**
- * Publish (or clear) the $UNIVAULT address.
+ * Publish (or clear) the $SAFEX address.
  *
  * Validation is not politeness here: whatever lands in this field is what the
  * header tells every visitor to copy. An address that fails the checksum is
@@ -24,16 +28,26 @@ export async function GET() {
 export async function POST(request: Request) {
   if (!(await isAuthed())) return denied();
 
-  let address: unknown;
+  let body: Record<string, unknown>;
   try {
-    address = (await request.json())?.address;
+    body = (await request.json()) ?? {};
   } catch {
     return NextResponse.json({ error: "Malformed request." }, { status: 400 });
   }
 
-  const trimmed = typeof address === "string" ? address.trim() : "";
+  /* Two fields, one endpoint, and only the field that was sent is touched --
+     so publishing the token cannot silently blank the staking address, or the
+     other way round. */
+  const field = "stakingContract" in body ? "stakingContract" : "address";
+  const raw = body[field];
+  const trimmed = typeof raw === "string" ? raw.trim() : "";
+  const value = trimmed === "" ? null : trimmed;
+
   try {
-    const config = await writeUnivaultToken(trimmed === "" ? null : trimmed);
+    const config =
+      field === "stakingContract"
+        ? await writeStakingContract(value)
+        : await writeSafexToken(value);
     return NextResponse.json(config);
   } catch {
     return NextResponse.json(

@@ -50,18 +50,18 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "UNIVAULT — Grow your bag, automatically",
+  title: "SAFEX — Grow your bag, automatically",
   description:
-    "A non-custodial auto-yield vault on Robinhood Chain. Deposit stablecoin, earn real yield, grow into tokenized stocks — auto-rebalanced.",
+    "A non-custodial auto-yield vault on BNB Chain. Deposit stablecoin, earn real yield, grow into tokenized stocks — auto-rebalanced.",
   openGraph: {
-    title: "UNIVAULT",
+    title: "SAFEX",
     description:
       "Deposit stablecoin. Earn real yield. Grow into tokenized stocks, auto-rebalanced. Non-custodial.",
     images: ["/seo/banner.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "UNIVAULT",
+    title: "SAFEX",
     description:
       "Deposit stablecoin. Earn real yield. Grow into tokenized stocks, auto-rebalanced. Non-custodial.",
     images: ["/seo/banner.png"],

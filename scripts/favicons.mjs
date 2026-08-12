@@ -1,4 +1,4 @@
-/* Renders the UNIVAULT mark into the favicon set.
+/* Renders the SAFEX mark into the favicon set.
  *
  * The mark itself (components/icons.tsx, VaultMark) is three concentric
  * outlines: a rounded square, a ring and four ticks, all at stroke 2.5 on a 32

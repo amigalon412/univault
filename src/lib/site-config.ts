@@ -5,7 +5,7 @@ import { getAddress, isAddress, type Address } from "viem";
 /**
  * Settings the operator can change after launch without a rebuild.
  *
- * The $UNIVAULT contract address does not exist until the token is launched, and it
+ * The $SAFEX contract address does not exist until the token is launched, and it
  * is needed on the site the minute it does. It used to live in
  * NEXT_PUBLIC_BLUR_TOKEN, which Next inlines into the client bundle at BUILD
  * time -- changing it meant editing .env, rebuilding, redeploying and
@@ -16,13 +16,28 @@ import { getAddress, isAddress, type Address } from "viem";
  * "use client" component -- go through /api/ca instead.
  */
 export type SiteConfig = {
-  /** Checksummed $UNIVAULT address, or null while the token does not exist. */
-  univaultToken: Address | null;
+  /** Checksummed $SAFEX address, or null while the token does not exist. */
+  safexToken: Address | null;
+  /**
+   * Checksummed SafexStaking address, or null while it is not deployed.
+   *
+   * Stored beside the token because the two have to be pointed at each other
+   * after both exist: the staking contract is deployed first and learns the
+   * token through a one-time `setToken` call. This file is how the admin page
+   * knows which contract to offer that call for -- it is not, and cannot be,
+   * how the contract itself learns the address. Only a signed transaction does
+   * that, and nothing here holds a key.
+   */
+  stakingContract: Address | null;
   /** ISO timestamp of the last write, for the admin page to show. */
   updatedAt: string | null;
 };
 
-const EMPTY: SiteConfig = { univaultToken: null, updatedAt: null };
+const EMPTY: SiteConfig = {
+  safexToken: null,
+  stakingContract: null,
+  updatedAt: null,
+};
 
 /**
  * Where the file lives. On a VPS this must point OUTSIDE the deploy directory
@@ -38,11 +53,14 @@ function configPath(): string {
 function coerce(raw: unknown): SiteConfig {
   if (typeof raw !== "object" || raw === null) return EMPTY;
   const record = raw as Record<string, unknown>;
-  const token = record.univaultToken;
+  const token = record.safexToken;
+  const staking = record.stakingContract;
   const updatedAt = record.updatedAt;
   return {
-    univaultToken:
+    safexToken:
       typeof token === "string" && isAddress(token) ? getAddress(token) : null,
+    stakingContract:
+      typeof staking === "string" && isAddress(staking) ? getAddress(staking) : null,
     updatedAt: typeof updatedAt === "string" ? updatedAt : null,
   };
 }
@@ -59,10 +77,10 @@ function fromEnv(): Address | null {
 export async function readSiteConfig(): Promise<SiteConfig> {
   try {
     const parsed = coerce(JSON.parse(await readFile(configPath(), "utf8")));
-    return parsed.univaultToken ? parsed : { ...parsed, univaultToken: fromEnv() };
+    return parsed.safexToken ? parsed : { ...parsed, safexToken: fromEnv() };
   } catch {
     // Missing or unreadable file is the normal state before the first write.
-    return { ...EMPTY, univaultToken: fromEnv() };
+    return { ...EMPTY, safexToken: fromEnv() };
   }
 }
 
@@ -72,12 +90,33 @@ export async function readSiteConfig(): Promise<SiteConfig> {
  *
  * `null` clears it and the site goes back to saying the token is not launched.
  */
-export async function writeUnivaultToken(address: string | null): Promise<SiteConfig> {
+export async function writeSafexToken(address: string | null): Promise<SiteConfig> {
   if (address !== null && !isAddress(address)) {
     throw new Error("not a valid address");
   }
+  const current = await readSiteConfig();
+  return writeSiteConfig({
+    ...current,
+    safexToken: address === null ? null : getAddress(address),
+  });
+}
+
+/** Same, for the staking contract's own address. */
+export async function writeStakingContract(address: string | null): Promise<SiteConfig> {
+  if (address !== null && !isAddress(address)) {
+    throw new Error("not a valid address");
+  }
+  const current = await readSiteConfig();
+  return writeSiteConfig({
+    ...current,
+    stakingContract: address === null ? null : getAddress(address),
+  });
+}
+
+async function writeSiteConfig(config: Omit<SiteConfig, "updatedAt">): Promise<SiteConfig> {
   const next: SiteConfig = {
-    univaultToken: address === null ? null : getAddress(address),
+    safexToken: config.safexToken,
+    stakingContract: config.stakingContract,
     updatedAt: new Date().toISOString(),
   };
 

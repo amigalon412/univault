@@ -7,7 +7,7 @@ import { AdminPanel } from "@/components/AdminPanel";
  * but there is no reason for this page to be indexed either.
  */
 export const metadata: Metadata = {
-  title: "UNIVAULT — admin",
+  title: "SAFEX — admin",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -16,7 +16,7 @@ export default function AdminPage() {
     <main className="admin-shell page-enter">
       <div className="admin-card card">
         <span className="eyebrow">{"// Operator"}</span>
-        <h1>UNIVAULT admin</h1>
+        <h1>SAFEX admin</h1>
         <p>Post-launch settings.</p>
         <AdminPanel />
       </div>

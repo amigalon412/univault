@@ -61,8 +61,8 @@ export const HERO_SLIDES: HeroSlide[] = [
 ];
 
 export const HERO_NOTE = {
-  eyebrow: "// UNIVAULT engine",
-  body: "Deposit once. The vault lends the balance out for real interest, grows a slice into tokenized stocks, and a guarded keeper pulls it back on target — on-chain, on Robinhood Chain.",
+  eyebrow: "// SAFEX engine",
+  body: "Deposit once. The vault lends the balance out for real interest, grows a slice into tokenized stocks, and a guarded keeper pulls it back on target — on-chain, on BNB Chain.",
 } as const;
 
 /** Which diagram <StepDiagram /> draws on a step's plate. */
@@ -117,7 +117,7 @@ export interface EcosystemLogo {
 }
 
 export const ECOSYSTEM_LOGOS: EcosystemLogo[] = [
-  { name: "Robinhood Chain", mask: "/images/logos/robinhood.png", accent: "#00c805" },
+  { name: "BNB Chain", mask: "/images/logos/bnb.png", accent: "#f0b90b" },
   { name: "USDG", mask: "/images/logos/usdg.png", accent: "#2775ca" },
   { name: "Uniswap", mask: "/images/logos/uniswap.png", accent: "#ff007a" },
   { name: "MetaMask", mask: "/images/logos/metamask.png", accent: "#e2761b" },
@@ -178,4 +178,4 @@ export const FOOTER_LINKS = [
 ] as const;
 
 export const FOOTER_DISCLAIMER =
-  "UNIVAULT is non-custodial software running on Robinhood Chain. Nothing here is financial advice, and no return is promised or guaranteed — yield comes from third-party lending venues and the market value of tokenized stocks, both of which can fall. Tokenized stock exposure is not available to US persons. Read the contracts before you deposit.";
+  "SAFEX is non-custodial software running on BNB Chain. Nothing here is financial advice, and no return is promised or guaranteed — yield comes from third-party lending venues and the market value of tokenized stocks, both of which can fall. Tokenized stock exposure is not available to US persons. Read the contracts before you deposit.";

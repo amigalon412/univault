@@ -1,26 +1,26 @@
 "use client";
 
 import type { Address } from "viem";
-import { useUnivaultToken } from "@/hooks/useUnivaultToken";
+import { useSafexToken } from "@/hooks/useSafexToken";
 
 /**
- * The $UNIVAULT contract address in the nav, click to copy.
+ * The $SAFEX contract address in the nav, click to copy.
  *
  * Before launch there is no address, and this deliberately does not go quiet:
  * it says so and says that anything claiming otherwise is fake. A nav that
  * simply omits the CA leaves nothing to contradict the first scam address that
  * circulates, and launch day is exactly when people go looking for one.
  *
- * The address is never rendered from the bundle — <useUnivaultToken /> re-fetches
+ * The address is never rendered from the bundle — <useSafexToken /> re-fetches
  * and re-checksums it, because this is the control that puts a string on
  * somebody's clipboard.
  */
 export function CaPill({ initial }: { initial: Address | null }) {
-  const { token, copied, copy } = useUnivaultToken(initial);
+  const { token, copied, copy } = useSafexToken(initial);
 
   if (!token) {
     return (
-      <span className="ca-pill is-pending" title="No $UNIVAULT contract exists yet">
+      <span className="ca-pill is-pending" title="No $SAFEX contract exists yet">
         <span className="ca-k">CA</span>
         <span className="ca-v">not live yet</span>
       </span>
@@ -37,7 +37,7 @@ export function CaPill({ initial }: { initial: Address | null }) {
       /* The full address in the tooltip: the pill shows a truncation, and
          nobody should have to paste it somewhere to find out what they got. */
       title={token}
-      aria-label={`Copy the $UNIVAULT contract address, ${token}`}
+      aria-label={`Copy the $SAFEX contract address, ${token}`}
     >
       <span className="ca-k">CA</span>
       <span className="ca-v">{copied ? "Copied" : short}</span>

@@ -25,7 +25,7 @@ export function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
 }
 
 /**
- * The UNIVAULT mark: a vault door, drawn flat.
+ * The SAFEX mark: a vault door, drawn flat.
  *
  * A squircle with a ring and four bolts. Deliberately geometric and monoline
  * so it reads at 24px in the nav and at 60px in the footer without a second

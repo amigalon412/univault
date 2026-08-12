@@ -21,8 +21,8 @@ export function EcosystemSection() {
             <span className="eyebrow">{"// Ecosystem"}</span>
             <h2>Built on rails you already use</h2>
             <p>
-              UNIVAULT does not run a chain, mint a stablecoin or custody a share. It
-              reads the same rails everything else on Robinhood Chain reads — the
+              SAFEX does not run a chain, mint a stablecoin or custody a share. It
+              reads the same rails everything else on BNB Chain reads — the
               stablecoin, the venues, the explorer and the wallet you already have.
             </p>
           </div>

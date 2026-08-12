@@ -5,13 +5,13 @@ import { getAddress, isAddress, type Address } from "viem";
 import { BLUR_TOKEN } from "@/lib/chain";
 
 /**
- * The published $UNIVAULT contract address, and a copy button for it.
+ * The published $SAFEX contract address, and a copy button for it.
  *
  * Fetched from /api/ca at runtime rather than read out of the bundle, so the
  * operator can publish it from /admin on launch day and every surface picks it
  * up on the next load with no rebuild.
  *
- * Shared by the header strip and the $UNIVAULT section so the two can never
+ * Shared by the header strip and the $SAFEX section so the two can never
  * disagree about whether the token exists -- which is exactly what happened
  * when the section hardcoded "NOT LAUNCHED YET" while the header showed a
  * live address.
@@ -19,10 +19,10 @@ import { BLUR_TOKEN } from "@/lib/chain";
  * BLUR_TOKEN (the build-time env var) is the initial value, so a deploy that
  * still bakes it in renders correctly before the fetch resolves.
  */
-export function useUnivaultToken(initial?: Address | null) {
+export function useSafexToken(initial?: Address | null) {
   // `initial` is the server's own read of the published address. Without it the
   // first paint after launch says NOT LAUNCHED YET -- and that strip also calls
-  // any $UNIVAULT address a fake, so the flash would be the site briefly disowning
+  // any $SAFEX address a fake, so the flash would be the site briefly disowning
   // its own contract, on the one day everybody is looking at it.
   const [token, setToken] = useState<Address | null>(initial ?? BLUR_TOKEN);
   const [copied, setCopied] = useState(false);

@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { ArrowRightIcon } from "@/components/icons";
-import { robinhoodChain } from "@/lib/chain";
+import { bnbChain } from "@/lib/chain";
 import { useMounted } from "@/hooks/useMounted";
 import { cn } from "@/lib/utils";
 
@@ -46,7 +46,7 @@ export function ConnectButton({
   const { switchChain, isPending: isSwitching } = useSwitchChain();
 
   const injected = connectors[0];
-  const wrongChain = isConnected && chainId !== robinhoodChain.id;
+  const wrongChain = isConnected && chainId !== bnbChain.id;
 
   const base = cn(className);
   const wrap = (text: string): ReactNode =>
@@ -88,7 +88,7 @@ export function ConnectButton({
     return (
       <button
         type="button"
-        onClick={() => switchChain({ chainId: robinhoodChain.id })}
+        onClick={() => switchChain({ chainId: bnbChain.id })}
         disabled={isSwitching}
         className={base}
       >

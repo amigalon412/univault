@@ -20,13 +20,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const stored = getDocPage(slug);
-  if (!stored) return { title: "UNIVAULT — Docs" };
+  if (!stored) return { title: "SAFEX — Docs" };
   // Resolved here too, or the share card for the token page keeps announcing
   // that the token has not launched after it has.
-  const { univaultToken } = await readSiteConfig();
-  const page = resolveDocPage(stored, univaultToken);
+  const { safexToken } = await readSiteConfig();
+  const page = resolveDocPage(stored, safexToken);
   return {
-    title: `${page.title} — UNIVAULT docs`,
+    title: `${page.title} — SAFEX docs`,
     description: page.intro[0],
   };
 }
@@ -42,8 +42,8 @@ export default async function DocsPage({
 
   // Read on the server, per request, so publishing the address from /admin
   // rewrites the docs on the next load -- no rebuild and no edit to docs.ts.
-  const { univaultToken } = await readSiteConfig();
-  const page = resolveDocPage(stored, univaultToken);
+  const { safexToken } = await readSiteConfig();
+  const page = resolveDocPage(stored, safexToken);
 
   const { prev, next } = getDocNeighbours(slug);
 

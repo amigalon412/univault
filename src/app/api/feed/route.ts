@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { createPublicClient, formatUnits, http, type Address } from "viem";
-import { univaultAbi } from "@/lib/abis";
+import { safexAbi } from "@/lib/abis";
 import {
   DEPLOYED_VAULTS,
-  robinhoodChain,
+  bnbChain,
   STEAK_USDG,
   STOCK_FEEDS,
 } from "@/lib/chain";
@@ -12,7 +12,7 @@ import type { FeedItem, FeedResponse } from "@/types/feed";
 export const dynamic = "force-dynamic";
 
 const client = createPublicClient({
-  chain: robinhoodChain,
+  chain: bnbChain,
   transport: http(),
 });
 
@@ -49,7 +49,7 @@ const erc4626Abi = [
   },
 ] as const;
 
-const explorer = robinhoodChain.blockExplorers.default.url;
+const explorer = bnbChain.blockExplorers.default.url;
 
 function short(address: Address): string {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
@@ -100,7 +100,7 @@ async function readChain(): Promise<FeedResponse> {
       ? client.multicall({
           contracts: vaultAddresses.map((address) => ({
             address,
-            abi: univaultAbi,
+            abi: safexAbi,
             functionName: "totalAssets" as const,
           })),
         })

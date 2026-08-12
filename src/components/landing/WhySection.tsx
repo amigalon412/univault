@@ -26,7 +26,7 @@ export function WhySection() {
     <section id="why">
       <div className="wrap">
         <div className="sec-head ctr reveal">
-          <span className="eyebrow">{"// Why UNIVAULT"}</span>
+          <span className="eyebrow">{"// Why SAFEX"}</span>
           <h2>Read the permissions, not the promises</h2>
           <p>
             Rewards come from real lending and real market exposure, your shares stay at
@@ -51,7 +51,7 @@ export function WhySection() {
         <div className="matrix reveal" ref={ref}>
           <div className="matrix-head">
             <span className="matrix-title">Permission map</span>
-            <span className="showcase-meta">Univault · KeeperGuard</span>
+            <span className="showcase-meta">Safex · KeeperGuard</span>
           </div>
 
           <div className="matrix-scroll">
@@ -100,7 +100,7 @@ export function WhySection() {
             <span className="ui-label">Verified source</span>
             <ContractLink
               address={VAULT_ADDRESSES.balanced}
-              label="Univault"
+              label="Safex"
               variant="chip"
             />
             <ContractLink address={KEEPER_GUARD} label="KeeperGuard" variant="chip" />

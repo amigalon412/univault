@@ -16,7 +16,7 @@ import type { CSSProperties } from "react";
  */
 const LOGOS = [
   { name: "0x", src: "/images/logos/zerox.png", ratio: 1.632 },
-  { name: "Robinhood", src: "/images/logos/robinhood.png", ratio: 0.8 },
+  { name: "BNB Chain", src: "/images/logos/bnb.png", ratio: 1 },
   { name: "NVIDIA", src: "/images/logos/nvda.png", ratio: 1.293 },
   { name: "Amazon", src: "/images/logos/amzn.png", ratio: 1 },
   { name: "Tesla", src: "/images/logos/tsla.png", ratio: 1 },

@@ -24,7 +24,7 @@ export function HowItWorks() {
           </div>
           <div className="reveal">
             <p>
-              UNIVAULT is an ERC-4626 vault and a guarded keeper working together. You
+              SAFEX is an ERC-4626 vault and a guarded keeper working together. You
               deposit once; the vault lends, buys and rebalances on its own, and every
               box below opens the deployed contract it runs at.
             </p>

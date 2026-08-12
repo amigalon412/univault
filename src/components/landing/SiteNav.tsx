@@ -21,13 +21,13 @@ import { readSiteConfig } from "@/lib/site-config";
  * /admin still lands without a rebuild.
  */
 export async function SiteNav() {
-  const { univaultToken } = await readSiteConfig();
+  const { safexToken } = await readSiteConfig();
 
   return (
     <nav className="nav">
       <div className="wrap nav-in">
         <Link className="brand" href="/#top">
-          <span className="nm">UNIVAULT</span>
+          <span className="nm">SAFEX</span>
         </Link>
 
         <div className="nav-links">
@@ -47,10 +47,10 @@ export async function SiteNav() {
         </div>
 
         <div className="nav-cta">
-          <CaPill initial={univaultToken} />
+          <CaPill initial={safexToken} />
           <a
             className="nav-icon"
-            href="https://x.com/univaultpro"
+            href="https://x.com/safexpro"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Follow on X"
