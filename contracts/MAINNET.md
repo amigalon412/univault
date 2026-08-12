@@ -37,7 +37,7 @@ export OWNER=0x...                # your wallet
 export KEEPER=0x...               # bot address (may equal OWNER for a test)
 
 OWNER=$OWNER KEEPER=$KEEPER TARGET_STABLE_BPS=10000 \
-VAULT_NAME="Univault Steady" VAULT_SYMBOL=uvSTEADY \
+VAULT_NAME="Safex Steady" VAULT_SYMBOL=sfxSTEADY \
 forge script script/DeployStack.s.sol:DeployStack \
   --rpc-url https://rpc.mainnet.chain.robinhood.com \
   --broadcast --private-key $DEPLOYER_PK
@@ -93,20 +93,20 @@ Same command, different split — these add the stock basket automatically:
 ```bash
 # BALANCED — 60% lending, 40% stocks
 OWNER=$OWNER KEEPER=$KEEPER TARGET_STABLE_BPS=6000 \
-VAULT_NAME="Univault Balanced" VAULT_SYMBOL=uvBALANCED \
+VAULT_NAME="Safex Balanced" VAULT_SYMBOL=sfxBALANCED \
 forge script script/DeployStack.s.sol:DeployStack --rpc-url https://rpc.mainnet.chain.robinhood.com --broadcast --private-key $DEPLOYER_PK
 
 # GROWTH — 30% lending, 70% stocks
 OWNER=$OWNER KEEPER=$KEEPER TARGET_STABLE_BPS=3000 \
-VAULT_NAME="Univault Growth" VAULT_SYMBOL=uvGROWTH \
+VAULT_NAME="Safex Growth" VAULT_SYMBOL=sfxGROWTH \
 forge script script/DeployStack.s.sol:DeployStack --rpc-url https://rpc.mainnet.chain.robinhood.com --broadcast --private-key $DEPLOYER_PK
 ```
 
 Verify each, then set `NEXT_PUBLIC_VAULT_BALANCED` and `NEXT_PUBLIC_VAULT_GROWTH`.
 
-## The $UNIVAULT token and buyback — later, and separate
+## The $SAFEX token and buyback — later, and separate
 
-None of the vaults need $UNIVAULT. The token, its USDG pool, and the buyback module
+None of the vaults need $SAFEX. The token, its USDG pool, and the buyback module
 are their own track, and the buyback only has something to do once fees have
 accrued. Deploy the token with `script/DeployToken.s.sol` when you want it; the
 pool and liquidity are a manual Uniswap step after that.

@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 import {Test, console2} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import {Univault} from "../src/Univault.sol";
+import {Safex} from "../src/Safex.sol";
 import {BasketAdapter} from "../src/BasketAdapter.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
 import {PriceOracle} from "../src/PriceOracle.sol";
@@ -17,7 +17,7 @@ contract TwoLegTest is Test {
     MockERC20 usdg;
     MockYieldVault venue;
     PriceOracle oracle;
-    Univault vault;
+    Safex vault;
     BasketAdapter basket;
 
     MockStock nvda;
@@ -35,7 +35,7 @@ contract TwoLegTest is Test {
         usdg = new MockERC20("Global Dollar", "USDG", 6);
         venue = new MockYieldVault(IERC20(address(usdg)), 700);
         oracle = new PriceOracle(owner);
-        vault = new Univault(IERC20(address(usdg)), IERC4626(address(venue)), "Univault Balanced", "uvBAL", owner);
+        vault = new Safex(IERC20(address(usdg)), IERC4626(address(venue)), "Safex Balanced", "uvBAL", owner);
         basket = new BasketAdapter(owner, oracle, address(vault), address(usdg), IPoolManager(address(0)));
 
         nvda = new MockStock("NVIDIA", "NVDA");
@@ -196,7 +196,7 @@ contract TwoLegTest is Test {
 
         BasketAdapter other = new BasketAdapter(owner, oracle, address(vault), address(usdg), IPoolManager(address(0)));
         vm.prank(owner);
-        vm.expectRevert(Univault.BasketAlreadySet.selector);
+        vm.expectRevert(Safex.BasketAlreadySet.selector);
         vault.setBasket(other, 6_000);
     }
 
@@ -205,13 +205,13 @@ contract TwoLegTest is Test {
     function test_BasketCannotBeSwappedOutEvenWhenEmpty() public {
         BasketAdapter other = new BasketAdapter(owner, oracle, address(vault), address(usdg), IPoolManager(address(0)));
         vm.prank(owner);
-        vm.expectRevert(Univault.BasketAlreadySet.selector);
+        vm.expectRevert(Safex.BasketAlreadySet.selector);
         vault.setBasket(other, 6_000);
     }
 
     function test_LendingOnlyVaultIsUnaffected() public {
-        Univault steady =
-            new Univault(IERC20(address(usdg)), IERC4626(address(venue)), "Univault Steady", "uvSTEADY", owner);
+        Safex steady =
+            new Safex(IERC20(address(usdg)), IERC4626(address(venue)), "Safex Steady", "sfxSTEADY", owner);
 
         assertEq(steady.targetStableBps(), 10_000, "a fresh vault is lending-only");
         assertEq(steady.basketAssets(), 0);
@@ -226,7 +226,7 @@ contract TwoLegTest is Test {
 
     function test_TargetSplitIsBounded() public {
         vm.prank(owner);
-        vm.expectRevert(Univault.SplitOutOfRange.selector);
+        vm.expectRevert(Safex.SplitOutOfRange.selector);
         vault.setTargetStableBps(10_001);
     }
 }

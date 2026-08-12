@@ -4,16 +4,16 @@ pragma solidity 0.8.26;
 import {Test, console2} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import {Univault} from "../src/Univault.sol";
+import {Safex} from "../src/Safex.sol";
 import {RobinhoodChain} from "../src/RobinhoodChain.sol";
 
 /// @notice Runs against a fork of Robinhood Chain, so the yield is the real
 ///         rate Morpho is paying rather than a number we invented.
-contract UnivaultForkTest is Test {
+contract SafexForkTest is Test {
     IERC20 constant usdg = IERC20(RobinhoodChain.USDG);
     IERC4626 constant steak = IERC4626(RobinhoodChain.STEAK_USDG);
 
-    Univault vault;
+    Safex vault;
 
     address owner = makeAddr("owner");
     address alice = makeAddr("alice");
@@ -24,7 +24,7 @@ contract UnivaultForkTest is Test {
     function setUp() public {
         vm.createSelectFork(vm.envOr("ROBINHOOD_RPC", vm.rpcUrl("robinhood")));
 
-        vault = new Univault(usdg, steak, "Univault Steady", "uvSTEADY", owner);
+        vault = new Safex(usdg, steak, "Safex Steady", "sfxSTEADY", owner);
         vm.prank(owner);
         vault.setAutoAllocate(false); // these tests drive deployIdle by hand
 

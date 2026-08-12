@@ -10,9 +10,9 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
-import {BasketAdapter} from "./BasketAdapter.sol";
+import {BasketAdapterCore} from "./BasketAdapterCore.sol";
 
-/// @title Univault
+/// @title Safex
 /// @notice Tokenized vault that puts idle stablecoin to work in an external
 ///         lending vault and hands depositors a proportional share of the result.
 /// @dev Stage 1 of the protocol: the lending leg only. The tokenized-stock leg
@@ -35,7 +35,7 @@ import {BasketAdapter} from "./BasketAdapter.sol";
 ///      target split and make the vault trade, losing spread each time, and it
 ///      can point a constituent at a different pool for the same pair. Both are
 ///      bounded by MAX_SLIPPAGE_BPS. Costly if abused, not a theft.
-contract Univault is ERC4626, Ownable, ReentrancyGuard {
+contract Safex is ERC4626, Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     uint16 internal constant BPS = 10_000;
@@ -70,7 +70,7 @@ contract Univault is ERC4626, Ownable, ReentrancyGuard {
     address public guard;
 
     /// @notice Equity side of the vault. Zero means this is a lending-only vault.
-    BasketAdapter public basket;
+    BasketAdapterCore public basket;
 
     /// @notice Share of the vault targeted at the lending leg, in bps.
     /// @dev 10_000 is STEADY. 6_000 is BALANCED. 3_000 is GROWTH.
@@ -645,7 +645,7 @@ contract Univault is ERC4626, Ownable, ReentrancyGuard {
     ///      before its basket is set and leave it lending-only for good. It
     ///      costs them a deposit, it strands nothing, and the remedy is to
     ///      deploy again -- which is why this is a nuisance and not a hole.
-    function setBasket(BasketAdapter newBasket, uint16 newTargetStableBps) external onlyOwner {
+    function setBasket(BasketAdapterCore newBasket, uint16 newTargetStableBps) external onlyOwner {
         if (newTargetStableBps > BPS) revert SplitOutOfRange();
         if (address(basket) != address(0)) revert BasketAlreadySet();
         if (totalSupply() != 0) revert VaultInUse();

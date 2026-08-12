@@ -4,16 +4,16 @@ pragma solidity 0.8.26;
 import {Test, console2} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import {Univault} from "../src/Univault.sol";
+import {Safex} from "../src/Safex.sol";
 import {MockERC20, MockYieldVault} from "./mocks/Mocks.sol";
 
 /// @notice Deterministic tests. The fork suite proves we are wired to the real
 ///         chain; this one proves the accounting is right, at a speed and
 ///         repeatability a fork cannot give.
-contract UnivaultTest is Test {
+contract SafexTest is Test {
     MockERC20 usdg;
     MockYieldVault yieldVault;
-    Univault vault;
+    Safex vault;
 
     address owner = makeAddr("owner");
     address alice = makeAddr("alice");
@@ -25,7 +25,7 @@ contract UnivaultTest is Test {
     function setUp() public {
         usdg = new MockERC20("Global Dollar", "USDG", 6);
         yieldVault = new MockYieldVault(IERC20(address(usdg)), APR_BPS);
-        vault = new Univault(IERC20(address(usdg)), IERC4626(address(yieldVault)), "Univault Steady", "uvSTEADY", owner);
+        vault = new Safex(IERC20(address(usdg)), IERC4626(address(yieldVault)), "Safex Steady", "sfxSTEADY", owner);
         vm.prank(owner);
         vault.setAutoAllocate(false); // these tests drive deployIdle by hand
 

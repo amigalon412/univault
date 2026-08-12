@@ -8,8 +8,9 @@ import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
 import {PoolKey} from "v4-core/src/types/PoolKey.sol";
 import {Currency} from "v4-core/src/types/Currency.sol";
 import {IHooks} from "v4-core/src/interfaces/IHooks.sol";
-import {Univault} from "../src/Univault.sol";
+import {Safex} from "../src/Safex.sol";
 import {BasketAdapter} from "../src/BasketAdapter.sol";
+import {BasketAdapterCore} from "../src/BasketAdapterCore.sol";
 import {PriceOracle} from "../src/PriceOracle.sol";
 import {SwapExecutor} from "../src/SwapExecutor.sol";
 import {RobinhoodChain} from "../src/RobinhoodChain.sol";
@@ -25,7 +26,7 @@ contract SwapForkTest is Test {
     IERC20 constant nvda = IERC20(RobinhoodChain.NVDA);
 
     PriceOracle oracle;
-    Univault vault;
+    Safex vault;
     BasketAdapter basket;
 
     address owner = makeAddr("owner");
@@ -35,8 +36,8 @@ contract SwapForkTest is Test {
         vm.createSelectFork(vm.envOr("ROBINHOOD_RPC", vm.rpcUrl("robinhood")));
 
         oracle = new PriceOracle(owner);
-        vault = new Univault(
-            usdg, IERC4626(RobinhoodChain.STEAK_USDG), "Univault Balanced", "uvBAL", owner
+        vault = new Safex(
+            usdg, IERC4626(RobinhoodChain.STEAK_USDG), "Safex Balanced", "uvBAL", owner
         );
         basket = new BasketAdapter(owner, oracle, address(vault), address(usdg), POOL_MANAGER);
 
@@ -119,7 +120,7 @@ contract SwapForkTest is Test {
         deal(address(usdg), address(basket), 1_000 * ONE);
 
         vm.prank(owner);
-        vm.expectRevert(BasketAdapter.NotVault.selector);
+        vm.expectRevert(BasketAdapterCore.NotVault.selector);
         basket.buy(RobinhoodChain.NVDA, 1_000 * ONE, 0);
     }
 

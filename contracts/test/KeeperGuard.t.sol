@@ -5,14 +5,14 @@ import {Test, console2} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {Univault} from "../src/Univault.sol";
+import {Safex} from "../src/Safex.sol";
 import {KeeperGuard} from "../src/KeeperGuard.sol";
 import {MockERC20, MockYieldVault} from "./mocks/Mocks.sol";
 
 contract KeeperGuardTest is Test {
     MockERC20 usdg;
     MockYieldVault yieldVault;
-    Univault vault;
+    Safex vault;
     KeeperGuard guard;
 
     address owner = makeAddr("owner");
@@ -28,7 +28,7 @@ contract KeeperGuardTest is Test {
     function setUp() public {
         usdg = new MockERC20("Global Dollar", "USDG", 6);
         yieldVault = new MockYieldVault(IERC20(address(usdg)), 700);
-        vault = new Univault(IERC20(address(usdg)), IERC4626(address(yieldVault)), "BLUR", "blur", owner);
+        vault = new Safex(IERC20(address(usdg)), IERC4626(address(yieldVault)), "BLUR", "blur", owner);
         guard = new KeeperGuard(owner, CAP, COOLDOWN);
 
         vm.startPrank(owner);
@@ -98,8 +98,8 @@ contract KeeperGuardTest is Test {
     }
 
     function test_KeeperCannotDriveAnUnregisteredVault() public {
-        Univault other =
-            new Univault(IERC20(address(usdg)), IERC4626(address(yieldVault)), "other", "other", owner);
+        Safex other =
+            new Safex(IERC20(address(usdg)), IERC4626(address(yieldVault)), "other", "other", owner);
 
         vm.prank(keeper);
         vm.expectRevert(KeeperGuard.VaultNotAllowed.selector);
@@ -181,9 +181,9 @@ contract KeeperGuardTest is Test {
         guard.setKeeper(attacker, true);
 
         // Cannot go around the guard to reach the vault directly.
-        vm.expectRevert(Univault.NotAutomation.selector);
+        vm.expectRevert(Safex.NotAutomation.selector);
         vault.deployIdle();
-        vm.expectRevert(Univault.NotAutomation.selector);
+        vm.expectRevert(Safex.NotAutomation.selector);
         vault.deployIdle(type(uint256).max);
 
         vm.stopPrank();

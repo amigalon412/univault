@@ -36,8 +36,8 @@ contract DeployStackForkTest is Test, DeployStack {
             sentinel: sentinel,
             maxDeployPerCall: 50_000 * ONE,
             cooldown: 1 hours,
-            name: "Univault Balanced",
-            symbol: "uvBALANCED",
+            name: "Safex Balanced",
+            symbol: "sfxBALANCED",
             targetStableBps: targetStableBps
         });
     }

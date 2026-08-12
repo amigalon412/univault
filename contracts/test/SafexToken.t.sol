@@ -9,7 +9,7 @@ import {PoolKey} from "v4-core/src/types/PoolKey.sol";
 import {Currency} from "v4-core/src/types/Currency.sol";
 import {IHooks} from "v4-core/src/interfaces/IHooks.sol";
 
-import {UnivaultToken} from "../src/UnivaultToken.sol";
+import {SafexToken} from "../src/SafexToken.sol";
 import {BuybackModule} from "../src/BuybackModule.sol";
 import {MockERC20} from "./mocks/Mocks.sol";
 
@@ -34,8 +34,8 @@ contract FixedRateBuyer is BuybackModule {
     }
 }
 
-contract UnivaultTokenTest is Test {
-    UnivaultToken token;
+contract SafexTokenTest is Test {
+    SafexToken token;
     MockERC20 usdg;
 
     address deployer = makeAddr("deployer");
@@ -45,7 +45,7 @@ contract UnivaultTokenTest is Test {
     uint256 constant ONE = 1e6;
 
     function setUp() public {
-        token = new UnivaultToken(deployer);
+        token = new SafexToken(deployer);
         usdg = new MockERC20("Global Dollar", "USDG", 6);
     }
 
@@ -61,8 +61,8 @@ contract UnivaultTokenTest is Test {
         // Pinned deliberately: name and symbol are set in the constructor and
         // ERC20 gives no way to change them afterwards, so whatever ships here
         // is what every wallet and explorer shows for the life of the token.
-        assertEq(token.symbol(), "UNIVAULT");
-        assertEq(token.name(), "UNIVAULT");
+        assertEq(token.symbol(), "SAFEX");
+        assertEq(token.name(), "SAFEX");
     }
 
     /// @dev The properties this token is chosen for are the absent ones, so they

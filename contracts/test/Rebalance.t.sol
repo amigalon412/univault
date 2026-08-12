@@ -5,7 +5,7 @@ import {Test, console2} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
-import {Univault} from "../src/Univault.sol";
+import {Safex} from "../src/Safex.sol";
 import {BasketAdapter} from "../src/BasketAdapter.sol";
 import {PriceOracle} from "../src/PriceOracle.sol";
 import {MockERC20, MockYieldVault} from "./mocks/Mocks.sol";
@@ -40,7 +40,7 @@ contract RebalanceTest is Test {
     MockERC20 usdg;
     MockYieldVault venue;
     PriceOracle oracle;
-    Univault vault;
+    Safex vault;
     PerfectFillBasket basket;
     MockStock nvda;
     MockAggregator feed;
@@ -57,7 +57,7 @@ contract RebalanceTest is Test {
         usdg = new MockERC20("Global Dollar", "USDG", 6);
         venue = new MockYieldVault(IERC20(address(usdg)), 700);
         oracle = new PriceOracle(owner);
-        vault = new Univault(IERC20(address(usdg)), IERC4626(address(venue)), "Univault Balanced", "uvBAL", owner);
+        vault = new Safex(IERC20(address(usdg)), IERC4626(address(venue)), "Safex Balanced", "uvBAL", owner);
         basket = new PerfectFillBasket(owner, oracle, address(vault), address(usdg));
 
         nvda = new MockStock("NVIDIA", "NVDA");
@@ -140,7 +140,7 @@ contract RebalanceTest is Test {
         assertFalse(vault.needsRebalance());
 
         vm.prank(keeper);
-        vm.expectRevert(Univault.WithinBand.selector);
+        vm.expectRevert(Safex.WithinBand.selector);
         vault.rebalance(address(nvda), type(uint256).max, 100);
     }
 
@@ -152,7 +152,7 @@ contract RebalanceTest is Test {
         uint256 priceBefore = vault.sharePrice();
         for (uint256 i; i < 50; ++i) {
             vm.prank(keeper);
-            vm.expectRevert(Univault.WithinBand.selector);
+            vm.expectRevert(Safex.WithinBand.selector);
             vault.rebalance(address(nvda), type(uint256).max, 100);
         }
         assertEq(vault.sharePrice(), priceBefore, "grinding cost holders value");
@@ -164,13 +164,13 @@ contract RebalanceTest is Test {
 
     function test_OnlyAutomationOrOwnerCanRebalance() public {
         vm.prank(alice);
-        vm.expectRevert(Univault.NotAutomation.selector);
+        vm.expectRevert(Safex.NotAutomation.selector);
         vault.rebalance(address(nvda), type(uint256).max, 100);
     }
 
     function test_SlippageIsBounded() public {
         vm.prank(keeper);
-        vm.expectRevert(Univault.SlippageOutOfRange.selector);
+        vm.expectRevert(Safex.SlippageOutOfRange.selector);
         vault.rebalance(address(nvda), type(uint256).max, 10_001);
     }
 
@@ -194,10 +194,10 @@ contract RebalanceTest is Test {
     }
 
     function test_LendingOnlyVaultRefusesToRebalance() public {
-        Univault steady =
-            new Univault(IERC20(address(usdg)), IERC4626(address(venue)), "Univault Steady", "s", owner);
+        Safex steady =
+            new Safex(IERC20(address(usdg)), IERC4626(address(venue)), "Safex Steady", "s", owner);
         vm.prank(owner);
-        vm.expectRevert(Univault.NoBasket.selector);
+        vm.expectRevert(Safex.NoBasket.selector);
         steady.rebalance(address(nvda), 1, 100);
     }
 }

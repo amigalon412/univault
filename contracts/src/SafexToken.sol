@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
-/// @title BLUR
+/// @title SAFEX
 /// @notice The protocol token. One billion, minted once, and that is the whole
 ///         of it.
 ///
@@ -20,11 +20,11 @@ import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC2
 ///      takes from the caller's own balance, which is what lets BuybackModule
 ///      retire what it buys by actually reducing `totalSupply` rather than
 ///      parking tokens at a dead address and calling that a burn.
-contract UnivaultToken is ERC20, ERC20Burnable {
+contract SafexToken is ERC20, ERC20Burnable {
     /// @notice The entire supply. Minted at construction, never added to.
     uint256 public constant TOTAL_SUPPLY = 1_000_000_000e18;
 
-    constructor(address recipient) ERC20("UNIVAULT", "UNIVAULT") {
+    constructor(address recipient) ERC20("SAFEX", "SAFEX") {
         _mint(recipient, TOTAL_SUPPLY);
     }
 }

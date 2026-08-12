@@ -2,7 +2,7 @@
 pragma solidity 0.8.26;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {UnivaultToken} from "../src/UnivaultToken.sol";
+import {SafexToken} from "../src/SafexToken.sol";
 
 /// @notice Deploys BLUR. One transaction, no configuration, nothing to get
 ///         wrong afterwards -- the supply is fixed at construction and there is
@@ -12,11 +12,11 @@ import {UnivaultToken} from "../src/UnivaultToken.sol";
 ///      Nothing about that is enforceable on-chain; it is a thing the deployer
 ///      does or does not do, and holders can check the balance either way.
 contract DeployToken is Script {
-    function run() external returns (UnivaultToken token) {
+    function run() external returns (SafexToken token) {
         address recipient = vm.envOr("RECIPIENT", msg.sender);
 
         vm.startBroadcast();
-        token = new UnivaultToken(recipient);
+        token = new SafexToken(recipient);
         vm.stopBroadcast();
 
         console2.log("token     :", address(token));

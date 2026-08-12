@@ -5,6 +5,7 @@ import {Test, console2} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {BasketAdapter} from "../src/BasketAdapter.sol";
+import {BasketAdapterCore} from "../src/BasketAdapterCore.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
 import {PriceOracle} from "../src/PriceOracle.sol";
 import {MockERC20} from "./mocks/Mocks.sol";
@@ -115,7 +116,7 @@ contract BasketAdapterTest is Test {
 
         assertFalse(basket.isValuable(), "a moved multiplier must stop valuation");
         vm.expectRevert(
-            abi.encodeWithSelector(BasketAdapter.MultiplierChanged.selector, address(nvda), 1e18, 2e18)
+            abi.encodeWithSelector(BasketAdapterCore.MultiplierChanged.selector, address(nvda), 1e18, 2e18)
         );
         basket.totalValueUsd();
     }
@@ -158,11 +159,11 @@ contract BasketAdapterTest is Test {
         nvda.mint(address(basket), 10e18);
 
         vm.prank(stranger);
-        vm.expectRevert(BasketAdapter.NotVault.selector);
+        vm.expectRevert(BasketAdapterCore.NotVault.selector);
         basket.sendToVault(address(nvda), 1e18);
 
         vm.prank(owner);
-        vm.expectRevert(BasketAdapter.NotVault.selector);
+        vm.expectRevert(BasketAdapterCore.NotVault.selector);
         basket.sendToVault(address(nvda), 1e18);
     }
 
@@ -215,7 +216,7 @@ contract BasketAdapterTest is Test {
     function test_WeightsCannotExceedOneHundredPercent() public {
         MockStock tsla = new MockStock("Tesla", "TSLA");
         vm.prank(owner);
-        vm.expectRevert(abi.encodeWithSelector(BasketAdapter.WeightsExceedTotal.selector, 10_500));
+        vm.expectRevert(abi.encodeWithSelector(BasketAdapterCore.WeightsExceedTotal.selector, 10_500));
         basket.addConstituent(address(tsla), 500);
     }
 
@@ -224,7 +225,7 @@ contract BasketAdapterTest is Test {
 
         vm.prank(owner);
         vm.expectRevert(
-            abi.encodeWithSelector(BasketAdapter.StillHoldingBalance.selector, address(nvda), 10e18)
+            abi.encodeWithSelector(BasketAdapterCore.StillHoldingBalance.selector, address(nvda), 10e18)
         );
         basket.removeConstituent(address(nvda));
     }
@@ -234,7 +235,7 @@ contract BasketAdapterTest is Test {
         basket.removeConstituent(address(nvda));
 
         assertEq(basket.tokensLength(), 1);
-        vm.expectRevert(abi.encodeWithSelector(BasketAdapter.UnknownToken.selector, address(nvda)));
+        vm.expectRevert(abi.encodeWithSelector(BasketAdapterCore.UnknownToken.selector, address(nvda)));
         basket.valueOf(address(nvda));
     }
 
@@ -242,12 +243,12 @@ contract BasketAdapterTest is Test {
         MockStock rogue = new MockStock("Rogue", "ROGUE");
         rogue.mint(address(basket), 1e18);
 
-        vm.expectRevert(abi.encodeWithSelector(BasketAdapter.UnknownToken.selector, address(rogue)));
+        vm.expectRevert(abi.encodeWithSelector(BasketAdapterCore.UnknownToken.selector, address(rogue)));
         basket.valueOf(address(rogue));
 
         // And an unregistered token cannot be pulled out either.
         vm.prank(vault);
-        vm.expectRevert(abi.encodeWithSelector(BasketAdapter.UnknownToken.selector, address(rogue)));
+        vm.expectRevert(abi.encodeWithSelector(BasketAdapterCore.UnknownToken.selector, address(rogue)));
         basket.sendToVault(address(rogue), 1e18);
 
         // So a donation cannot inflate the basket's reported value.

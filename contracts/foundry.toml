@@ -23,3 +23,6 @@ depth = 64
 # Official endpoint. publicnode/allnodes rejects the archive reads forking needs,
 # and Blockscout's JSON-RPC shim rejects forge's block parameter format.
 robinhood = "https://rpc.mainnet.chain.robinhood.com"
+# BNB Chain, for the ported stack's fork tests. The dataseed endpoints serve
+# the archive reads forking needs; override with BSC_RPC if one rate-limits.
+bsc = "https://bsc-dataseed.binance.org"

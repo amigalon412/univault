@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify every deployed Univault contract on Blockscout.
+# Verify every deployed Safex contract on Blockscout.
 #
 # Verification uploads source; it sends no transaction and needs no private
 # key. Safe to re-run -- an already-verified contract is reported as such and
@@ -83,7 +83,7 @@ for row in "${STACKS[@]}"; do
   vname=$(call "$VAULT" 'name()(string)' | unquote)
   vsym=$(call "$VAULT" 'symbol()(string)' | unquote)
   vowner=$(call "$VAULT" 'owner()(address)')
-  verify "$VAULT" src/Univault.sol:Univault \
+  verify "$VAULT" src/Safex.sol:Safex \
     "$(cast abi-encode 'c(address,address,string,string,address)' "$asset" "$yv" "$vname" "$vsym" "$vowner")"
 
   gowner=$(call "$GUARD" 'owner()(address)')

@@ -4,13 +4,13 @@ pragma solidity 0.8.26;
 import {Test, console2} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import {Univault} from "../src/Univault.sol";
+import {Safex} from "../src/Safex.sol";
 import {MockERC20, MockYieldVault} from "./mocks/Mocks.sol";
 
 contract FeesTest is Test {
     MockERC20 usdg;
     MockYieldVault yieldVault;
-    Univault vault;
+    Safex vault;
 
     address owner = makeAddr("owner");
     address treasury = makeAddr("treasury");
@@ -22,7 +22,7 @@ contract FeesTest is Test {
     function setUp() public {
         usdg = new MockERC20("Global Dollar", "USDG", 6);
         yieldVault = new MockYieldVault(IERC20(address(usdg)), 0); // no auto-yield; tests move the price
-        vault = new Univault(IERC20(address(usdg)), IERC4626(address(yieldVault)), "BLUR", "blur", owner);
+        vault = new Safex(IERC20(address(usdg)), IERC4626(address(yieldVault)), "BLUR", "blur", owner);
 
         vm.prank(owner);
         vault.setFeeRecipient(treasury);
@@ -165,7 +165,7 @@ contract FeesTest is Test {
 
     function test_FeeCannotBeSetAbsurdlyHigh() public {
         vm.prank(owner);
-        vm.expectRevert(Univault.FeeTooHigh.selector);
+        vm.expectRevert(Safex.FeeTooHigh.selector);
         vault.setPerformanceFeeBps(2_001);
     }
 
