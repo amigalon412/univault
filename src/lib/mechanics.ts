@@ -79,7 +79,7 @@ export const LEG_NODES: FlowNode[] = [
   {
     glyph: BASKET,
     name: "Stock basket",
-    role: "Four names, evenly weighted",
+    role: `${BASKET_STOCKS.length} names, evenly weighted`,
     address: BASKET_ADAPTER,
     /*
      * The four tickers link to the token contracts, not to the adapter.
