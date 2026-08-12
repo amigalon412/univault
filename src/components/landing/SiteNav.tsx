@@ -32,8 +32,15 @@ export async function SiteNav() {
 
         <div className="nav-links">
           {NAV_LINKS.map((link, i) => (
-            <Fragment key={link.href}>
-              <a href={link.href}>{link.label}</a>
+            <Fragment key={link.label}>
+              {link.soon ? (
+                <span className="nav-soon" aria-disabled="true">
+                  {link.label}
+                  <i>soon</i>
+                </span>
+              ) : (
+                <a href={link.href}>{link.label}</a>
+              )}
               {i < NAV_LINKS.length - 1 && <span className="sep">{"//"}</span>}
             </Fragment>
           ))}

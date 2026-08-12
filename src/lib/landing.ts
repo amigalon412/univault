@@ -22,12 +22,28 @@ export interface HeroSlide {
   lineTwo: TextSegment[];
 }
 
-export const NAV_LINKS = [
+/**
+ * One item in the top nav.
+ *
+ * `soon` items render inert -- no href, not focusable, not a link. A greyed
+ * anchor that still navigates is worse than no anchor at all, because the one
+ * person who clicks it is the one who came looking for that exact thing.
+ */
+export interface NavLink {
+  label: string;
+  href?: string;
+  soon?: boolean;
+}
+
+export const NAV_LINKS: readonly NavLink[] = [
   { label: "How it works", href: "/#how" },
   { label: "Vaults", href: "/#vaults" },
+  /* Announced, not built. There is no staking contract and no token yet, so
+     this points nowhere on purpose -- see contracts/DEPLOYMENTS.md. */
+  { label: "Staking", soon: true },
   { label: "Ecosystem", href: "/#ecosystem" },
   { label: "Live", href: "/#community" },
-] as const;
+];
 
 export const HERO_SLIDES: HeroSlide[] = [
   {

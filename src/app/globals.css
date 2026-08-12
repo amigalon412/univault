@@ -573,6 +573,28 @@
   color: var(--line-2);
   transition: color 0.5s;
 }
+/* An announced-but-unbuilt item. Not an anchor at all, so there is nothing to
+   click and nothing for the keyboard to land on; the muted ink plus the badge
+   are what say "later" without needing a tooltip. */
+.nav-links .nav-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--line-2);
+  cursor: default;
+  user-select: none;
+}
+.nav-links .nav-soon i {
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  padding: 3px 5px 2px;
+  border-radius: 4px;
+  color: var(--accent-ink);
+  background: var(--wash);
+  border: 1px solid color-mix(in oklch, var(--accent) 26%, transparent);
+}
 .nav-cta {
   display: flex;
   align-items: center;
