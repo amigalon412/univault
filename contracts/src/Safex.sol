@@ -399,6 +399,18 @@ contract Safex is ERC4626, Ownable, ReentrancyGuard {
         if (deployed > maxAssets) deployed = maxAssets;
         if (deployed == 0) return 0;
 
+        /* Hand over only what the venue will credit back.
+
+           `yieldVault.deposit(x)` mints shares rounded DOWN, so converting
+           those shares back gives less than x -- the remainder is handed to
+           the venue's other depositors and vanishes from this vault's
+           accounting. One wei per deploy, measured. Deploying the round-tripped
+           figure instead leaves that wei idle here, where it is still ours and
+           still counted, until it is large enough to place whole. */
+        uint256 credited = yieldVault.convertToAssets(yieldVault.previewDeposit(deployed));
+        if (credited == 0) return 0;
+        deployed = credited;
+
         IERC20(asset()).forceApprove(address(yieldVault), deployed);
         yieldVault.deposit(deployed, address(this));
         emit Deployed(deployed);
