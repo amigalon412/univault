@@ -135,10 +135,12 @@ function SplitArt() {
         return (
           <g key={sym}>
             <rect className="sd-chip" x={x} y={y} width={CHIP_W} height={CHIP_H} rx="6" />
-            {/* The mask PNG is white ink on transparency. brightness(0) drives
-                the ink to black without touching the alpha, and the opacity
-                lands it at the same grey as the labels — one filter instead of
-                a per-mark <mask> and an id per mark in a diagram rendered once. */}
+            {/* The mask PNG is dark ink on transparency. `brightness(0)
+                invert(1)` drives it to white without touching the alpha, and
+                the opacity settles it into the chip — one filter instead of a
+                per-mark <mask> and an id per mark in a diagram rendered once.
+                See .sd-logo: the invert is what this build added, and without
+                it the marks are black on a near-black chip. */}
             {mask ? (
               <image
                 className="sd-logo"

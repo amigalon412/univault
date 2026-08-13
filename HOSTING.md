@@ -242,6 +242,20 @@ sudo ufw allow 'Nginx Full'
 sudo ufw enable
 ```
 
+**Deploying the standalone bundle — unpack beside, then swap.** `tar -xzf`
+into the live directory only ever ADDS files: every build's hashed chunks stay
+behind for ever, and a stale rule can sit in the tree looking current while
+nothing references it. Swap instead:
+
+```bash
+rm -rf /var/www/safex.new && mkdir -p /var/www/safex.new
+tar -xzf /tmp/safex-site-bundle.tar.gz -C /var/www/safex.new
+mv /var/www/safex /var/www/safex.old && mv /var/www/safex.new /var/www/safex
+systemctl restart safex && rm -rf /var/www/safex.old
+```
+
+Keep `safex.old` until the new one answers — it is the rollback.
+
 **Updating later:**
 ```bash
 cd /var/www/blurvault

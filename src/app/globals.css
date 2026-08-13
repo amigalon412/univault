@@ -1394,8 +1394,15 @@
   stroke-width: 1.5;
 }
 .step-art .sd-logo {
-  filter: brightness(0);
-  opacity: 0.55;
+  /* The mask PNGs are dark ink on transparency. `brightness(0)` alone drove
+     them to black, which was right on the white build and invisible here --
+     five black marks on a near-black chip. `invert(1)` after it takes the
+     same alpha to white without touching the shape, the same trick the
+     strategy glyphs needed. Opacity, not a grey fill, so the chip's own
+     surface still shows through and the marks sit in the tile rather than on
+     it. */
+  filter: brightness(0) invert(1);
+  opacity: 0.82;
 }
 
 /* rebalance */
