@@ -138,6 +138,14 @@ export function useTotalValueLocked(): {
   return { total: sawOne ? total : undefined, perVault };
 }
 
+/**
+ * `valueOf` is 18-decimal USD; the app speaks the asset's decimals. One is a
+ * property of the oracle and the other of the token, so this is a real
+ * conversion rather than a formatting choice -- and it is 1 on BNB, where USDT
+ * already has eighteen.
+ */
+const VALUE_OF_SCALE = 10n ** BigInt(18 - USDG_DECIMALS);
+
 /** The connected wallet's USDG balance, and what it has approved to `spender`. */
 export function useUsdg(spender: Address | null) {
   const { address: account } = useAccount();
@@ -242,13 +250,28 @@ export function usePositionBreakdown(strategy: StrategyId): PositionBreakdown {
     query: { enabled: hasBasket },
   });
 
-  // valueOf is an 18-decimal USD figure; the rest of the app speaks USDG's six.
+  /**
+   * `valueOf` answers in USD at EIGHTEEN decimals, always -- it comes from the
+   * oracle, not from the asset. The rest of the app speaks the asset's own
+   * decimals, so the two only need reconciling when they differ.
+   *
+   * This used to divide by a hardcoded 1e12, because on Robinhood Chain the
+   * asset was USDG at six. On BNB it is USDT at eighteen, and that division
+   * made every holding a trillionth of its real value: the first live deposit
+   * showed "Stocks · $0.80" in the header with $0.00 and 0% on all five rows
+   * beneath it. The tokens were bought and sitting in the basket adapter the
+   * whole time -- only the reading was wrong, which is the worst way for this
+   * to fail, because the vault looks broken when it is working.
+   *
+   * Derived from USDG_DECIMALS now, so it is correct for either and cannot
+   * silently rot the next time the stable changes.
+   */
   const stocks: StockHolding[] = hasBasket
     ? BASKET_STOCKS.map((s, i) => ({
         symbol: s.symbol,
         value:
           stockData?.[i]?.status === "success"
-            ? (stockData[i].result as bigint) / 1_000_000_000_000n
+            ? (stockData[i].result as bigint) / VALUE_OF_SCALE
             : 0n,
       }))
     : [];
