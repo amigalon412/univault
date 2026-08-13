@@ -93,16 +93,14 @@ export const KEEPER_GUARD: Address = getAddress(
 );
 
 /**
- * NOT DEPLOYED ON BNB CHAIN YET.
+ * BnbExitRouter, deployed 2026-08-13 at block 115725204, tx 0x86f11093…0f2e.
  *
- * BnbExitRouter is written and tested but was not part of the stack deploy, so
- * there is nothing at this address here -- it is the Robinhood Chain router,
- * kept only so the homepage's contract list has something to name. `EXIT_ROUTER`
- * below is deliberately empty, which hides the "sell everything" button rather
- * than offering one backed by a contract that does not exist on this chain.
+ * Ownerless and holds no funds between calls -- it has no `Ownable`, no
+ * privileged functions and nothing to configure, which is why it could be
+ * deployed from any address without changing anything about it.
  */
 export const EXIT_ROUTER_FALLBACK: Address = getAddress(
-  "0x2304d57bA6E5EecD3d4d8Cc657740D9aa5824035",
+  "0x795A0bEAB813Ea9BefB6124997FE2a3522096abc",
 );
 
 /**
@@ -229,18 +227,16 @@ export const DEPLOYED_VAULTS = Object.entries(VAULT_ADDRESSES).filter(
 export const BLUR_TOKEN = optionalAddress(process.env.NEXT_PUBLIC_BLUR_TOKEN);
 
 /**
- * The ExitRouter. Lets a holder of a basketed vault sell the stock leg to USDG
+ * The ExitRouter. Lets a holder of a basketed vault sell the stock leg to USDT
  * in one transaction instead of receiving stock tokens in kind; without it the
  * "sell everything" control simply doesn't render.
  *
- * Deployed 2026-07-24 at block 17686207, ownerless and holding no funds. A
- * committed default for the same reason the vaults have one -- a clone with no
- * .env.local was hiding a control that works.
+ * A committed default for the same reason the vaults have one -- a clone with
+ * no .env.local was hiding a control that works. It was deliberately empty
+ * between the BNB port and 2026-08-13, while the router existed only as source.
  */
 export const EXIT_ROUTER = optionalAddress(
-  /* Empty until BnbExitRouter is deployed here. optionalAddress turns that into
-     null, and the app hides the button rather than calling into nothing. */
-  process.env.NEXT_PUBLIC_EXIT_ROUTER || "",
+  process.env.NEXT_PUBLIC_EXIT_ROUTER || EXIT_ROUTER_FALLBACK,
 );
 
 /** Minimal ExitRouter ABI: the one function the UI calls. */

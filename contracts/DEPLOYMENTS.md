@@ -81,11 +81,25 @@ Backed's xStocks do exist and are unusable ($16k in one NVDAx pool, $37 and $21
 for TSLAx, no AAPLx pair). MSTRB, INTCB and SOXLB trade but have no feed. Nine
 more are issued with zero liquidity. Full reasoning in `src/BnbChain.sol`.
 
-## Not deployed here yet
+## Exit router
 
-- **BnbExitRouter** — written and tested, not in the stack deploy. Until it is,
-  `NEXT_PUBLIC_EXIT_ROUTER` stays empty and the app hides the "sell everything"
-  button rather than offering one backed by nothing.
+`0x795A0bEAB813Ea9BefB6124997FE2a3522096abc` — **BnbExitRouter**, deployed
+2026-08-13, block 115725204, tx
+`0x86f11093bf2a4c9fda7d83919597b1329a927fbd9a02eba7aaa99f3a31ed0f2e`,
+755,091 gas.
+
+Ownerless, holds no funds between calls, nothing to configure — no `Ownable`,
+no privileged functions. It could therefore have been deployed from any
+address without changing a thing about it.
+
+Market-sells a whole position, stock leg included, to USDT in one transaction
+via `redeemInKind` plus PancakeSwap v3 swaps. Powers the "sell everything"
+button on BALANCED and GROWTH. It reads each leg's fee tier off the basket
+adapter on every call rather than keeping its own copy — the tier is not
+uniform here, and a stored copy is what broke the first ExitRouter on the
+other chain.
+
+## Not deployed here yet
 - **A keeper.** `setKeeper` was never called, so no address may rebalance. The
   guard is still the owner's, so this is one transaction whenever an address
   exists for it. Until then the vaults hold their split only as deposits set it.
