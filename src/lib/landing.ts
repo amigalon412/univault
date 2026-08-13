@@ -83,7 +83,7 @@ export const HOW_STEPS: HowStep[] = [
     num: "[ 01 ]",
     caption: "deposit",
     title: `You send ${STABLE_SYMBOL}`,
-    body: "An ordinary ERC-20 transfer into an ERC-4626 vault. Shares are minted to your own address, and no function on the vault can move the assets behind them anywhere but back to a holder.",
+    body: "An ordinary BEP-20 transfer into an ERC-4626 vault — BEP-20 is what BNB Chain calls ERC-20, and 4626 is the vault standard on top of it. Shares are minted to your own address, and no function on the vault can move the assets behind them anywhere but back to a holder.",
     links: [
       { label: STABLE_SYMBOL, address: USDG },
       { label: "Vault", address: VAULT_ADDRESSES.balanced },
@@ -149,14 +149,11 @@ export const ECOSYSTEM_LOGOS: EcosystemLogo[] = [
  * step the fast ones lap the slow ones into a cluster within a minute.
  */
 export const ORBIT_SATELLITES = [
-  { sym: "NVDA", duration: "22s" },
-  { sym: "AAPL", duration: "28s", delay: "-7s" },
-  { sym: "TSLA", duration: "34s", delay: "-14s" },
-  { sym: "AMZN", duration: "40s", delay: "-21s" },
-  { sym: "GOOGL", duration: "26s", delay: "-13s" },
-  { sym: "MSFT", duration: "31s", delay: "-24s" },
-  { sym: "SPCX", duration: "37s", delay: "-5s" },
-  { sym: "PLTR", duration: "43s", delay: "-32s" },
+  { sym: "SPYB", duration: "22s" },
+  { sym: "QQQB", duration: "28s", delay: "-7s" },
+  { sym: "GOOGLB", duration: "34s", delay: "-14s" },
+  { sym: "MSFTB", duration: "40s", delay: "-21s" },
+  { sym: "METAB", duration: "26s", delay: "-13s" },
 ] as const;
 
 /** The three closing claims, after the evidence rather than before it. */

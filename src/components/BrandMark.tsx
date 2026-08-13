@@ -53,6 +53,29 @@ export const BRAND_MASKS: Record<string, BrandMask> = {
      fell back to printing the ticker, which collided with the row label
      beside it. */
   SPCX: { src: "/images/logos/spcx-mark.png", ratio: 1.529, k: 0.86 },
+
+  /* ── the BNB Chain basket ────────────────────────────────────────────
+     Binance's bStocks carry a B, and the mark belongs to the company rather
+     than to the wrapper, so GOOGLB reuses Alphabet's own G. Missing keys are
+     the bug this whole block prevents: without them the component printed the
+     ticker over the row label, which is exactly what happened to SpaceX and
+     then to all five of these. */
+  GOOGLB: { src: "/images/logos/googl.png", ratio: 0.98, k: 0.92 },
+  MSFTB: { src: "/images/logos/msft.png", ratio: 1, k: 0.9 },
+  METAB: { src: "/images/logos/meta.png", ratio: 1.506, k: 0.9 },
+
+  /* SPY and QQQ are index ETFs, and neither SPDR nor Invesco publishes a mark
+     reachable without an account. They are known by the ticker anyway -- the
+     lettermark IS the identity. Drawn as type and run through the same alpha
+     pipeline as the brand masks, so the row keeps one grey and one edge
+     treatment rather than two. Square canvas, because the same mark has to sit
+     in a row AND inside a circular orbit badge -- a 2.5:1 wordmark spills
+     straight out of the badge. */
+  SPYB: { src: "/images/logos/spy.png", ratio: 1, k: 1 },
+  QQQB: { src: "/images/logos/qqq.png", ratio: 1, k: 1 },
+
+  /* The stable, for rows about the lending leg. */
+  USDT: { src: "/images/logos/usdt.png", ratio: 1.148, k: 0.88 },
 };
 
 interface BrandMarkProps {
@@ -65,7 +88,22 @@ interface BrandMarkProps {
 
 export function BrandMark({ sym, size = 22, className = "" }: BrandMarkProps) {
   const mask = BRAND_MASKS[sym];
-  if (!mask) return <span className={className}>{sym}</span>;
+  /* A missing key used to print the raw ticker into a slot sized for a mark,
+     where it overlapped whatever label sat beside it. It now renders as a
+     contained lettermark instead: still obviously a fallback, but one that
+     cannot break a layout while nobody is looking. */
+  if (!mask) {
+    return (
+      <span
+        className={`brandmark-fallback ${className}`.trim()}
+        role="img"
+        aria-label={sym}
+        style={{ "--cap": `${size}px` } as CSSProperties}
+      >
+        {sym}
+      </span>
+    );
+  }
 
   return (
     <span

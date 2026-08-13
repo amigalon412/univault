@@ -3465,3 +3465,21 @@ a.chip:hover {
     opacity: 0;
   }
 }
+
+/* A holding with no mask. Contained and clipped, so an unknown ticker degrades
+   to a small lettermark rather than spilling across the row beside it. */
+.brandmark-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--cap);
+  max-width: calc(var(--cap) * 2.6);
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: calc(var(--cap) * 0.5);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: currentColor;
+  opacity: 0.85;
+}

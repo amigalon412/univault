@@ -53,11 +53,13 @@ function DepositArt() {
     <svg className="step-art" viewBox={VIEW_BOX} aria-hidden="true" focusable="false">
       {/* the stablecoin going in, as a stack rather than a disc — a lone ring
           with a bar through it reads as a "no entry" sign */}
-      <path className="sd-face" d="M18 100 V116 A22 7 0 0 0 62 116 V100 Z" />
-      <ellipse className="sd-face" cx="40" cy="100" rx="22" ry="7" />
-      <path className="sd-face" d="M18 84 V100 A22 7 0 0 0 62 100 V84 Z" />
-      <ellipse className="sd-face" cx="40" cy="84" rx="22" ry="7" />
-      <ellipse className="sd-hair" cx="40" cy="84" rx="9" ry="2.9" />
+      {/* Tether's own mark rather than a generic coin stack. The artwork is a
+          24x24 viewBox, so it is translated and scaled into this diagram's
+          coordinates instead of being redrawn by hand -- redrawing a brand is
+          how you end up with something that is nearly it. */}
+      <g transform="translate(14 70) scale(2.17)" className="sd-face">
+        <path d="M18.7538 10.5176c0 .6251-2.2379 1.1483-5.2381 1.2812l.0028.0007c-.0848.0064-.5233.0325-1.5012.0325-.7778 0-1.33-.0233-1.5237-.0325-3.0059-.1322-5.2495-.6555-5.2495-1.2819s2.2436-1.149 5.2495-1.2834v2.0442c.1965.0142.7594.0474 1.5372.0474.9334 0 1.4008-.0389 1.4849-.0466V9.2356c2.9994.1337 5.2381.657 5.2381 1.282zm5.19.5466L12.1248 22.389a.1803.1803 0 0 1-.2496 0L.0562 11.0635a.1781.1781 0 0 1-.0382-.2079l4.3762-9.1921a.1767.1767 0 0 1 .1626-.1026h14.8878a.1768.1768 0 0 1 .1612.1032l4.3762 9.1922a.1782.1782 0 0 1-.0382.2079zm-4.478-.4038c0-.8068-2.5515-1.4799-5.9473-1.6369V7.195h4.186V4.4055H6.3076V7.195h4.1852v1.8286c-3.4018.1562-5.9601.83-5.9601 1.6376 0 .8075 2.5583 1.4806 5.9601 1.6376v5.8618h3.025v-5.8639c3.394-.1563 5.948-.8295 5.948-1.6363z" />
+      </g>
 
       {/* into the vault */}
       <path className="sd-rail" d="M70 96 H104" />
