@@ -22,7 +22,7 @@ export function SiteFooter() {
                 {link.label}
               </Link>
             ))}
-            <a href="https://x.com/safexpro" target="_blank" rel="noopener noreferrer">
+            <a href="https://x.com/SafexBNB" target="_blank" rel="noopener noreferrer">
               X
             </a>
           </div>
@@ -43,7 +43,7 @@ export function SiteFooter() {
       </div>
       <a
         className="bf-x"
-        href="https://x.com/safexpro"
+        href="https://x.com/SafexBNB"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="SAFEX on X"

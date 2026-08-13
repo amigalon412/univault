@@ -50,7 +50,7 @@ export async function SiteNav() {
           <CaPill initial={safexToken} />
           <a
             className="nav-icon"
-            href="https://x.com/safexpro"
+            href="https://x.com/SafexBNB"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Follow on X"

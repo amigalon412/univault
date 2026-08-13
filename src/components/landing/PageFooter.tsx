@@ -26,7 +26,7 @@ export function PageFooter() {
                 {link.label}
               </Link>
             ))}
-            <a href="https://x.com/safexpro" target="_blank" rel="noopener noreferrer">
+            <a href="https://x.com/SafexBNB" target="_blank" rel="noopener noreferrer">
               <XIcon width={12} height={12} />
             </a>
           </nav>
