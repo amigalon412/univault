@@ -1,0 +1,52 @@
+[Unit]
+Description=SAFEX keeper (drives all three BNB Chain vaults through their guards)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=safexkeeper
+WorkingDirectory=/opt/safex-keeper
+ExecStart=/usr/bin/env bash run-all.sh
+
+# run-all.sh launches one process per vault and forwards their logs. Each polls
+# every POLL_MS; the guard's own cooldown (3600s) is what actually paces the
+# transactions, so a short poll costs RPC reads and nothing else.
+Environment=NODE_ENV=production
+Environment=POLL_MS=60000
+
+# The v24 in /opt, not the system node. On this box `node` on PATH is v22 and
+# belongs to another project; the keeper's package.json requires >=24 and the
+# system one must not be upgraded for us.
+Environment=NODE_BIN=/opt/node24/bin/node
+
+# DRY RUN IS THE DEFAULT HERE, and that is load-bearing rather than cautious.
+# With DRY_RUN=false and no key the process calls required("KEEPER_PRIVATE_KEY")
+# and exits 1 -- under Restart=on-failure that is a crash loop, not a safe
+# fallback. So the unit stays inert and /etc/safex-keeper.env is what arms it:
+# that file carries BOTH the key and DRY_RUN=false, and EnvironmentFile is read
+# after these Environment= lines, so it wins. One file arms the keeper; deleting
+# it disarms the keeper. Nothing else to remember.
+Environment=DRY_RUN=true
+EnvironmentFile=-/etc/safex-keeper.env
+
+# BUYBACK_ADDRESS is deliberately unset: the buyback module is not deployed on
+# BNB, and without it the keeper runs only the vault half of its job. Do not
+# invent one.
+
+# The keeper needs its key, an outbound connection and nothing else.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/safex-keeper
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -17,6 +17,11 @@
 #
 # Ctrl-C stops all three. Addresses are the mainnet deploys in
 # contracts/DEPLOYMENTS.md.
+#
+# `sed -u` — unbuffered. Without it sed block-buffers when stdout is not a
+# terminal, which is exactly the case under systemd: the service runs, ticks
+# every minute, and journalctl shows nothing but "Started" for hours. A keeper
+# you cannot read is a keeper you cannot trust.
 set -uo pipefail
 cd "$(dirname "$0")"
 
@@ -43,8 +48,11 @@ trap cleanup INT TERM EXIT
 
 for entry in "${PAIRS[@]}"; do
   IFS=: read -r name vault guard <<< "$entry"
+  # NODE_BIN, not a bare `node`: the box this runs on may have another
+  # project's older node first on PATH. On our VPS the system node is v22 and
+  # belongs to odysseyos, while this needs the v24 in /opt.
   VAULT_ADDRESS="$vault" GUARD_ADDRESS="$guard" \
-    node src/index.js "$@" 2>&1 | sed "s/^/[$name] /" &
+    "${NODE_BIN:-node}" src/index.js "$@" 2>&1 | sed -u "s/^/[$name] /" &
   pids+=($!)
 done
 

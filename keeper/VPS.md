@@ -1,4 +1,4 @@
-# Running the keeper on someone else's VPS
+# Running the keeper on a VPS
 
 The keeper is the only part of Safex that needs a key on an always-on machine.
 This is how to put it there without handing over the one key that matters.
@@ -43,13 +43,13 @@ Each guard is separate, so this is three transactions. `setKeeper` is
 `onlyOwner`, so these are signed with your key.
 
 ```bash
-RPC=https://rpc.mainnet.chain.robinhood.com
+RPC=https://bsc-dataseed.binance.org
 KEEPER_ADDR=0x...            # from step 1
 
 for GUARD in \
-  0x101183e175EA27E059Fd44E6B36e5fBF1f466F26 \
-  0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7 \
-  0x56CAceC02cc8DCb729b209cA1b8EdF5609da091B
+  0x4FB1425bAe5E05C7De959B1bBDdA49ce6DEFCf8A \
+  0xB6312EcAA70B72f2cbec53741A7D2FF5Bdb217CE \
+  0x8caB9f8c22AF2823485ef3aBc9eDFE99a72B212B
 do
   cast send "$GUARD" 'setKeeper(address,bool)' "$KEEPER_ADDR" true \
     --rpc-url "$RPC" --interactive
@@ -63,9 +63,9 @@ Check it took:
 
 ```bash
 for GUARD in \
-  0x101183e175EA27E059Fd44E6B36e5fBF1f466F26 \
-  0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7 \
-  0x56CAceC02cc8DCb729b209cA1b8EdF5609da091B
+  0x4FB1425bAe5E05C7De959B1bBDdA49ce6DEFCf8A \
+  0xB6312EcAA70B72f2cbec53741A7D2FF5Bdb217CE \
+  0x8caB9f8c22AF2823485ef3aBc9eDFE99a72B212B
 do
   echo -n "$GUARD "
   cast call "$GUARD" 'isKeeper(address)(bool)' "$KEEPER_ADDR" --rpc-url "$RPC"
@@ -78,8 +78,8 @@ that vault will not be driven.
 ### 3. Send it gas
 
 The keeper pays for its own transactions and holds nothing else. Send a small
-amount of the chain's native token to `KEEPER_ADDR` — enough for a few hundred
-transactions, topped up when it runs low. It never needs USDG.
+amount of BNB to `KEEPER_ADDR` — 0.01 is a few hundred transactions at BSC gas
+prices, topped up when it runs low. It never needs USDT.
 
 ---
 
@@ -87,12 +87,17 @@ transactions, topped up when it runs low. It never needs USDG.
 
 Everything here can be done by whoever runs the box. None of it needs your key.
 
+**On 109.71.246.168 this is already done** — steps 4, 5, 6 and 8 ran on
+2026-08-13. The service is installed, enabled and ticking in dry run against
+all three BNB vaults. Only step 7 is left, and only you can do it. The section
+below is kept for a rebuild or a second box.
+
 ### 4. Node and a user to run it as
 
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt install -y nodejs
-sudo useradd --system --home /opt/blur-keeper --shell /usr/sbin/nologin blurkeeper
+sudo useradd --system --home /opt/safex-keeper --shell /usr/sbin/nologin safexkeeper
 ```
 
 ### 5. Copy the keeper across
@@ -100,16 +105,16 @@ sudo useradd --system --home /opt/blur-keeper --shell /usr/sbin/nologin blurkeep
 From a checkout of this repo, on your machine:
 
 ```bash
-rsync -az --exclude node_modules keeper/ user@VPS:/tmp/blur-keeper/
+rsync -az --exclude node_modules keeper/ user@VPS:/tmp/safex-keeper/
 ```
 
 Then on the VPS:
 
 ```bash
-sudo mkdir -p /opt/blur-keeper
-sudo cp -r /tmp/blur-keeper/. /opt/blur-keeper/
-cd /opt/blur-keeper && sudo npm ci --omit=dev   # lockfile is committed, so this is reproducible
-sudo chown -R blurkeeper:blurkeeper /opt/blur-keeper
+sudo mkdir -p /opt/safex-keeper
+sudo cp -r /tmp/safex-keeper/. /opt/safex-keeper/
+cd /opt/safex-keeper && sudo npm ci --omit=dev   # lockfile is committed, so this is reproducible
+sudo chown -R safexkeeper:safexkeeper /opt/safex-keeper
 ```
 
 ### 6. Dry run before anything is armed
@@ -118,9 +123,9 @@ sudo chown -R blurkeeper:blurkeeper /opt/blur-keeper
 safe with no key present at all. Run it as the service user:
 
 ```bash
-cd /opt/blur-keeper
-sudo -u blurkeeper env VAULT_ADDRESS=0x3601c09C4F84885454cCbd46B9dF3DaB244c1150 \
-  GUARD_ADDRESS=0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7 \
+cd /opt/safex-keeper
+sudo -u safexkeeper env VAULT_ADDRESS=0x0c892E668a20a4fE82d7963580ebD0C6A66Ba8F4 \
+  GUARD_ADDRESS=0xB6312EcAA70B72f2cbec53741A7D2FF5Bdb217CE \
   npm run once
 ```
 
@@ -128,29 +133,43 @@ Expect it to read the chain, print what it would do, and send nothing. With no
 deposits in the vault the honest answer is that there is nothing to do — that
 is a pass, not a failure.
 
-### 7. Install the key
+### 7. Install the key — THE ONE STEP THAT ARMS IT
+
+The file carries both the key and `DRY_RUN=false`. That is deliberate: the unit
+sets `DRY_RUN=true`, `EnvironmentFile` is read afterwards and wins, so this one
+file is the whole switch. Writing it arms the keeper; deleting it and
+restarting disarms it. There is nothing else to remember and nothing else to
+edit.
 
 ```bash
-printf 'KEEPER_PRIVATE_KEY=%s\n' '0x...' | sudo tee /etc/blur-keeper.env >/dev/null
-sudo chmod 600 /etc/blur-keeper.env
-sudo chown root:root /etc/blur-keeper.env
+sudo install -m 600 -o root -g root /dev/null /etc/safex-keeper.env
+sudo tee /etc/safex-keeper.env >/dev/null <<'EOF'
+KEEPER_PRIVATE_KEY=0x...
+DRY_RUN=false
+EOF
+sudo systemctl restart safex-keeper
 ```
 
-Type the key at that prompt rather than pasting the command with the key in
+Type the key into that heredoc rather than pasting a command with the key in
 it, or it lands in the shell history of a machine you do not control.
+
+**Do not put `DRY_RUN=false` in the unit instead.** With no key present the
+keeper calls `required("KEEPER_PRIVATE_KEY")` and exits 1, and under
+`Restart=on-failure` that is a crash loop every 30 seconds — not the graceful
+fallback an earlier version of this document claimed.
 
 ### 8. Start the service
 
 ```bash
-sudo cp /opt/blur-keeper/deploy/blur-keeper.service /etc/systemd/system/
+sudo cp /opt/safex-keeper/deploy/safex-keeper.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now blur-keeper
-systemctl status blur-keeper          # active (running)
-journalctl -u blur-keeper -f          # three prefixed log streams
+sudo systemctl enable --now safex-keeper
+systemctl status safex-keeper          # active (running)
+journalctl -u safex-keeper -f          # three prefixed log streams
 ```
 
-You should see `[STEADY]`, `[BALANCED]` and `[GROWTH]` lines. The unit sets
-`DRY_RUN=false`, so from here it will send transactions when the guard lets it.
+You should see `[STEADY]`, `[BALANCED]` and `[GROWTH]` lines within a second or
+two. Until step 7 they say `mode=DRY RUN` and the keeper sends nothing.
 
 ---
 
@@ -159,7 +178,8 @@ You should see `[STEADY]`, `[BALANCED]` and `[GROWTH]` lines. The unit sets
 From the VPS:
 
 ```bash
-sudo systemctl stop blur-keeper
+sudo rm /etc/safex-keeper.env && sudo systemctl restart safex-keeper   # back to dry run
+sudo systemctl stop safex-keeper                                      # or off entirely
 ```
 
 From anywhere, with the owner key — this works whether or not the machine
@@ -181,7 +201,7 @@ nothing at all, and any gas left on it is the whole loss.
 |---|---|
 | VPS goes down | Drift is not corrected until it comes back. Deposits still work — allocation happens in the deposit transaction, not here. |
 | Keeper key is stolen | The thief can rebalance within the size and slippage caps, once per cooldown. They cannot choose where funds go. Revoke with `setKeeper(..., false)`. |
-| Key file is missing | The service starts in dry run and sends nothing. |
+| Key file is missing | The service starts in dry run and sends nothing — because the unit defaults `DRY_RUN=true`. With `DRY_RUN=false` hardcoded it would crash-loop instead. |
 | Two keepers run at once | The second finds nothing to do, or reverts on cooldown. Wasted gas, not damage. |
 
 ## What is still on you
