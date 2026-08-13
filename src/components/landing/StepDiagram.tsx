@@ -1,5 +1,5 @@
 import { BRAND_MASKS } from "@/components/BrandMark";
-import { BASKET_STOCKS } from "@/lib/chain";
+import { BASKET_STOCKS, STABLE_SYMBOL } from "@/lib/chain";
 import type { StepArt } from "@/lib/landing";
 
 /**
@@ -80,7 +80,7 @@ function DepositArt() {
       />
 
       <text className="sd-label" x="40" y="146" textAnchor="middle">
-        USDG
+        {STABLE_SYMBOL}
       </text>
       <text className="sd-label" x="164" y="176" textAnchor="middle">
         ERC-4626 VAULT

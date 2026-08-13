@@ -12,7 +12,7 @@ import {
   useUsdg,
   useVault,
 } from "@/hooks/useVault";
-import { NOTHING_DEPLOYED } from "@/lib/chain";
+import { NOTHING_DEPLOYED, STABLE_SYMBOL } from "@/lib/chain";
 import { STRATEGIES, type StrategyId } from "@/lib/strategies";
 
 export function VaultApp() {
@@ -46,7 +46,7 @@ export function VaultApp() {
     {
       label: "Wallet",
       value: live && balance !== undefined ? formatUsdg(balance) : "—",
-      sub: "USDG available",
+      sub: `${STABLE_SYMBOL} available`,
     },
   ];
 

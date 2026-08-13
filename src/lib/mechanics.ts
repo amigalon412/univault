@@ -6,6 +6,7 @@ import {
   KEEPER_GUARD,
   PRICE_ORACLE,
   STEAK_USDG,
+  STABLE_SYMBOL,
   USDG,
   VAULT_ADDRESSES,
 } from "@/lib/chain";
@@ -48,7 +49,7 @@ export interface TraceStep {
 /** Where the money enters. */
 export const SOURCE_NODE: FlowNode = {
   glyph: COIN,
-  name: "USDG",
+  name: STABLE_SYMBOL,
   role: "What you send",
   address: USDG,
 };
@@ -73,7 +74,7 @@ export const LEG_NODES: FlowNode[] = [
   {
     glyph: YIELD,
     name: "Lending leg",
-    role: "Steakhouse USDG",
+    role: "Venus USDT, via our 4626 wrapper",
     address: STEAK_USDG,
   },
   {
@@ -119,9 +120,9 @@ export const DIAGRAM_VAULT = "BALANCED";
 export const TRACE_STEPS: TraceStep[] = [
   {
     num: "01",
-    title: "You send USDG",
+    title: `You send ${STABLE_SYMBOL}`,
     body: "An ordinary ERC-20 transfer. Six decimals, not eighteen.",
-    links: [{ label: "USDG", address: USDG }],
+    links: [{ label: STABLE_SYMBOL, address: USDG }],
   },
   {
     num: "02",

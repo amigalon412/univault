@@ -11,7 +11,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { safexAbi } from "@/lib/abis";
-import { EXIT_ROUTER, exitRouterAbi, explorerTxUrl, bnbChain } from "@/lib/chain";
+import { EXIT_ROUTER, exitRouterAbi, explorerTxUrl, bnbChain, STABLE_SYMBOL } from "@/lib/chain";
 
 /** Slippage choices for the market exit, in basis points. */
 const SLIPPAGE = [
@@ -157,8 +157,8 @@ export function ExitAllButton({ vault, shares }: ExitAllButtonProps) {
               ? "Confirming…"
               : "Check your wallet…"
           : needsApproval
-            ? "Approve sell → USDG"
-            : "Sell everything → USDG (market)"}
+            ? `Approve sell → ${STABLE_SYMBOL}`
+            : `Sell everything → ${STABLE_SYMBOL} (market)`}
       </button>
 
       {error && (

@@ -35,18 +35,42 @@ export const bnbChain = defineChain({
   },
 });
 
-/** Global Dollar. Six decimals, not eighteen -- do not assume. */
+/**
+ * Tether USD on BNB Chain. EIGHTEEN decimals, not six -- the opposite of USDG
+ * on Robinhood Chain, and the likeliest source of a silent off-by-1e12 in code
+ * ported between the two.
+ *
+ * USDT and not USDC because that is what the tokenised equities trade against:
+ * every bStock pool is quoted in USDT and not one has a USDC pair.
+ */
 export const USDG: Address = getAddress(
-  "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+  "0x55d398326f99059fF775485246999027B3197955",
 );
-export const USDG_DECIMALS = 6;
+export const USDG_DECIMALS = 18;
 
 /**
- * Steakhouse USDG, the MetaMorpho vault the lending leg supplies into. Its
+ * What to CALL the stable in the interface.
+ *
+ * The constant above is still named USDG for the same reason the keystore is:
+ * renaming an identifier across the codebase is churn, and the address is what
+ * matters. What must not be stale is the word on screen -- the vault takes
+ * USDT here, and a page that says USDG sends somebody to approve the wrong
+ * token. Every user-facing mention reads this, so the next chain move is one
+ * line rather than a hunt.
+ */
+export const STABLE_SYMBOL = "USDT";
+
+/**
+ * The lending leg: our ERC-4626 wrapper over Venus's core USDT market. Its
  * share price is where the base yield actually shows up.
+ *
+ * A wrapper rather than the venue itself because Venus's core market is a
+ * Compound v2 vToken, and Venus's own 4626 factory refuses it -- that factory
+ * only accepts vTokens in the isolated-pool registry, which hold four to five
+ * figures while the core market holds nine.
  */
 export const STEAK_USDG: Address = getAddress(
-  "0xBeEff033F34C046626B8D0A041844C5d1A5409dd",
+  "0xf9ABEa4Bf8FeBEDB9FEd8eCF7a7F1272C49f5424",
 );
 
 /**
@@ -59,22 +83,23 @@ export const STEAK_USDG: Address = getAddress(
  * basket at all. See contracts/DEPLOYMENTS.md.
  */
 export const BASKET_ADAPTER: Address = getAddress(
-  "0xA36f535E0035bb068cc27ca59137eF36b193f273",
+  "0x0C55a91caBDbD63000983286dd78ABC889a513BE",
 );
 export const PRICE_ORACLE: Address = getAddress(
-  "0x6EEd6275c580C43A97825e9870397f96FA181ea8",
+  "0xf1C6503a26fB311281E7C588999E837d2Aac4362",
 );
 export const KEEPER_GUARD: Address = getAddress(
-  "0x9a2aA7D2dd221aF99410215E5904146a7c96e1E7",
+  "0xB6312EcAA70B72f2cbec53741A7D2FF5Bdb217CE",
 );
 
 /**
- * The deployed ExitRouter, for display only.
+ * NOT DEPLOYED ON BNB CHAIN YET.
  *
- * `EXIT_ROUTER` below reads the environment and is null until it is set, which
- * is right for the app -- it must not offer a button backed by nothing. The
- * homepage is describing what exists on chain, not offering to call it, so it
- * uses this constant and always has something to link to.
+ * BnbExitRouter is written and tested but was not part of the stack deploy, so
+ * there is nothing at this address here -- it is the Robinhood Chain router,
+ * kept only so the homepage's contract list has something to name. `EXIT_ROUTER`
+ * below is deliberately empty, which hides the "sell everything" button rather
+ * than offering one backed by a contract that does not exist on this chain.
  */
 export const EXIT_ROUTER_FALLBACK: Address = getAddress(
   "0x2304d57bA6E5EecD3d4d8Cc657740D9aa5824035",
@@ -93,19 +118,11 @@ export const EXIT_ROUTER_FALLBACK: Address = getAddress(
  * so it can never be one -- see BASKET_STOCKS below.
  */
 export const STOCK_FEEDS: { symbol: string; feed: Address }[] = [
-  { symbol: "NVDA", feed: getAddress("0x379EC4f7C378F34a1B47E4F3cbeBCbAC3E8E9F15") },
-  { symbol: "AAPL", feed: getAddress("0x6B22A786bAa607d76728168703a39Ea9C99f2cD0") },
-  { symbol: "TSLA", feed: getAddress("0x4A1166a659A55625345e9515b32adECea5547C38") },
-  { symbol: "AMZN", feed: getAddress("0xD5a1508ceD74c084eBf3cBe853e2C968fB2a651C") },
-  /* Added 2026-08-11 with the basket expansion. Each was found by reading
-     description() off every EACAggregatorProxy on the chain — the explorer
-     indexes them by contract name, and the ticker only exists inside the
-     contract. Note the naming is not consistent: most read "Robinhood X / USD"
-     and Microsoft's reads "RHMSFT / USD". */
-  { symbol: "GOOGL", feed: getAddress("0xA04EE5c4c8827F17e82f93bE9e19DeA221A749a8") },
-  { symbol: "MSFT", feed: getAddress("0x45C3C877C15E6BA2EBB19eA114Ea508d14C1Af2E") },
-  { symbol: "SPCX", feed: getAddress("0x42a95341ff361e81fd934F39943c5C98F6991844") },
-  { symbol: "PLTR", feed: getAddress("0x820ABedFF239034956B7A9d2F0a331f9F075eB4c") },
+  { symbol: "SPY", feed: getAddress("0xb24D1DeE5F9a3f761D286B56d2bC44CE1D02DF7e") },
+  { symbol: "QQQ", feed: getAddress("0x9A41B56b2c24683E2f23BdE15c14BC7c4a58c3c4") },
+  { symbol: "GOOGL", feed: getAddress("0xeDA73F8acb669274B15A977Cb0cdA57a84F18c2a") },
+  { symbol: "MSFT", feed: getAddress("0x5D209cE1fBABeAA8E6f9De4514A74FFB4b34560F") },
+  { symbol: "META", feed: getAddress("0xfc76E9445952A3C31369dFd26edfdfb9713DF5Bb") },
 ];
 
 /**
@@ -118,45 +135,27 @@ export const STOCK_FEEDS: { symbol: string; feed: Address }[] = [
  * a token is a thing the vault can actually own.
  */
 export const BASKET_STOCKS: { symbol: string; token: Address }[] = [
-  { symbol: "NVDA", token: getAddress("0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC") },
-  { symbol: "AAPL", token: getAddress("0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9") },
-  { symbol: "TSLA", token: getAddress("0x322F0929c4625eD5bAd873c95208D54E1c003b2d") },
-  { symbol: "AMZN", token: getAddress("0x12f190a9F9d7D37a250758b26824B97CE941bF54") },
-  { symbol: "GOOGL", token: getAddress("0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3") },
-  { symbol: "MSFT", token: getAddress("0xe93237C50D904957Cf27E7B1133b510C669c2e74") },
-  { symbol: "SPCX", token: getAddress("0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa") },
-  { symbol: "PLTR", token: getAddress("0x894E1EC2D74FFE5AEF8Dc8A9e84686acCB964F2A") },
+  { symbol: "SPYB", token: getAddress("0x7138b48df7D98D7e3cc221BfE7192D0a178182D8") },
+  { symbol: "QQQB", token: getAddress("0x205812CdBed920aFf76C6580abD681a46D11efc7") },
+  { symbol: "GOOGLB", token: getAddress("0x3F53De71c126BdaBAe20f9cD64848d317f6C3238") },
+  { symbol: "MSFTB", token: getAddress("0x80106cb3EAD06659A5ad19DF39D9b4733863B9b0") },
+  { symbol: "METAB", token: getAddress("0x7425889FE94F9d693E8daefE88BCCed6AcFEf4c0") },
 ];
 
 /**
- * ────────────────────────────────────────────────────────────────────────
- * NOT YET TRUE ON CHAIN. DO NOT DEPLOY THIS BUILD.
+ * How many names the live adapters actually hold.
  *
- * The four names above NVDA/AAPL/TSLA/AMZN were added on 2026-08-11 as
- * preparation. Both live BasketAdapters still report tokensLength() == 4 and
- * hold only the original four, so a build shipped from here tells visitors the
- * vault owns things it does not.
+ * Read back off BNB Chain after the deploy: both BnbBasketAdapters report
+ * tokensLength() == 5, all five at 2000 bps, and isValuable() == true, which
+ * means every Chainlink feed answered. The two ETFs route through the 0.01%
+ * tier and the three single names through 0.25% -- the tier is stored per token
+ * for exactly that reason.
  *
- * What has to happen on chain first, per adapter (BALANCED 0xA36f…, GROWTH
- * 0x76d5…) and per oracle (0x6EEd…, 0x7C3F…):
- *
- *   PriceOracle.setFeed(token, aggregator, maxAge)
- *   BasketAdapter.setPool(token, poolKey)
- *   BasketAdapter.addConstituent(token, weightBps)
- *   BasketAdapter.setWeight(...) on the rest, so the total stays <= 10000
- *
- * The pool keys are NOT uniform. The original four and GOOGL and MSFT trade in
- * the 0.30% pool (fee 3000, tickSpacing 60, no hook). SPCX and PLTR have no
- * liquidity there at all — their pools are the 1% tier (fee 10000, tickSpacing
- * 200). Copying the 0.30% key onto them points the adapter at an uninitialised
- * pool and every swap through it reverts.
- *
- * Verified 2026-08-11 by reading PoolManager state directly; NFLX and CRCL were
- * requested too and are absent from this list because NFLX has no Chainlink
- * feed anywhere on the chain and neither has liquidity at any standard tier.
- * ────────────────────────────────────────────────────────────────────────
+ * This constant exists because the last build shipped a basket the chain did
+ * not have yet. Keep it equal to what the adapters report, not to what the
+ * copy hopes for.
  */
-export const BASKET_LIVE_ON_CHAIN = 4;
+export const BASKET_LIVE_ON_CHAIN = 5;
 
 /**
  * Reads an address out of the environment, returning null rather than throwing
@@ -198,9 +197,9 @@ function optionalAddress(value: string | undefined): Address | null {
  * regardless, so these are public the moment anyone loads the page.
  */
 const MAINNET_VAULTS: Record<StrategyId, string> = {
-  steady: "0xcd0898066b8345fE23b94Cf6Ea5Ffdd560a1ad37",
-  balanced: "0x3601c09C4F84885454cCbd46B9dF3DaB244c1150",
-  growth: "0xa809DC62C6fc723E04B061cbE6271AaA093eC75b",
+  steady: "0x8F6154E79471CE8538f0DCEb9D0cf90d48D883E6",
+  balanced: "0x0c892E668a20a4fE82d7963580ebD0C6A66Ba8F4",
+  growth: "0x12a2DC45Cd51F26075129332ceD4bC6e1e190ae5",
 };
 
 /**
@@ -239,7 +238,9 @@ export const BLUR_TOKEN = optionalAddress(process.env.NEXT_PUBLIC_BLUR_TOKEN);
  * .env.local was hiding a control that works.
  */
 export const EXIT_ROUTER = optionalAddress(
-  process.env.NEXT_PUBLIC_EXIT_ROUTER || "0x2304d57bA6E5EecD3d4d8Cc657740D9aa5824035",
+  /* Empty until BnbExitRouter is deployed here. optionalAddress turns that into
+     null, and the app hides the button rather than calling into nothing. */
+  process.env.NEXT_PUBLIC_EXIT_ROUTER || "",
 );
 
 /** Minimal ExitRouter ABI: the one function the UI calls. */

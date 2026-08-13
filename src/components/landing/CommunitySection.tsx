@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { BrandMark } from "@/components/BrandMark";
 import { ArrowRightIcon } from "@/components/icons";
 import { StrategyGlyph } from "@/components/StrategyGlyph";
-import { BASKET_STOCKS } from "@/lib/chain";
+import { BASKET_STOCKS, STABLE_SYMBOL } from "@/lib/chain";
 import { STRATEGIES, type StrategyId } from "@/lib/strategies";
 import type { FeedItem, FeedResponse } from "@/types/feed";
 
@@ -15,7 +15,7 @@ import type { FeedItem, FeedResponse } from "@/types/feed";
  * USDG is in here beside the holdings because the lending rows name it —
  * "steakUSDG" contains it, which is what the substring match below is for.
  */
-const SYMBOLS = [...BASKET_STOCKS.map((s) => s.symbol), "USDG"];
+const SYMBOLS = [...BASKET_STOCKS.map((s) => s.symbol), STABLE_SYMBOL];
 
 /**
  * Cards shown before the feed answers, and if it never does.
@@ -53,7 +53,7 @@ const RESTING: MiniData[] = [
     meta: "Basket holding",
     note: PER_STOCK,
   })),
-  { sym: "USDG", name: "Lending leg", meta: "USDG supplied", note: `${BALANCED.stablePct}%` },
+  { sym: STABLE_SYMBOL, name: "Lending leg", meta: `${STABLE_SYMBOL} supplied`, note: `${BALANCED.stablePct}%` },
   { sym: null, name: "Rebalance", meta: "On drift", note: "auto" },
 ];
 

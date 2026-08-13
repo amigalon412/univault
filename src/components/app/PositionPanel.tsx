@@ -5,6 +5,7 @@ import { BrandMark } from "@/components/BrandMark";
 import { useMounted } from "@/hooks/useMounted";
 import { formatUsdg, usePositionBreakdown, useVault } from "@/hooks/useVault";
 import type { Strategy } from "@/lib/strategies";
+import { STABLE_SYMBOL } from "@/lib/chain";
 
 interface PositionPanelProps {
   strategy: Strategy;
@@ -27,7 +28,7 @@ function Status({ on, label }: { on: boolean; label: string }) {
  */
 function Mechanism({ hasBasket }: { hasBasket: boolean }) {
   const stages = [
-    { k: "Deposit", s: "USDG" },
+    { k: "Deposit", s: STABLE_SYMBOL },
     { k: "At work", s: hasBasket ? "Lending + stocks" : "Lending" },
     { k: "Yield", s: "Grows" },
     { k: "Compound", s: "Repeats" },

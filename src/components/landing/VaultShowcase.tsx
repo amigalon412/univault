@@ -6,7 +6,7 @@ import { BrandMark } from "@/components/BrandMark";
 import { ArrowRightIcon } from "@/components/icons";
 import { ScrambleFigure } from "@/components/ScrambleFigure";
 import { useReveal } from "@/hooks/useReveal";
-import { BASKET_STOCKS } from "@/lib/chain";
+import { BASKET_STOCKS, STABLE_SYMBOL } from "@/lib/chain";
 import { STRATEGIES, type StrategyId } from "@/lib/strategies";
 
 /* An illustrative deposit, not a real position — every figure below is this
@@ -109,7 +109,7 @@ export function VaultShowcase() {
                   <ScrambleFigure value={usd(EXAMPLE)} active={seen} />
                 </div>
                 <div className="showcase-sub">
-                  <span className="chip">USDG</span>
+                  <span className="chip">{STABLE_SYMBOL}</span>
                   once · no lockup
                 </div>
               </div>

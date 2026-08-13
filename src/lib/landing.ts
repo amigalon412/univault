@@ -1,5 +1,5 @@
 import type { Address } from "viem";
-import { KEEPER_GUARD, PRICE_ORACLE, STEAK_USDG, USDG, VAULT_ADDRESSES } from "@/lib/chain";
+import { KEEPER_GUARD, PRICE_ORACLE, STABLE_SYMBOL, STEAK_USDG, USDG, VAULT_ADDRESSES } from "@/lib/chain";
 
 /**
  * Copy for the landing page.
@@ -82,10 +82,10 @@ export const HOW_STEPS: HowStep[] = [
   {
     num: "[ 01 ]",
     caption: "deposit",
-    title: "You send USDG",
+    title: `You send ${STABLE_SYMBOL}`,
     body: "An ordinary ERC-20 transfer into an ERC-4626 vault. Shares are minted to your own address, and no function on the vault can move the assets behind them anywhere but back to a holder.",
     links: [
-      { label: "USDG", address: USDG },
+      { label: STABLE_SYMBOL, address: USDG },
       { label: "Vault", address: VAULT_ADDRESSES.balanced },
     ],
   },
@@ -116,12 +116,22 @@ export interface EcosystemLogo {
   accent: string;
 }
 
+/**
+ * Three cells short of what it should be, and deliberately so.
+ *
+ * USDG, Uniswap and Blockscout were all true on Robinhood Chain and are all
+ * false here: the stable is USDT, the venue is PancakeSwap v3, the explorer is
+ * BscScan. There are no logo masks in the repo for the replacements, and a grid
+ * that names venues this build does not touch is worse than a short one --
+ * somebody checks a claim like that, and finds it wrong.
+ *
+ * To fill it back out, add usdt.png, pancakeswap.png and bscscan.png to
+ * public/images/logos (alpha-only, they are used as CSS masks) and put the
+ * three rows back with the accents #26a17b, #1fc7d4 and #f0b90b.
+ */
 export const ECOSYSTEM_LOGOS: EcosystemLogo[] = [
   { name: "BNB Chain", mask: "/images/logos/bnb.png", accent: "#f0b90b" },
-  { name: "USDG", mask: "/images/logos/usdg.png", accent: "#2775ca" },
-  { name: "Uniswap", mask: "/images/logos/uniswap.png", accent: "#ff007a" },
   { name: "MetaMask", mask: "/images/logos/metamask.png", accent: "#e2761b" },
-  { name: "Blockscout", mask: "/images/logos/blockscout.png", accent: "#5353d3" },
   { name: "Ethereum", mask: "/images/logos/ethereum.png", accent: "#627eea" },
 ];
 

@@ -9,7 +9,7 @@ import { ExitAllButton } from "@/components/app/ExitAllButton";
 import { useMounted } from "@/hooks/useMounted";
 import { formatUsdg, useUsdg, useVault } from "@/hooks/useVault";
 import { safexAbi } from "@/lib/abis";
-import { explorerTxUrl, bnbChain, USDG, USDG_DECIMALS } from "@/lib/chain";
+import { explorerTxUrl, bnbChain, STABLE_SYMBOL, USDG, USDG_DECIMALS } from "@/lib/chain";
 import type { Strategy } from "@/lib/strategies";
 
 type Mode = "deposit" | "withdraw";
@@ -153,13 +153,13 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
     { label: "Strategy", value: strategy.name },
     {
       label: mode === "deposit" ? "You receive" : "You redeem",
-      value: mode === "deposit" ? "SAFEX shares" : "USDG",
+      value: mode === "deposit" ? "SAFEX shares" : STABLE_SYMBOL,
     },
   ];
 
   if (mode === "withdraw" && ready) {
     rows.splice(1, 0, {
-      label: "Withdrawable in USDG",
+      label: `Withdrawable in ${STABLE_SYMBOL}`,
       value: vault.maxWithdraw === undefined ? "—" : formatUsdg(vault.maxWithdraw),
       numeric: true,
     });
@@ -171,7 +171,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
     if (vault.isPriceable === false) return "Pricing halted";
     if (parsed === null) return "Enter amount";
     if (insufficient) return mode === "deposit" ? "Insufficient balance" : "More than is withdrawable";
-    if (mode === "deposit") return needsApproval ? "Approve USDG" : "Deposit";
+    if (mode === "deposit") return needsApproval ? `Approve ${STABLE_SYMBOL}` : "Deposit";
     return "Withdraw";
   }
 
@@ -187,7 +187,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
       <div className="panel-head">
         <h2 className="capitalize">{mode}</h2>
         <span className="ui-label deposit-asset">
-          <span className="animate-blink">●</span> USDG
+          <span className="animate-blink">●</span> {STABLE_SYMBOL}
         </span>
       </div>
 
@@ -219,7 +219,7 @@ export function DepositPanel({ strategy }: DepositPanelProps) {
             aria-label={`Amount to ${mode}`}
             className="amount-input figure"
           />
-          <span className="chip">USDG</span>
+          <span className="chip">{STABLE_SYMBOL}</span>
         </div>
 
         <dl className="rows">
