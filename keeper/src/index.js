@@ -5,7 +5,7 @@ import { privateKeyToAccount } from "viem/accounts";
 // Config
 // ---------------------------------------------------------------------------
 
-const RPC_URL = process.env.RPC_URL ?? "https://rpc.mainnet.chain.robinhood.com";
+const RPC_URL = process.env.RPC_URL ?? "https://bsc-dataseed.binance.org";
 const VAULT = required("VAULT_ADDRESS");
 const GUARD = required("GUARD_ADDRESS");
 
@@ -14,9 +14,23 @@ const BUYBACK = process.env.BUYBACK_ADDRESS ?? null;
 
 // Do not act on dust. A call that moves less than this is not worth the gas or
 // the block space, and spamming small allocations only feeds venue rounding.
-const MIN_DEPLOY = BigInt(process.env.MIN_DEPLOY_UNITS ?? 100_000_000); // 100 USDG
-const MIN_FEE = BigInt(process.env.MIN_FEE_UNITS ?? 10_000_000); // 10 USDG
-const MIN_BUYBACK = BigInt(process.env.MIN_BUYBACK_UNITS ?? 50_000_000); // 50 USDG
+//
+// WHOLE TOKENS, scaled by the asset's own decimals once the chain has told us
+// what they are -- see `dust()` below. They used to be raw base units with a
+// six-decimal assumption baked into the number (100_000_000 meaning 100 USDG),
+// which is correct on Robinhood Chain and wrong by a factor of a million on
+// BNB, where USDT has EIGHTEEN decimals. A keeper reading `100_000_000` as its
+// floor there would treat anything under 0.0000000001 USDT as worth acting on
+// -- that is, it would never skip, and would burn gas allocating dust forever.
+// Expressing the floor in tokens makes the units impossible to get wrong.
+const MIN_DEPLOY_TOKENS = Number(process.env.MIN_DEPLOY_TOKENS ?? 100);
+const MIN_FEE_TOKENS = Number(process.env.MIN_FEE_TOKENS ?? 10);
+const MIN_BUYBACK_TOKENS = Number(process.env.MIN_BUYBACK_TOKENS ?? 50);
+
+/** Whole tokens -> base units, at the asset's real precision. */
+function dust(tokens, decimals) {
+  return BigInt(Math.round(tokens * 1e6)) * 10n ** BigInt(decimals) / 1_000_000n;
+}
 
 // How far below the simulated fill a buyback may still settle. The protocol
 // token has no price feed, so this is the only bound on the price and it is
@@ -29,10 +43,13 @@ const POLL_MS = Number(process.env.POLL_MS ?? 60_000);
 const DRY_RUN = process.env.DRY_RUN !== "false";
 const ONCE = process.argv.includes("--once");
 
-const robinhood = defineChain({
-  id: 4663,
-  name: "Robinhood Chain",
-  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+// BNB Chain. Gas is BNB, not ETH -- viem only uses nativeCurrency for
+// formatting, but a keeper that prints "0.004 ETH" of gas on BSC is a keeper
+// nobody can sanity-check against an explorer.
+const bnb = defineChain({
+  id: 56,
+  name: "BNB Chain",
+  nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
   rpcUrls: { default: { http: [RPC_URL] } },
 });
 
@@ -99,7 +116,7 @@ const erc20Abi = [
 
 // ---------------------------------------------------------------------------
 
-const publicClient = createPublicClient({ chain: robinhood, transport: http(RPC_URL) });
+const publicClient = createPublicClient({ chain: bnb, transport: http(RPC_URL) });
 
 // The key is only read when actually sending. A dry run never touches it, so
 // the bot can be inspected and left running without one present.
@@ -108,7 +125,7 @@ let walletClient = null;
 if (!DRY_RUN) {
   const pk = required("KEEPER_PRIVATE_KEY");
   account = privateKeyToAccount(pk.startsWith("0x") ? pk : `0x${pk}`);
-  walletClient = createWalletClient({ account, chain: robinhood, transport: http(RPC_URL) });
+  walletClient = createWalletClient({ account, chain: bnb, transport: http(RPC_URL) });
 }
 
 function required(name) {
@@ -241,11 +258,10 @@ async function planVaultAction(ctx) {
   const wouldDeploy = deployable > cap ? cap : deployable;
   const state = `idle=${fmt(idle)} buffer=${fmt(target)} deployable=${fmt(deployable)} cap=${fmt(cap)}`;
 
-  if (wouldDeploy < MIN_DEPLOY) {
-    return { skip: `nothing to allocate (${fmt(wouldDeploy)} < ${fmt(MIN_DEPLOY)})`, state };
+  const minDeploy = dust(MIN_DEPLOY_TOKENS, decimals);
+  if (wouldDeploy < minDeploy) {
+    return { skip: `nothing to allocate (${fmt(wouldDeploy)} < ${fmt(minDeploy)})`, state };
   }
-
-  void decimals;
   return {
     name: "deployIdle",
     describe: `allocate ${fmt(wouldDeploy)}`,
@@ -263,8 +279,9 @@ async function planCollect(ctx) {
   if (shares === 0n) return { skip: "no fee shares to collect" };
 
   const worth = await readVault("convertToAssets", [shares]);
-  if (worth < MIN_FEE) {
-    return { skip: `fees below threshold (${fmt(worth)} < ${fmt(MIN_FEE)})` };
+  const minFee = dust(MIN_FEE_TOKENS, ctx.decimals);
+  if (worth < minFee) {
+    return { skip: `fees below threshold (${fmt(worth)} < ${fmt(minFee)})` };
   }
 
   return {
@@ -300,8 +317,9 @@ async function planBuyback(ctx) {
   ]);
   const spend = balance > cap ? cap : balance;
 
-  if (spend < MIN_BUYBACK) {
-    return { skip: `too little to buy back (${fmt(spend)} < ${fmt(MIN_BUYBACK)})` };
+  const minBuyback = dust(MIN_BUYBACK_TOKENS, ctx.decimals);
+  if (spend < minBuyback) {
+    return { skip: `too little to buy back (${fmt(spend)} < ${fmt(minBuyback)})` };
   }
 
   // A quote, taken by asking the chain what would happen with no lower bound.
@@ -414,7 +432,7 @@ async function main() {
   log(`keeper starting | vault=${VAULT} guard=${GUARD}${BUYBACK ? ` buyback=${BUYBACK}` : ""}`);
   log(
     `mode=${DRY_RUN ? "DRY RUN" : "LIVE"} poll=${POLL_MS}ms ` +
-      `minDeploy=${MIN_DEPLOY} minFee=${MIN_FEE} minBuyback=${MIN_BUYBACK} ` +
+      `minDeploy=${MIN_DEPLOY_TOKENS} minFee=${MIN_FEE_TOKENS} minBuyback=${MIN_BUYBACK_TOKENS} (whole tokens) ` +
       `buybackSlippage=${BUYBACK_SLIPPAGE_BPS}bps`,
   );
 
