@@ -14,20 +14,25 @@ import type { CSSProperties } from "react";
  *
  * Regenerate the masks with `node scripts/logo-masks.mjs`.
  */
+/* What the vault actually touches on BNB Chain: the five names in the basket,
+   the stable it takes, the venue it trades on, the chain and the explorer.
+   Ratios match BRAND_MASKS so a mark is the same size wherever it appears.
+
+   IT USED TO RUN NVIDIA, AMAZON, TESLA, APPLE, PALANTIR AND SPACEX. Those are
+   the Robinhood basket and none of them exists as a bStock -- the row was
+   showing six companies the vault cannot hold, on the same page whose picker
+   lists the five it does. The ecosystem grid was cut short for exactly this
+   reason during the port; this row was missed. */
 const LOGOS = [
-  { name: "0x", src: "/images/logos/zerox.png", ratio: 1.632 },
   { name: "BNB Chain", src: "/images/logos/bnb.png", ratio: 1 },
-  { name: "NVIDIA", src: "/images/logos/nvda.png", ratio: 1.293 },
-  { name: "Amazon", src: "/images/logos/amzn.png", ratio: 1 },
-  { name: "Tesla", src: "/images/logos/tsla.png", ratio: 1 },
-  { name: "Apple", src: "/images/logos/aapl.png", ratio: 0.808 },
+  { name: "S&P 500", src: "/images/logos/spy.png", ratio: 1 },
+  { name: "Nasdaq 100", src: "/images/logos/qqq.png", ratio: 1 },
   { name: "Google", src: "/images/logos/googl.png", ratio: 0.98 },
   { name: "Microsoft", src: "/images/logos/msft.png", ratio: 1 },
-  { name: "Palantir", src: "/images/logos/pltr.png", ratio: 0.8 },
-  /* The full SpaceX mark, swoosh included — this row has the width for it and
-     0x already sits at 1.63. The badges use spcx-mark.png instead, which is
-     the X on its own; see BRAND_MASKS. */
-  { name: "SpaceX", src: "/images/logos/spcx.png", ratio: 2.564 },
+  { name: "Meta", src: "/images/logos/meta.png", ratio: 1.506 },
+  { name: "Tether", src: "/images/logos/usdt.png", ratio: 1.148 },
+  { name: "PancakeSwap", src: "/images/logos/pancakeswap.png", ratio: 1 },
+  { name: "BscScan", src: "/images/logos/bscscan.png", ratio: 1 },
 ] as const;
 
 /**

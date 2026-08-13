@@ -117,20 +117,26 @@ export interface EcosystemLogo {
 }
 
 /**
- * Three cells short of what it should be, and deliberately so.
+ * What this build actually touches. Every row is checkable, which is the whole
+ * point of the grid -- somebody verifies a claim like this and finds it wrong.
  *
- * USDG, Uniswap and Blockscout were all true on Robinhood Chain and are all
- * false here: the stable is USDT, the venue is PancakeSwap v3, the explorer is
- * BscScan. There are no logo masks in the repo for the replacements, and a grid
- * that names venues this build does not touch is worse than a short one --
- * somebody checks a claim like that, and finds it wrong.
+ * It ran three cells short for a while after the port, on purpose: USDG,
+ * Uniswap and Blockscout were all true on Robinhood Chain and all false here,
+ * and there were no masks in the repo for what replaced them. A short grid
+ * beats a grid that names venues we do not use.
  *
- * To fill it back out, add usdt.png, pancakeswap.png and bscscan.png to
- * public/images/logos (alpha-only, they are used as CSS masks) and put the
- * three rows back with the accents #26a17b, #1fc7d4 and #f0b90b.
+ * The masks exist now. BscScan's is the GLYPH ONLY -- their shipped SVG is a
+ * 470x122 lockup with the wordmark and "Product of Etherscan" under it, and a
+ * lockup stretched into a square cell is the same mistake the SPY lettermark
+ * made in the films. PancakeSwap's is the rabbit with its cyan disc keyed out:
+ * poured through its own alpha the shipped badge is just a filled circle,
+ * because the disc is opaque too.
  */
 export const ECOSYSTEM_LOGOS: EcosystemLogo[] = [
   { name: "BNB Chain", mask: "/images/logos/bnb.png", accent: "#f0b90b" },
+  { name: "USDT", mask: "/images/logos/usdt.png", accent: "#26a17b" },
+  { name: "PancakeSwap", mask: "/images/logos/pancakeswap.png", accent: "#1fc7d4" },
+  { name: "BscScan", mask: "/images/logos/bscscan.png", accent: "#f0b90b" },
   { name: "MetaMask", mask: "/images/logos/metamask.png", accent: "#e2761b" },
   { name: "Ethereum", mask: "/images/logos/ethereum.png", accent: "#627eea" },
 ];
