@@ -99,10 +99,29 @@ adapter on every call rather than keeping its own copy — the tier is not
 uniform here, and a stored copy is what broke the first ExitRouter on the
 other chain.
 
+## Keeper
+
+`0xC21bF9c53f9DCf50c7c4437f443DF542Af1fEaBc` — registered on all three guards
+2026-08-13, one broadcast, three receipts at 47,740 gas each. Verified by
+reading `isKeeper` back off the chain rather than trusting the log: three
+`true`.
+
+A fresh EOA that holds nothing but gas, never the owner key. What it may do is
+bounded by the guard: rebalance toward target, allocate idle to the venue,
+convert fee shares, spend on the buyback — each inside the size, slippage and
+cooldown limits, and none of them able to choose a destination. Revoking is
+`ALLOWED=false forge script script/SetBnbKeeper.s.sol`, works whether or not
+the machine running it cooperates.
+
+**It is registered, not yet running live.** The process is installed on the VPS
+(`/opt/safex-keeper`, service `safex-keeper`) and ticking in DRY RUN, because
+`/etc/safex-keeper.env` does not exist yet — that file carries both the private
+key and `DRY_RUN=false` and is the entire arming switch. See `keeper/VPS.md`.
+Nothing is lost by waiting: the vaults hold zero, so there is no drift to
+correct, and deposits allocate themselves inside the depositor's own
+transaction (`autoAllocate` is true on all three).
+
 ## Not deployed here yet
-- **A keeper.** `setKeeper` was never called, so no address may rebalance. The
-  guard is still the owner's, so this is one transaction whenever an address
-  exists for it. Until then the vaults hold their split only as deposits set it.
 - **$SAFEX token, staking, BuybackModule.**
 
 ## Wiring the site
